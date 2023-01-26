@@ -1,4 +1,4 @@
-package it.unipi.lsmsd;
+package it.unipi.lsmsd.servlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
