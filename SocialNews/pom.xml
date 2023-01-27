@@ -9,7 +9,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
-  <groupId>it.unipi.lsmsd</groupId>
+  <groupId>it.unipi.lsmsd.socialnews</groupId>
   <artifactId>SocialNews</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <name>SocialNews</name>
@@ -21,15 +21,29 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>3.8.1</version>
+      <version>4.13</version>
       <scope>test</scope>
     </dependency>
+    <!-- Tomcat wrapper for standard JEE Servlet -->
     <dependency>
-      <!-- Tomcat wrapper for standard JEE Servlet -->
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-servlet-api</artifactId>
       <version>9.0.71</version>
       <scope>provided</scope>
+    </dependency>
+    <!-- MongoDB synchronous drivers -->
+    <dependency>
+      <groupId>org.mongodb</groupId>
+      <artifactId>mongodb-driver-sync</artifactId>
+      <version>4.7.2</version>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Logging library supported by mongo drivers-->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>2.0.6</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
 
