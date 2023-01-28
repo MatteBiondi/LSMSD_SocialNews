@@ -11,10 +11,11 @@ import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
 public abstract class MongoDAO<T>{
+    private static final String databaseName = "socialNewsDB";
+
     private final MongoConnection mongoConnection;
     private final Class<T> template;
     private final String collectionName;
-    private static final String databaseName = "socialNewsDB";
 
     protected MongoDAO(String collectionName, Class<T> template){
         this.template = template;

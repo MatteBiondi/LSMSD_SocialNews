@@ -1,7 +1,5 @@
 package it.unipi.lsmsd.socialnews.model;
 
-import org.bson.types.ObjectId;
-
 import java.util.Arrays;
 
 public class Reader extends User{
