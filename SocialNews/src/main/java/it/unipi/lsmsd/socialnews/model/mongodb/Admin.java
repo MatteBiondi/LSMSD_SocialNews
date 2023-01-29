@@ -1,4 +1,4 @@
-package it.unipi.lsmsd.socialnews.model;
+package it.unipi.lsmsd.socialnews.model.mongodb;
 
 public class Admin extends User {
     Boolean isAdmin;
