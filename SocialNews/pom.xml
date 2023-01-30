@@ -39,12 +39,14 @@
 
   <!-- BUILD -->
   <dependencies>
+    <!-- TestNG testing framework-->
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.13</version>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <version>7.7.1</version>
       <scope>test</scope>
     </dependency>
+
     <!-- Tomcat wrapper for standard JEE Servlet -->
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -52,6 +54,7 @@
       <version>9.0.71</version>
       <scope>provided</scope>
     </dependency>
+
     <!-- MongoDB synchronous drivers -->
     <dependency>
       <groupId>org.mongodb</groupId>
@@ -59,10 +62,17 @@
       <version>4.7.2</version>
       <scope>compile</scope>
     </dependency>
+
     <!-- Logging library supported by mongo drivers-->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
+      <version>2.0.6</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
       <version>2.0.6</version>
       <scope>compile</scope>
     </dependency>
