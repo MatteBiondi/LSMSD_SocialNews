@@ -1,4 +1,4 @@
-package it.unipi.lsmsd.socialnews.model.neo4j;
+package it.unipi.lsmsd.socialnews.dao.model.neo4j;
 
 import org.neo4j.ogm.annotation.*;
 

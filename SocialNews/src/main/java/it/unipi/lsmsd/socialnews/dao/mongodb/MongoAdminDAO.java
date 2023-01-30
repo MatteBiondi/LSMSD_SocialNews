@@ -3,8 +3,8 @@ package it.unipi.lsmsd.socialnews.dao.mongodb;
 import com.mongodb.MongoException;
 import com.mongodb.client.model.Filters;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
-import it.unipi.lsmsd.socialnews.model.mongodb.Admin;
-import it.unipi.lsmsd.socialnews.model.mongodb.User;
+import it.unipi.lsmsd.socialnews.dao.model.mongodb.Admin;
+import it.unipi.lsmsd.socialnews.dao.model.mongodb.User;
 
 public class MongoAdminDAO extends MongoDAO<Admin> {
 

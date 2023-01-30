@@ -1,4 +1,4 @@
-package it.unipi.lsmsd.socialnews.model.mongodb;
+package it.unipi.lsmsd.socialnews.dao.model.mongodb;
 
 import java.util.Arrays;
 
