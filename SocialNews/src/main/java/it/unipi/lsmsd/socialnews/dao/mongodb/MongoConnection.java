@@ -4,12 +4,16 @@ import com.mongodb.*;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.session.ClientSession;
 import org.bson.BsonDocument;
 import org.bson.BsonInt64;
 import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MongoConnection {
+    private static final Logger logger = LoggerFactory.getLogger(MongoConnection.class);
     private static volatile MongoConnection instance = null;
     private final MongoClient mongoClient;
 
@@ -32,7 +36,7 @@ public class MongoConnection {
 
         mongoClient = MongoClients.create(settings);
 
-        System.out.println("New MongoClient instance built!");
+        logger.info("New MongoClient instance built!");
     }
 
     public static MongoConnection getConnection(){
@@ -46,13 +50,13 @@ public class MongoConnection {
         return instance;
     }
 
-    public void closeConnection(){
+    public void close(){
         if(instance != null){
             synchronized (MongoConnection.class){
                 if(instance != null){
                     mongoClient.close(); // Method is guaranteed to be thread safe by MongoDB documentation
                     instance = null;
-                    System.out.println("MongoClient instance destroyed!");
+                    logger.info("MongoClient instance destroyed!");
                 }
             }
         }
