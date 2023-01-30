@@ -1,4 +1,4 @@
-package it.unipi.lsmsd.socialnews.environment;
+package it.unipi.lsmsd.socialnews.config.environment;
 
 public class Neo4jEnvironment {
     private static final String DEFAULT_HOST = "localhost";
