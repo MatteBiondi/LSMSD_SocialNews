@@ -13,3 +13,9 @@
 <https://tomcat.apache.org/download-90.cgi>
 
 ---
+
+### *Document database - MongoDB 6.0*
+| Component        | Version |
+|------------------|---------|
+| Java-sync-driver | 4.7.2   |
+
