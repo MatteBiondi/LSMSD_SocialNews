@@ -1,4 +1,4 @@
-package it.unipi.lsmsd.servlet;
+package it.unipi.lsmsd.socialnews.servlet;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
