@@ -1,9 +1,7 @@
 package it.unipi.lsmsd.socialnews.dao.model.mongodb;
 
-import org.bson.types.ObjectId;
-
 public class User {
-    protected ObjectId id;
+    protected String id;
     protected String email;
     protected String password;
     protected String fullName;
@@ -16,11 +14,11 @@ public class User {
         this.fullName = fullName;
     }
 
-    public ObjectId getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(ObjectId id) {
+    public void setId(String id) {
         this.id = id;
     }
 
