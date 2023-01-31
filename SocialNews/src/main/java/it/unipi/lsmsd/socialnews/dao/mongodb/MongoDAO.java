@@ -2,6 +2,7 @@ package it.unipi.lsmsd.socialnews.dao.mongodb;
 
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import it.unipi.lsmsd.socialnews.config.environment.MongoEnvironment;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.*;
@@ -11,8 +12,7 @@ import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
 import static org.bson.codecs.configuration.CodecRegistries.*;
 
 public abstract class MongoDAO<T>{
-    private static final String databaseName = "socialNewsDB";
-
+    private final static String ENTITIES = "it.unipi.lsmsd.socialnews.dao.model.mongodb";
     private final MongoConnection mongoConnection;
     private final Class<T> template;
     private final String collectionName;
@@ -27,7 +27,7 @@ public abstract class MongoDAO<T>{
 
         CodecProvider pojoCodecProvider = PojoCodecProvider
                 .builder()
-                .register("it.unipi.lsmsd.socialnews.model.mongodb")
+                .register(ENTITIES)
                 .register(ClassModel.builder(template)
                         .idGenerator(new IdGenerator<String>() {
                             @Override
@@ -47,7 +47,7 @@ public abstract class MongoDAO<T>{
                 fromProviders(pojoCodecProvider)
         );
 
-        MongoDatabase database = mongoConnection.getDatabase(databaseName)
+        MongoDatabase database = mongoConnection.getDatabase(MongoEnvironment.getMongoDatabase())
                 .withCodecRegistry(pojoCodecRegistry);
 
         return database.getCollection(collectionName, template);
