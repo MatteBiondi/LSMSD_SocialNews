@@ -20,7 +20,7 @@ import java.util.logging.Logger;
 )
 
 public class AuthenticationFilter implements Filter {
-    private static final Logger LOGGER = Logger.getLogger(HomepageServlet.class.getName()); //*
+    private static final Logger LOGGER = Logger.getLogger(AuthenticationFilter.class.getName());
 
     public void init(FilterConfig config) {
         LOGGER.info("AuthenticationFilter initialized");
