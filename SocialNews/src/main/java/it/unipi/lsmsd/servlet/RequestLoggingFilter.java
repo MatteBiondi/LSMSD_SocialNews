@@ -18,7 +18,7 @@ import java.util.logging.Logger;
         description = "Log all the request received"
 )
 public class RequestLoggingFilter implements Filter {
-    private static final Logger LOGGER = Logger.getLogger(HomepageServlet.class.getName()); //*
+    private static final Logger LOGGER = Logger.getLogger(RequestLoggingFilter.class.getName());
 
     public void init(FilterConfig config){
         LOGGER.info("RequestLoggingFilter initialized");
