@@ -16,7 +16,7 @@
 
   <packaging>war</packaging>
 
-  <!-- DEPENDENCIES -->
+  <!-- BUILD -->
   <build>
     <finalName>SocialNews</finalName>
     <plugins>
@@ -37,7 +37,7 @@
     </plugins>
   </build>
 
-  <!-- BUILD -->
+  <!-- DEPENDENCIES -->
   <dependencies>
     <!-- TestNG testing framework-->
     <dependency>
@@ -55,10 +55,10 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>javax.servlet.jsp.jstl</groupId>
-      <artifactId>jstl-api</artifactId>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
       <version>1.2</version>
-      <scope>compile</scope>
+      <scope>runtime</scope>
     </dependency>
 
     <!-- MongoDB synchronous drivers -->
@@ -76,12 +76,13 @@
       <version>2.0.6</version>
       <scope>compile</scope>
     </dependency>
-    <dependency>
+    <dependency><!--TODO: define custom format-->
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <version>2.0.6</version>
       <scope>compile</scope>
     </dependency>
+
     <!-- Neo4J OGM for entities handling -->
     <dependency>
       <groupId>org.neo4j</groupId>
@@ -110,10 +111,14 @@
       <artifactId>log4j-slf4j-impl</artifactId>
       <version>2.13.3</version>
     </dependency>
+
+    <!-- Utilities to convert entity objects into DTO objects -->
     <dependency>
       <groupId>org.modelmapper</groupId>
       <artifactId>modelmapper</artifactId>
       <version>3.1.1</version>
+      <scope>compile</scope>
     </dependency>
   </dependencies>
+
 </project>
