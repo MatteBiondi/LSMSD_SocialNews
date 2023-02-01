@@ -44,9 +44,9 @@ public final class ServiceLocator {
      * Services handled by ServiceLocator
      */
     enum Service{
-        ADMIN(null),
-        READER(null),
-        REPORTER(null),
+        ADMIN(AdminService.class),
+        READER(ReaderService.class),
+        REPORTER(ReporterService.class),
         STATISTICS(null);
 
         private final Class<?> clazz;
