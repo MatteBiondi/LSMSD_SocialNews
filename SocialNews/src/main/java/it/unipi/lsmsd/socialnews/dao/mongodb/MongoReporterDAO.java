@@ -8,9 +8,7 @@ import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.mongodb.Post;
 import it.unipi.lsmsd.socialnews.dao.model.mongodb.Reporter;
 import org.bson.conversions.Bson;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class MongoReporterDAO extends MongoDAO<Reporter> {
 
@@ -96,9 +94,16 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
 
     public List<Reporter> reportersByFullName(String fullNamePattern, Reporter offset, Integer pageSize) throws SocialNewsDataAccessException {
         ArrayList<Reporter> reporters = new ArrayList<>();
+
+        StringBuilder regex = new StringBuilder();
+        String[] subPatterns = fullNamePattern.trim().split(" ");
+        for (Iterator<String> iter = Arrays.stream(subPatterns).iterator(); iter.hasNext(); ) {
+            regex.append(String.format("(%s.*)\\s%s", iter.next(), iter.hasNext() ? "+":"*"));
+        }
+
         Bson filter = Filters.and(
                 Filters.exists("email", true),
-                Filters.regex("fullName", String.format("(^%1$s)|(\s+%1$s)", fullNamePattern),"i")
+                Filters.regex("fullName", regex.toString(),"i")
         );
         if(offset != null){
             filter = Filters.and(
