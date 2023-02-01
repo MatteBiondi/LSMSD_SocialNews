@@ -1,4 +1,6 @@
 package it.unipi.lsmsd.socialnews.dto;
 
-public class BaseDTO {
+import java.io.Serializable;
+
+public abstract class BaseDTO implements Serializable {
 }
