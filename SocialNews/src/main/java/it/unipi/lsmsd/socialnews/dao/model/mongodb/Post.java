@@ -1,11 +1,13 @@
 package it.unipi.lsmsd.socialnews.dao.model.mongodb;
 
+import it.unipi.lsmsd.socialnews.dao.model.BaseEntity;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public class Post {
+public class Post extends BaseEntity {
     String postId;
     String text;
     Date timestamp;

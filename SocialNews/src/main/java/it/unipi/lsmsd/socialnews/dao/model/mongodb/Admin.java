@@ -5,16 +5,27 @@ public class Admin extends User {
 
     public Admin(){ }
 
-    public Admin(String email, String password, String fullName, Boolean isAdmin) {
+    public Admin(String email, String password, String fullName) {
         super(email, password, fullName);
-        this.isAdmin = isAdmin;
+        this.isAdmin = true;
     }
 
-    public Boolean getAdmin() {
+    public Boolean getIsAdmin() {
         return isAdmin;
     }
 
-    public void setAdmin(Boolean admin) {
+    public void setIsAdmin(Boolean admin) {
         isAdmin = admin;
+    }
+
+    @Override
+    public String toString() {
+        return "Admin{" +
+                "id='" + id + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", isAdmin=" + isAdmin +
+                '}';
     }
 }

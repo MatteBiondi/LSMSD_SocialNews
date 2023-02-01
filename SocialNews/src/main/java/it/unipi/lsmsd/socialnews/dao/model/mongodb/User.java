@@ -1,6 +1,8 @@
 package it.unipi.lsmsd.socialnews.dao.model.mongodb;
 
-public class User {
+import it.unipi.lsmsd.socialnews.dao.model.BaseEntity;
+
+public class User extends BaseEntity {
     protected String id;
     protected String email;
     protected String password;

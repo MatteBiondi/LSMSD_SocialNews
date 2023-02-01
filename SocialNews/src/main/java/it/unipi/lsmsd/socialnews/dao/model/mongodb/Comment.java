@@ -1,8 +1,10 @@
 package it.unipi.lsmsd.socialnews.dao.model.mongodb;
 
+import it.unipi.lsmsd.socialnews.dao.model.BaseEntity;
+
 import java.util.Date;
 
-public class Comment {
+public class Comment extends BaseEntity {
     String id;
     Reader reader;
     String postId;

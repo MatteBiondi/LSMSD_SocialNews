@@ -2,7 +2,7 @@ package it.unipi.lsmsd.socialnews.dao.model.mongodb;
 
 import java.util.Arrays;
 
-public class Reader extends User{
+public class Reader extends User {
     public String gender;
     public String country;
     public Byte[] picture;
