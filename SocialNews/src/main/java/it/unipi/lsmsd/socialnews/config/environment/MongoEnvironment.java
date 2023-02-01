@@ -1,6 +1,6 @@
 package it.unipi.lsmsd.socialnews.config.environment;
 
-public abstract class MongoEnvironment {
+public final class MongoEnvironment {
     private static final String DEFAULT_PROTOCOL = "mongodb";
     private static final String DEFAULT_USERNAME = "admin";
     private static final String DEFAULT_PASSWORD = "root";
@@ -8,6 +8,11 @@ public abstract class MongoEnvironment {
     private static final String DEFAULT_OPTS = "";
     private static final String DEFAULT_DATABASE = "socialNewsDB";
     private static final String DEFAULT_URI_FORMAT = "%s://%s:%s@%s/%s?";// <protocol>://<username>:<password>@<hostname>/?<options>
+
+    /**
+     * Private constructor to prevent instantiation
+     */
+    private MongoEnvironment(){ }
 
     private static String getMongoProtocol() {
         String protocol = System.getenv("MONGO_PROTOCOL");

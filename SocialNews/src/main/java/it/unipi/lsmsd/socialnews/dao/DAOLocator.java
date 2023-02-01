@@ -10,9 +10,14 @@ import java.util.Map;
 
 import static it.unipi.lsmsd.socialnews.dao.DAOLocator.Service.*;
 
-public abstract class DAOLocator {
+public final class DAOLocator {
     private static final Logger logger = LoggerFactory.getLogger(MongoConnection.class);
     private static final Map<Service, Object> cache;
+
+    /**
+     * Private constructor to prevent instantiation
+     */
+    private DAOLocator(){}
 
     /**
      * Initial context class, it is in charge to look up an instance of the service interface passed as argument
