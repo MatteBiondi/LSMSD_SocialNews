@@ -12,6 +12,27 @@ import java.security.NoSuchAlgorithmException;
 
 public class ReaderServiceImpl implements ReaderService {
     /**
+     * Register a new reader in the application, storing the information into database
+     *
+     * @param newReader reader DTO object containing information of the new reader
+     * @return identifier assigned to the new reader
+     * @throws SocialNewsServiceException in case of failure of the insert operation on database
+     */
+    @Override
+    public String register(ReaderDTO newReader) throws SocialNewsServiceException {
+        try {
+            newReader.setPassword(Util.hashPassword(newReader.getPassword()));
+            return DAOLocator.getReaderDAO().register(Util.buildReader(newReader));
+        } catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error");
+        } catch (NoSuchAlgorithmException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Configuration error: hash algorithm");
+        }
+    }
+
+    /**
      * Authenticates a reader identified by email via secret password
      *
      * @param email    email of the reader
