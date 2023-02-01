@@ -54,6 +54,12 @@
       <version>9.0.71</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>javax.servlet.jsp.jstl</groupId>
+      <artifactId>jstl-api</artifactId>
+      <version>1.2</version>
+      <scope>compile</scope>
+    </dependency>
 
     <!-- MongoDB synchronous drivers -->
     <dependency>
@@ -104,6 +110,10 @@
       <artifactId>log4j-slf4j-impl</artifactId>
       <version>2.13.3</version>
     </dependency>
+    <dependency>
+      <groupId>org.modelmapper</groupId>
+      <artifactId>modelmapper</artifactId>
+      <version>3.1.1</version>
+    </dependency>
   </dependencies>
-
 </project>
