@@ -4,7 +4,6 @@ import com.mongodb.MongoException;
 import com.mongodb.client.model.Filters;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.mongodb.Admin;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.User;
 
 public class MongoAdminDAO extends MongoDAO<Admin> {
 
@@ -12,7 +11,7 @@ public class MongoAdminDAO extends MongoDAO<Admin> {
         super("users", Admin.class);
     }
 
-    public User authenticate(String email, String password) throws SocialNewsDataAccessException {
+    public Admin authenticate(String email, String password) throws SocialNewsDataAccessException {
         try{
             return getCollection()
                     .find(Filters.and(

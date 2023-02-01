@@ -12,7 +12,8 @@ import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
 import static org.bson.codecs.configuration.CodecRegistries.*;
 
 public abstract class MongoDAO<T>{
-    private final static String ENTITIES = "it.unipi.lsmsd.socialnews.dao.model.mongodb";
+    private final static String ENTITIES_PACKAGE = "it.unipi.lsmsd.socialnews.dao.model.mongodb";
+
     private final MongoConnection mongoConnection;
     private final Class<T> template;
     private final String collectionName;
@@ -27,7 +28,7 @@ public abstract class MongoDAO<T>{
 
         CodecProvider pojoCodecProvider = PojoCodecProvider
                 .builder()
-                .register(ENTITIES)
+                .register(ENTITIES_PACKAGE)
                 .register(ClassModel.builder(template)
                         .idGenerator(new IdGenerator<String>() {
                             @Override

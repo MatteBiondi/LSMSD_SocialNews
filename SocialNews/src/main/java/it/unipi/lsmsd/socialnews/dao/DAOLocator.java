@@ -1,6 +1,6 @@
 package it.unipi.lsmsd.socialnews.dao;
 
-import it.unipi.lsmsd.socialnews.dao.implement.ReaderImplDAO;
+import it.unipi.lsmsd.socialnews.dao.implement.*;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,13 +25,13 @@ public abstract class DAOLocator {
          * @param service service interface
          * @return instance implementing the interface service
          */
-        Object lookup(Service service) {//TODO: create missing DAOs
+        Object lookup(Service service) {
             return switch (service) {
-                case ADMIN -> null;
-                case READER -> new ReaderImplDAO();
-                case REPORTER -> null;
-                case POST -> null;
-                case COMMENT -> null;
+                case ADMIN -> new AdminDAOImpl();
+                case READER -> new ReaderDAOImpl();
+                case REPORTER -> new ReporterDAOImpl();
+                case POST -> new PostDAOImpl();
+                case COMMENT -> new CommentDAOImpl();
             };
         }
     }
@@ -41,7 +41,7 @@ public abstract class DAOLocator {
      */
     enum Service{
         ADMIN(AdminDAO.class),
-        READER(ReaderImplDAO.class),
+        READER(ReaderDAOImpl.class),
         REPORTER(ReporterDAO.class),
         POST(PostDAO.class),
         COMMENT(CommentDAO.class);

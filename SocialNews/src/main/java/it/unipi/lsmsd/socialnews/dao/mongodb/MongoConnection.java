@@ -4,7 +4,6 @@ import com.mongodb.*;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.session.ClientSession;
 import it.unipi.lsmsd.socialnews.config.environment.MongoEnvironment;
 import org.bson.BsonDocument;
 import org.bson.BsonInt64;
