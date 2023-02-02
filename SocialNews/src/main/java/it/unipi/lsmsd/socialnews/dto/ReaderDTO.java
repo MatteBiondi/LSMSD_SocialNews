@@ -43,13 +43,13 @@ public class ReaderDTO extends UserDTO{
     @Override
     public String toString() {
         return "ReaderDTO{" +
-                "email='" + email + '\'' +
+                "id='" + id + '\'' +
+                ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", fullName='" + fullName + '\'' +
                 ", gender='" + gender + '\'' +
                 ", country='" + country + '\'' +
                 ", picture=" + Arrays.toString(picture) +
-                ", id='" + id + '\'' +
                 '}';
     }
 }
