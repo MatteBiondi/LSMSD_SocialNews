@@ -3,19 +3,25 @@ package it.unipi.lsmsd.socialnews.service.implement;
 import it.unipi.lsmsd.socialnews.dao.DAOLocator;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.mongodb.Admin;
+import it.unipi.lsmsd.socialnews.dao.model.mongodb.Reader;
+import it.unipi.lsmsd.socialnews.dao.model.mongodb.Reporter;
 import it.unipi.lsmsd.socialnews.dto.AdminDTO;
+import it.unipi.lsmsd.socialnews.dto.ReaderDTO;
 import it.unipi.lsmsd.socialnews.dto.ReporterDTO;
+import it.unipi.lsmsd.socialnews.dto.StatisticPageDTO;
 import it.unipi.lsmsd.socialnews.service.AdminService;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
+import it.unipi.lsmsd.socialnews.service.util.Statistic;
 import it.unipi.lsmsd.socialnews.service.util.Util;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class AdminServiceImpl implements AdminService {
 
-
     /**
-     * Register a new reporter in the application, storing the information on database
+     * Registers a new reporter in the application, storing the information on database
      *
      * @param newReporter reporter DTO object containing information of the new reporter
      * @return identifier assigned to the new reporter
@@ -58,5 +64,85 @@ public class AdminServiceImpl implements AdminService {
             ex.printStackTrace();
             throw new SocialNewsServiceException("Configuration error: hash algorithm");
         }
+    }
+
+    /**
+     * Retrieves information about readers ordered by name, up to a configured number of readers
+     *
+     * @return list of readerDTO objects containing basic information
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    @Override
+    public List<ReaderDTO> firstPageReaders() throws SocialNewsServiceException {
+        return nextPageReaders(null);
+    }
+
+    /**
+     * Retrieves information about readers ordered by name starting from the offset passed as argument, up to a
+     * configured number of readers
+     *
+     * @param readerOffset reader DTO containing id and fullName of the last reader in the previous page
+     * @return list of readerDTO objects containing basic information
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    @Override
+    public List<ReaderDTO> nextPageReaders(ReaderDTO readerOffset) throws SocialNewsServiceException {
+        try {
+            Reader offset = readerOffset == null ? null:Util.buildReader(readerOffset);
+            List<ReaderDTO> firstPageReaderDTO = new ArrayList<>();
+            DAOLocator.getReaderDAO()
+                    .allReaders(offset, Util.getIntProperty("listUserPageSize",50))
+                    .forEach(reader -> firstPageReaderDTO.add(Util.buildReaderDTO(reader)));
+            return firstPageReaderDTO;
+        } catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error");
+        }
+    }
+
+    /**
+     * Retrieves information about reporters ordered by name, up to a configured number of reporters
+     *
+     * @return list of reportersDTO objects containing basic information
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    @Override
+    public List<ReporterDTO> firstPageReporters() throws SocialNewsServiceException {
+        return nextPageReporters(null);
+    }
+
+    /**
+     * Retrieves information about reporters ordered by name starting from the offset passed as argument, up to a
+     * configured number of reporters
+     *
+     * @param reporterOffset reporter DTO containing reporterId and fullName of the last reporter in the previous page
+     * @return list of reporterDTO objects containing basic information
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    @Override
+    public List<ReporterDTO> nextPageReporters(ReporterDTO reporterOffset) throws SocialNewsServiceException {
+        try {
+            Reporter offset = reporterOffset == null ? null:Util.buildReporter(reporterOffset);
+            List<ReporterDTO> firstPageReporterDTO = new ArrayList<>();
+            DAOLocator.getReporterDAO()
+                    .allReporters(offset, Util.getIntProperty("listUserPageSize",50))
+                    .forEach(reporter -> firstPageReporterDTO.add(Util.buildReporterDTO(reporter)));
+            return firstPageReporterDTO;
+        } catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error");
+        }
+    }
+
+    /**
+     * Computes the statistics specified by arguments and pack them into a DTO containing the results
+     *
+     * @param statistics series of statistics that must be computed
+     * @return statistic results grouped into a DTO objects
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    @Override
+    public StatisticPageDTO computeStatistics(Statistic... statistics) throws SocialNewsServiceException {
+        return null; //TODO
     }
 }
