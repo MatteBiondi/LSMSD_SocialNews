@@ -4,7 +4,8 @@ import java.util.Date;
 import java.util.List;
 
 public class PostDTO extends BaseDTO{
-    String postId;
+    String id;
+    String reporterId;
     String text;
     Date timestamp;
     List<String> links;
@@ -14,8 +15,9 @@ public class PostDTO extends BaseDTO{
 
     public PostDTO(){ }
 
-    public PostDTO(String postId, String text, Date timestamp, List<String> links, List<String> hashtags, Integer numOfComment, List<CommentDTO> comments) {
-        this.postId = postId;
+    public PostDTO(String postId, String reporterId, String text, Date timestamp, List<String> links, List<String> hashtags, Integer numOfComment, List<CommentDTO> comments) {
+        this.id = postId;
+        this.reporterId = reporterId;
         this.text = text;
         this.timestamp = timestamp;
         this.links = links;
@@ -24,12 +26,20 @@ public class PostDTO extends BaseDTO{
         this.comments = comments;
     }
 
-    public String getPostId() {
-        return postId;
+    public String getId() {
+        return id;
     }
 
-    public void setPostId(String postId) {
-        this.postId = postId;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getReporterId() {
+        return reporterId;
+    }
+
+    public void setReporterId(String reporterId) {
+        this.reporterId = reporterId;
     }
 
     public String getText() {
@@ -83,7 +93,8 @@ public class PostDTO extends BaseDTO{
     @Override
     public String toString() {
         return "PostDTO{" +
-                "postId='" + postId + '\'' +
+                "id='" + id + '\'' +
+                ", reporterId='" + reporterId + '\'' +
                 ", text='" + text + '\'' +
                 ", timestamp=" + timestamp +
                 ", links=" + links +

@@ -74,14 +74,14 @@ public class MongoReaderDAO extends MongoDAO<Reader> {
                         Filters.or(
                                 Filters.and(
                                         Filters.gte("fullName", offset.getFullName()),
-                                        Filters.gt("email", offset.getEmail())
+                                        Filters.gt("_id", offset.getId())
                                 ),
                                 Filters.gt("fullName", offset.getFullName())
                         ));
 
             getCollection()
                     .find(filter)
-                    .sort(Sorts.ascending("fullName", "email"))
+                    .sort(Sorts.ascending("fullName", "_id"))
                     .limit(pageSize)
                     .into(readers);
 
