@@ -55,10 +55,10 @@ public class ReportNeo4jDAO {
     }
 
     public List<Report> getReportsByReporterId(String reporterId, int limit, int offset){
-        String query = "MATCH (r:Reporter) -[:WRITE]-> (p:Post) <-[rep:REPORT]- () " +
-                "WHERE r.reporter_id = $reporterId " +
-                "RETURN rep "+
-                "ORDER BY rep.id ASC " +
+        String query = "MATCH (reporter:Reporter) -[:WRITE]-> (post:Post) <-[report:REPORT]- (reader:Reader) " +
+                "WHERE reporter.reporter_id = $reporterId " +
+                "RETURN reader, report, post, reporter "+
+                "ORDER BY report.id ASC " +
                 "SKIP $offset " +
                 "LIMIT $limit";
 
@@ -67,11 +67,6 @@ public class ReportNeo4jDAO {
         parameters.put("offset", offset);
         parameters.put("limit", limit);
 
-        String query2 = "MATCH () -[r:REPORT] -> () RETURN r";
-        Map<String, Object> parameters2 = new HashMap<>();
-        Report rep = ((List<Report>) neo4jConnection.getNeo4jSession().query(Report.class, query2, parameters2)).get(0);
-        System.out.println();
-
         return (List<Report>) neo4jConnection.getNeo4jSession().query(Report.class, query, parameters);
     }
 
@@ -79,7 +74,8 @@ public class ReportNeo4jDAO {
     // DELETE OPERATIONS
 
     public void deleteReport(Long reportId){
-        String query = "MATCH (reader:Reader) <-[r:REPORT {report_id: $reportId}]-(p:Post) "+
+        String query = "MATCH (:Reader) -[r:REPORT]-> (:Post) "+
+                "WHERE id(r) = $reportId "+
                 "DELETE r";
 
         Map<String, Object> parameters = new HashMap<>();
