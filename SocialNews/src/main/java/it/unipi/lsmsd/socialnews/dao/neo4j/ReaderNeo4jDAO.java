@@ -92,7 +92,7 @@ public class ReaderNeo4jDAO{
 
         List<Reporter> result = null;
         Session session = neo4jConnection.getNeo4jSession();
-        Transaction tx = session.beginTransaction();
+        Transaction tx = session.beginTransaction(Transaction.Type.READ_ONLY);
         try {
             result = (List<Reporter>) session.query(Reporter.class, query, parameters);
             tx.commit();
@@ -175,7 +175,7 @@ public class ReaderNeo4jDAO{
 
         List<Reporter> result = null;
         Session session = neo4jConnection.getNeo4jSession();
-        Transaction tx = session.beginTransaction();
+        Transaction tx = session.beginTransaction(Transaction.Type.READ_ONLY);
         try {
             result = (List<Reporter>) session.query(Reporter.class, query, parameters);
             tx.commit();

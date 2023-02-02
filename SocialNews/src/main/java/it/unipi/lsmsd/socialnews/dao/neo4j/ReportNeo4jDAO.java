@@ -104,7 +104,7 @@ public class ReportNeo4jDAO {
 
         List<Report> result = null;
         Session session = neo4jConnection.getNeo4jSession();
-        Transaction tx = session.beginTransaction();
+        Transaction tx = session.beginTransaction(Transaction.Type.READ_ONLY);
         try {
             result = (List<Report>) session.query(Report.class, query, parameters);
             tx.commit();
