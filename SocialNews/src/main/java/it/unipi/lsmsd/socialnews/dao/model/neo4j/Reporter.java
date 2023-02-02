@@ -16,14 +16,6 @@ public class Reporter {
     @Property(name="picture")
     private String picture;
 
-    /* fixme
-    @Relationship(type = "WRITE", direction = Relationship.Direction.OUTGOING)
-    Set<Post> posts;
-
-    @Relationship(type = "FOLLOW", direction = Relationship.Direction.INCOMING)
-    Set<Reader> followers;
-     */
-
     public Reporter() {
     }
 
@@ -57,41 +49,6 @@ public class Reporter {
         this.picture = picture;
     }
 
-    /* fixme
-    public Set<Post> getPosts() {
-        return posts;
-    }
-
-    public void addPost(Post post) {
-        if (posts == null) {
-            posts = new HashSet<>();
-        }
-        posts.add(post);
-    }
-
-    public void removePost(Post post){
-        if(posts!=null && !posts.isEmpty()){
-            posts.remove(post);
-        }
-    }
-
-    public Set<Reader> getFollowers() {
-        return followers;
-    }
-
-    public void addFollower(Reader reader) {
-        if (followers == null) {
-            followers = new HashSet<>();
-        }
-        followers.add(reader);
-    }
-
-    public void removeFollower(Reader reader) {
-        if(followers != null && !followers.isEmpty()){
-            followers.remove(reader);
-        }
-    }
-     */
 
     @Override
     public String toString() {
