@@ -1,19 +1,17 @@
 package it.unipi.lsmsd.socialnews.dto;
 
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Comment;
-
 import java.util.Date;
 
 public class CommentDTO extends BaseDTO{
     String id;
-    Comment.Reader reader;
+    ReaderDTO reader;
     String postId;
     String text;
     Date timestamp;
 
     public CommentDTO(){ }
 
-    public CommentDTO(String id, Comment.Reader reader, String postId, String text, Date timestamp) {
+    public CommentDTO(String id, ReaderDTO reader, String postId, String text, Date timestamp) {
         this.id = id;
         this.reader = reader;
         this.postId = postId;
@@ -29,11 +27,11 @@ public class CommentDTO extends BaseDTO{
         this.id = id;
     }
 
-    public Comment.Reader getReader() {
+    public ReaderDTO getReader() {
         return reader;
     }
 
-    public void setReader(Comment.Reader reader) {
+    public void setReader(ReaderDTO reader) {
         this.reader = reader;
     }
 
@@ -70,5 +68,41 @@ public class CommentDTO extends BaseDTO{
                 ", text='" + text + '\'' +
                 ", timestamp=" + timestamp +
                 '}';
+    }
+
+    public static class ReaderDTO{
+        String id;
+        String fullName;
+
+        public ReaderDTO(){ }
+
+        public ReaderDTO(String id, String fullName) {
+            this.id = id;
+            this.fullName = fullName;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getFullName() {
+            return fullName;
+        }
+
+        public void setFullName(String fullName) {
+            this.fullName = fullName;
+        }
+
+        @Override
+        public String toString() {
+            return "ReaderDTO{" +
+                    "id='" + id + '\'' +
+                    ", fullName='" + fullName + '\'' +
+                    '}';
+        }
     }
 }
