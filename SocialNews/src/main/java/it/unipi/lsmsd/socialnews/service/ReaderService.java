@@ -5,7 +5,7 @@ import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
 
 public interface ReaderService {
     /**
-     * Register a new reader in the application, storing the information into database
+     * Registers a new reader in the application, storing the information into database
      *
      * @param newReader reader DTO object containing information of the new reader
      * @return identifier assigned to the new reader
@@ -21,5 +21,14 @@ public interface ReaderService {
      * @throws SocialNewsServiceException in case of failure of the operation
      */
     ReaderDTO authenticate(String email, String password) throws SocialNewsServiceException;
+
+    /**
+     * Retrieves all the information about the user identified by the email passed as argument
+     *
+     * @param email email of the reader
+     * @return readerDTO object containing all the information
+     * @throws SocialNewsServiceException in case of failure of the operation or if the reader is not in the system
+     */
+    ReaderDTO readerInfo(String email) throws SocialNewsServiceException;
 
 }

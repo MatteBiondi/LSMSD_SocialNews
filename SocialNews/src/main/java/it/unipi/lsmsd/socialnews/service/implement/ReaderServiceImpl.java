@@ -12,7 +12,7 @@ import java.security.NoSuchAlgorithmException;
 
 public class ReaderServiceImpl implements ReaderService {
     /**
-     * Register a new reader in the application, storing the information into database
+     * Registers a new reader in the application, storing the information into database
      *
      * @param newReader reader DTO object containing information of the new reader
      * @return identifier assigned to the new reader
@@ -52,6 +52,28 @@ public class ReaderServiceImpl implements ReaderService {
         catch (NoSuchAlgorithmException ex){
             ex.printStackTrace();
             throw new SocialNewsServiceException("Configuration error: hash algorithm");
+        }
+    }
+
+    /**
+     * Retrieves all the information about the user identified by the email passed as argument
+     *
+     * @param email email of the reader
+     * @return readerDTO object containing all the information
+     * @throws SocialNewsServiceException in case of failure of the operation or if the reader is not in the system
+     */
+    @Override
+    public ReaderDTO readerInfo(String email) throws SocialNewsServiceException {
+        try {
+            Reader reader = DAOLocator.getReaderDAO().readerByEmail(email);
+            return Util.buildReaderDTO(reader);
+        } catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error");
+        }
+        catch (IllegalArgumentException ex){
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("User not in the system, check the email field");
         }
     }
 }
