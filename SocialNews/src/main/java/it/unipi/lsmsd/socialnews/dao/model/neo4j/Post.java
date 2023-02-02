@@ -5,8 +5,6 @@ import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
 import org.neo4j.ogm.annotation.Relationship;
 
-import java.util.HashSet;
-import java.util.Set;
 
 @NodeEntity
 public class Post {
@@ -14,8 +12,9 @@ public class Post {
     @Property(name="post_id")
     private String postId;
 
-    @Relationship(type = "REPORT", direction = Relationship.Direction.INCOMING)
-    Set<Report> reports;
+    //fixme
+    //@Relationship(type = "REPORT", direction = Relationship.Direction.INCOMING)
+    //Set<Report> reports;
 
     @Relationship(type = "WRITE", direction = Relationship.Direction.INCOMING)
     Reporter reporter;
@@ -27,9 +26,15 @@ public class Post {
         this.postId = postId;
     }
 
+    public String getPostId() {
+        return postId;
+    }
+
+    /*fixme
     public Set<Report> getReports() {
         return reports;
     }
+    */
 
     public Reporter getReporter() {
         return reporter;
@@ -43,12 +48,21 @@ public class Post {
         this.reporter = reporter;
     }
 
+    /*fixme
     public void addReport(Report report) {
         if (reports == null) {
             reports = new HashSet<>();
         }
         reports.add(report);
     }
+
+
+    public void removeReport(Report report) {
+        if (reports != null && !reports.isEmpty()) {
+            reports.remove(report);
+        }
+    }
+    */
 
     @Override
     public String toString() {

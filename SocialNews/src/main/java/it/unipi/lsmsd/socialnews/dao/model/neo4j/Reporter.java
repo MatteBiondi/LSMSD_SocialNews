@@ -3,10 +3,6 @@ package it.unipi.lsmsd.socialnews.dao.model.neo4j;
 import org.neo4j.ogm.annotation.Id;
 import org.neo4j.ogm.annotation.NodeEntity;
 import org.neo4j.ogm.annotation.Property;
-import org.neo4j.ogm.annotation.Relationship;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @NodeEntity
 public class Reporter {
@@ -20,11 +16,13 @@ public class Reporter {
     @Property(name="picture")
     private String picture;
 
+    /* fixme
     @Relationship(type = "WRITE", direction = Relationship.Direction.OUTGOING)
     Set<Post> posts;
 
     @Relationship(type = "FOLLOW", direction = Relationship.Direction.INCOMING)
     Set<Reader> followers;
+     */
 
     public Reporter() {
     }
@@ -59,6 +57,7 @@ public class Reporter {
         this.picture = picture;
     }
 
+    /* fixme
     public Set<Post> getPosts() {
         return posts;
     }
@@ -68,6 +67,12 @@ public class Reporter {
             posts = new HashSet<>();
         }
         posts.add(post);
+    }
+
+    public void removePost(Post post){
+        if(posts!=null && !posts.isEmpty()){
+            posts.remove(post);
+        }
     }
 
     public Set<Reader> getFollowers() {
@@ -80,6 +85,13 @@ public class Reporter {
         }
         followers.add(reader);
     }
+
+    public void removeFollower(Reader reader) {
+        if(followers != null && !followers.isEmpty()){
+            followers.remove(reader);
+        }
+    }
+     */
 
     @Override
     public String toString() {
