@@ -39,12 +39,12 @@ public class ReaderNeo4jDAO{
 
     // READ OPERATIONS
 
-    public Reader readerById(String readerId){
+    public Reader getReaderById(String readerId){
         //todo check depth of load
         return neo4jConnection.getNeo4jSession().load(Reader.class, readerId);
     }
 
-    public List<Reporter> readFollowingByReaderId(String readerId, int limit, int offset){
+    public List<Reporter> getFollowingByReaderId(String readerId, int limit, int offset){
 
         String query = "MATCH (:Reader {reader_id: $readerId})-[:FOLLOW]->(following:Reporter) " +
                 "RETURN following " +

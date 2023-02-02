@@ -2,6 +2,8 @@ package it.unipi.lsmsd.socialnews.dao.model.neo4j;
 
 import org.neo4j.ogm.annotation.*;
 
+import java.time.LocalDateTime;
+
 
 @RelationshipEntity(type="REPORT")
 public class Report {
@@ -16,8 +18,7 @@ public class Report {
     private Post post;
 
     @Property(name="timestamp")
-    //fixme localdatetime
-    private String timestamp;
+    private LocalDateTime timestamp;
 
     @Property(name="text")
     private String text;
@@ -25,7 +26,7 @@ public class Report {
     public Report() {
     }
 
-    public Report(String timestamp, String text, Reader reader, Post post) {
+    public Report(LocalDateTime timestamp, String text, Reader reader, Post post) {
         this.timestamp = timestamp;
         this.text = text;
         this.reader = reader;
@@ -36,7 +37,7 @@ public class Report {
         return id;
     }
 
-    public String getTimestamp() {
+    public LocalDateTime getTimestamp() {
         return timestamp;
     }
 
@@ -56,7 +57,7 @@ public class Report {
         this.id = id;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(LocalDateTime timestamp) {
         this.timestamp = timestamp;
     }
 
