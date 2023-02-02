@@ -12,20 +12,44 @@ import org.modelmapper.ModelMapper;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Properties;
 
 public final class Util {
 
     private final static ModelMapper modelMapper = new ModelMapper();
-
+    private static Properties properties = null;
     /**
      * Private constructor to prevent instantiation
      */
     private Util(){ }
 
+    public static void configure(Properties properties){
+        if(Util.properties == null)
+            Util.properties = properties;
+        else
+            throw new RuntimeException("Configuration of services failed, it has already been set up");
+    }
+
+    public static String getProperty(String key){
+        return getProperty(key, null);
+    }
+
+    public static String getProperty(String key, String defaultValue){
+        if(properties != null && defaultValue != null){
+            return properties.getProperty(key, defaultValue);
+        }
+        else if(properties != null && properties.contains(key)){
+            return properties.getProperty(key);
+        }
+        else{
+            throw new RuntimeException("Services configuration not yet available");
+        }
+    }
+
     public static String hashPassword(String password) throws NoSuchAlgorithmException {
         // Compute hash
         byte[] hashedPassword = MessageDigest
-                .getInstance("SHA-256")//TODO: properties
+                .getInstance(getProperty("hashAlgorithm","SHA-256"))
                 .digest(password.getBytes(StandardCharsets.UTF_8));
 
         // Convert bytes to hexadecimal string
