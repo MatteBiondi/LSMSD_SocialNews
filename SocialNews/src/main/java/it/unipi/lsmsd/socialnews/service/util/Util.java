@@ -2,16 +2,16 @@ package it.unipi.lsmsd.socialnews.service.util;
 
 import it.unipi.lsmsd.socialnews.dao.model.BaseEntity;
 import it.unipi.lsmsd.socialnews.dao.model.mongodb.Admin;
+import it.unipi.lsmsd.socialnews.dao.model.mongodb.Post;
 import it.unipi.lsmsd.socialnews.dao.model.mongodb.Reader;
 import it.unipi.lsmsd.socialnews.dao.model.mongodb.Reporter;
-import it.unipi.lsmsd.socialnews.dto.AdminDTO;
-import it.unipi.lsmsd.socialnews.dto.BaseDTO;
-import it.unipi.lsmsd.socialnews.dto.ReaderDTO;
-import it.unipi.lsmsd.socialnews.dto.ReporterDTO;
+import it.unipi.lsmsd.socialnews.dto.*;
 import org.modelmapper.ModelMapper;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 public final class Util {
@@ -44,6 +44,10 @@ public final class Util {
         else{
             throw new RuntimeException("Services configuration not yet available");
         }
+    }
+
+    public static Integer getIntProperty(String key, Integer defaultValue){
+        return Integer.parseInt(getProperty(key, String.valueOf(defaultValue)));
     }
 
     public static String hashPassword(String password) throws NoSuchAlgorithmException {
@@ -80,6 +84,20 @@ public final class Util {
         return (ReporterDTO) buildDTO(source, ReporterDTO.class);
     }
 
+    public static PostDTO buildPostDTO(Post source, String reporterId) {
+        PostDTO postDTO = (PostDTO) buildDTO(source, PostDTO.class);
+        postDTO.setReporterId(reporterId);
+        return postDTO;
+    }
+
+    public static ReporterPageDTO buildReporterPageDTO(Reporter source) {
+        ReporterDTO reporterDTO = (ReporterDTO) buildDTO(source, ReporterDTO.class);
+        List<PostDTO> postListDTO = new ArrayList<>();
+        source.getPosts().forEach(post -> postListDTO.add(buildPostDTO(post, reporterDTO.getReporterId())));
+
+        return new ReporterPageDTO(reporterDTO, postListDTO);
+    }
+
     public static Admin buildAdmin(AdminDTO source){
         return (Admin) buildEntity(source, Admin.class);
     }
@@ -90,5 +108,9 @@ public final class Util {
 
     public static Reporter buildReporter(ReporterDTO source){
         return (Reporter) buildEntity(source, Reporter.class);
+    }
+
+    public static Post buildPost(PostDTO source){
+        return (Post) buildEntity(source, Post.class);
     }
 }
