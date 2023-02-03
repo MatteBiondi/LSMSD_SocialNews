@@ -22,7 +22,7 @@ public class ReporterNeo4jDAO{
     public void addReporter(Reporter reporter) throws SocialNewsDataAccessException{
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
-                    "CREATE (:Reporter {reporter_id: $reporterId, name: $name, picture: $picture})",
+                    "CREATE (:Reporter {reporterId: $reporterId, fullName: $name, picture: $picture})",
                     parameters("reporterId", reporter.getReporterId(),
                             "name", reporter.getFullName(),
                             "picture", reporter.getPicture())
@@ -41,7 +41,7 @@ public class ReporterNeo4jDAO{
     public Reporter getReporterById (String reporterId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
-                    "MATCH (reporter:Reporter {reporter_id: $reporterId}) RETURN reporter",
+                    "MATCH (reporter:Reporter {reporterId: $reporterId}) RETURN reporter",
                     parameters("reporterId", reporterId));
             return session.readTransaction(tx ->
                     new ObjectMapper().convertValue(
@@ -56,7 +56,7 @@ public class ReporterNeo4jDAO{
     public int getNumOfFollowers(String reporterId) throws SocialNewsDataAccessException{
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
-                    "MATCH (:Reporter {reporter_id: $reporterId}) <-[:FOLLOW]- (reader:Reader) " +
+                    "MATCH (:Reporter {reporterId: $reporterId}) <-[:FOLLOW]- (reader:Reader) " +
                             "RETURN count(reader) as numFollowers",
                     parameters("reporterId", reporterId));
             return session.readTransaction(tx -> tx.run(query).single().get("numFollowers").asInt());
@@ -73,7 +73,7 @@ public class ReporterNeo4jDAO{
     public void deleteReporter(String reporterId) throws SocialNewsDataAccessException{
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
-                    "MATCH (r:Reporter {reporter_id: $reporterId}) " +
+                    "MATCH (r:Reporter {reporterId: $reporterId}) " +
                             "OPTIONAL MATCH (r) -[w:WRITE]-> (p:Post) " +
                             "OPTIONAL MATCH (p) <-[rp]- () "+
                             "OPTIONAL MATCH (r) <-[rr]- () "+
@@ -108,7 +108,7 @@ public class ReporterNeo4jDAO{
 
             return session.readTransaction(tx ->
                     tx.run(query).list( record ->
-                            new ObjectMapper().convertValue(record.get("following").asMap(), Reporter.class))
+                            new ObjectMapper().convertValue(record.get("reporter").asMap(), Reporter.class))
             );
         } catch (Exception e){
             e.printStackTrace();

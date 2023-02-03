@@ -3,14 +3,12 @@ package it.unipi.lsmsd.socialnews.dao.neo4j;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Report;
-import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
+import org.neo4j.driver.Record;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.neo4j.driver.Values.parameters;
 
@@ -30,8 +28,8 @@ public class ReportNeo4jDAO {
 
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
-                    "MATCH (reader:Reader {reader_id: $readerId}) " +
-                            "MATCH (p:Post {post_id: $postId}) "+
+                    "MATCH (reader:Reader {readerId: $readerId}) " +
+                            "MATCH (p:Post {postId: $postId}) "+
                             "CREATE (reader) -[:REPORT {timestamp: $timestamp, text: $text}]-> (p)",
                     parameters("readerId", readerId,
                             "postId", postId,
@@ -54,15 +52,16 @@ public class ReportNeo4jDAO {
             Query query = new Query(
                     "MATCH (rr:Reader) -[r:REPORT]-> (p: Post) " +
                             "WHERE id(r) = $reportId " +
-                            "RETURN rr.reader_id as readerId,r as report,p.post_id as postId",
+                            "RETURN rr.readerId as readerId,r as report,p.postId as postId",
                     parameters("reportId", reportId));
             return session.readTransaction(tx -> {
                         Result result = tx.run(query);
+                        Record record = result.single();
                         Report r = new ObjectMapper().convertValue(
-                                result.single().get("report").asMap(), Report.class);
+                                record.get("report").asMap(), Report.class);
                         r.setReportId(reportId);
-                        r.setPostId(result.single().get("postId").asString());
-                        r.setReaderId(result.single().get("readerId").asString());
+                        r.setPostId(record.get("postId").asString());
+                        r.setReaderId(record.get("readerId").asString());
                         return r;
                     }
             );
@@ -76,8 +75,8 @@ public class ReportNeo4jDAO {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (reporter:Reporter) -[:WRITE]-> (post:Post) <-[report:REPORT]- (reader:Reader) " +
-                            "WHERE reporter.reporter_id = $reporterId " +
-                            "RETURN reader.reader_id as readerId, id(report) as reportId, report, post.post_id as postId "+
+                            "WHERE reporter.reporterId = $reporterId " +
+                            "RETURN reader.readerId as readerId, id(report) as reportId, report, post.postId as postId "+
                             "ORDER BY report.id ASC " +
                             "SKIP $offset " +
                             "LIMIT $limit",

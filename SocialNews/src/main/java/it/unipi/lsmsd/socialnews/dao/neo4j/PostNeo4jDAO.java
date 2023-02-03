@@ -20,8 +20,8 @@ public class PostNeo4jDAO{
 
     public void addPost(String reporterId, Post post) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
-            Query query = new Query( "MATCH (r:Reporter {reporter_id: $reporterId}) "+
-                            "MERGE (p:Post {post_id: $postId}) " +
+            Query query = new Query( "MATCH (r:Reporter {reporterId: $reporterId}) "+
+                            "MERGE (p:Post {postId: $postId}) " +
                             "CREATE (r) -[:WRITE]-> (p)",
                     parameters("reporterId", reporterId, "postId", post.getId()));
 
@@ -44,7 +44,7 @@ public class PostNeo4jDAO{
     public void deletePost(String postId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
-                    "MATCH (p:Post {post_id: $postId}) <-[rel]-() " +
+                    "MATCH (p:Post {postId: $postId}) <-[rel]-() " +
                             "DELETE rel "+
                             "DELETE p",
                     parameters("postId", postId));
@@ -62,7 +62,7 @@ public class PostNeo4jDAO{
     public void deletePostsByReporterId(String reporterId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
-                    "MATCH (p:Post) <-[w:WRITE]-(:Reporter {reporter_id: $reporterId}) "+
+                    "MATCH (p:Post) <-[w:WRITE]-(:Reporter {reporterId: $reporterId}) "+
                             "OPTIONAL MATCH (p) <-[rep:REPORT]- () "+
                             "DELETE rep " +
                             "DELETE w " +

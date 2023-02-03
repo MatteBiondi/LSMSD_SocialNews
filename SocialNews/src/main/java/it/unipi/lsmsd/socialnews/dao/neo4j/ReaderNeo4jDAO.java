@@ -21,7 +21,7 @@ public class ReaderNeo4jDAO{
 
     public void addReader(Reader reader) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
-            Query query = new Query( "CREATE (:Reader {reader_id: $readerId})",
+            Query query = new Query( "CREATE (:Reader {readerId: $readerId})",
                     parameters("readerId", reader.getId()));
 
             session.writeTransaction(tx -> tx.run(query));
@@ -34,8 +34,8 @@ public class ReaderNeo4jDAO{
     public void followReporter(String readerId, String reporterId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
-                    "MATCH (rd:Reader {reader_id: $readerId}) " +
-                            "MATCH (rp:Reporter {reporter_id: $reporterId}) " +
+                    "MATCH (rd:Reader {readerId: $readerId}) " +
+                            "MATCH (rp:Reporter {reporterId: $reporterId}) " +
                             "CREATE (rd) -[:FOLLOW]-> (rp)",
                     parameters("readerId", readerId, "reporterId", reporterId));
 
@@ -51,9 +51,9 @@ public class ReaderNeo4jDAO{
     public List<Reporter> getFollowingByReaderId(String readerId, int limit, int offset) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
-                    "MATCH (:Reader {reader_id: $readerId})-[:FOLLOW]->(following:Reporter) " +
+                    "MATCH (:Reader {readerId: $readerId})-[:FOLLOW]->(following:Reporter) " +
                             "RETURN following " +
-                            "ORDER BY following.reporter_id " +
+                            "ORDER BY following.reporterId " +
                             "SKIP $offset " +
                             "LIMIT $limit",
                     parameters("readerId", readerId, "offset", offset, "limit", limit));
@@ -73,7 +73,7 @@ public class ReaderNeo4jDAO{
     public void deleteReader(String readerId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
-                    "MATCH (r:Reader {reader_id: $readerId}) "+
+                    "MATCH (r:Reader {readerId: $readerId}) "+
                             "OPTIONAL MATCH (r) -[rep:REPORT]-> () "+
                             "OPTIONAL MATCH (r) -[f:FOLLOW]-> () "+
                             "DELETE rep " +
@@ -91,7 +91,7 @@ public class ReaderNeo4jDAO{
     public void unfollowReporter(String readerId, String reporterId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
-                    "MATCH (:Reader {reader_id: $readerId}) -[f:FOLLOW]-> (:Reporter {reporter_id: $reporterId}) "+
+                    "MATCH (:Reader {readerId: $readerId}) -[f:FOLLOW]-> (:Reporter {reporterId: $reporterId}) "+
                             "DELETE f",
                     parameters("readerId", readerId, "reporterId", reporterId));
 
@@ -110,7 +110,7 @@ public class ReaderNeo4jDAO{
             Query query = new Query(
                     "MATCH (r:Reporter) " +
                             "OPTIONAL MATCH (r)  <-[f:FOLLOW]- (rr:Reader) "+
-                            "WHERE rr.reader_id <> $readerId " +
+                            "WHERE rr.readerId <> $readerId " +
                             "WITH r as suggestedReporters, count(f) as NumFollower "+
                             "RETURN suggestedReporters " +
                             "ORDER BY NumFollower DESC " +
