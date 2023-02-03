@@ -36,6 +36,6 @@ public class ConfigListener implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         MongoConnection.getConnection().close();
-        Neo4jConnection.getConnection().closeConnection();
+        Neo4jConnection.getConnection().close();
     }
 }
