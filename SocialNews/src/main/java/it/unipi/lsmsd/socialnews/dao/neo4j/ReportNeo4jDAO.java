@@ -1,14 +1,18 @@
 package it.unipi.lsmsd.socialnews.dao.neo4j;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
-import it.unipi.lsmsd.socialnews.dao.model.neo4j.Report;
-import org.neo4j.ogm.session.Session;
-import org.neo4j.ogm.transaction.Transaction;
+import it.unipi.lsmsd.socialnews.dao.model.Report;
+import it.unipi.lsmsd.socialnews.dao.model.Reporter;
+import org.neo4j.driver.Query;
+import org.neo4j.driver.Result;
+import org.neo4j.driver.Session;
 
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.neo4j.driver.Values.parameters;
 
 public class ReportNeo4jDAO {
 
@@ -21,55 +25,24 @@ public class ReportNeo4jDAO {
     // CREATION OPERATIONS
 
     public void addReport(Report report) throws SocialNewsDataAccessException {
-        String postId = report.getPost().getPostId();
-        String readerId = report.getReader().getReaderId();
+        String postId = report.getPostId();
+        String readerId = report.getReaderId();
 
-        String query = "MATCH (reader:Reader {reader_id: $readerId}) " +
-                "MATCH (p:Post {post_id: $postId}) "+
-                "CREATE (reader) -[r:REPORT {timestamp: $timestamp, text: $text}]-> (p)";
+        try(Session session = neo4jConnection.getNeo4jSession()){
+            Query query = new Query(
+                    "MATCH (reader:Reader {reader_id: $readerId}) " +
+                            "MATCH (p:Post {post_id: $postId}) "+
+                            "CREATE (reader) -[:REPORT {timestamp: $timestamp, text: $text}]-> (p)",
+                    parameters("readerId", readerId,
+                            "postId", postId,
+                            "timestamp", report.getTimestamp(),
+                            "text", report.getText())
+            );
 
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("readerId", readerId);
-        parameters.put("postId", postId);
-        parameters.put("timestamp", report.getTimestamp());
-        parameters.put("text", report.getText());
-
-        Session session = neo4jConnection.getNeo4jSession();
-        Transaction tx = session.beginTransaction();
-        try {
-            session.query(Report.class, query, parameters);
-            tx.commit();
+            session.writeTransaction(tx -> tx.run(query));
         } catch (Exception e){
             e.printStackTrace();
-            tx.rollback();
             throw new SocialNewsDataAccessException("Report creation by object failed: "+ e.getMessage());
-        } finally {
-            tx.close();
-        }
-    }
-
-    public void addReportByFields(LocalDateTime timestamp, String text, String readerId, String postId) throws SocialNewsDataAccessException {
-        String query = "MATCH (reader:Reader {reader_id: $readerId}) " +
-                "MATCH (p:Post {post_id: $postId}) "+
-                "CREATE (reader) -[r:REPORT {timestamp: $timestamp, text: $text}]-> (p)";
-
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("readerId", readerId);
-        parameters.put("postId", postId);
-        parameters.put("timestamp", timestamp.toString());
-        parameters.put("text", text);
-
-        Session session = neo4jConnection.getNeo4jSession();
-        Transaction tx = session.beginTransaction();
-        try {
-            session.query(Report.class, query, parameters);
-            tx.commit();
-        } catch (Exception e){
-            e.printStackTrace();
-            tx.rollback();
-            throw new SocialNewsDataAccessException("Report creation by fields failed: "+ e.getMessage());
-        } finally {
-            tx.close();
         }
     }
 
@@ -77,70 +50,70 @@ public class ReportNeo4jDAO {
     // READ OPERATIONS
 
     public Report getReportById(Long reportId) throws SocialNewsDataAccessException {
-        Report r = null;
-
-        try {
-            r = neo4jConnection.getNeo4jSession().load(Report.class, reportId);
+        try(Session session = neo4jConnection.getNeo4jSession()){
+            Query query = new Query(
+                    "MATCH (rr:Reader) -[r:REPORT]-> (p: Post) " +
+                            "WHERE id(r) = $reportId " +
+                            "RETURN rr.reader_id as readerId,r as report,p.post_id as postId",
+                    parameters("reportId", reportId));
+            return session.readTransaction(tx -> {
+                        Result result = tx.run(query);
+                        Report r = new ObjectMapper().convertValue(
+                                result.single().get("report").asMap(), Report.class);
+                        r.setReportId(reportId);
+                        r.setPostId(result.single().get("postId").asString());
+                        r.setReaderId(result.single().get("readerId").asString());
+                        return r;
+                    }
+            );
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Report reading failed: "+ e.getMessage());
         }
-
-        return r;
     }
 
     public List<Report> getReportsByReporterId(String reporterId, int limit, int offset) throws SocialNewsDataAccessException {
-        String query = "MATCH (reporter:Reporter) -[:WRITE]-> (post:Post) <-[report:REPORT]- (reader:Reader) " +
-                "WHERE reporter.reporter_id = $reporterId " +
-                "RETURN reader, report, post "+
-                "ORDER BY report.id ASC " +
-                "SKIP $offset " +
-                "LIMIT $limit";
+        try(Session session = neo4jConnection.getNeo4jSession()){
+            Query query = new Query(
+                    "MATCH (reporter:Reporter) -[:WRITE]-> (post:Post) <-[report:REPORT]- (reader:Reader) " +
+                            "WHERE reporter.reporter_id = $reporterId " +
+                            "RETURN reader.reader_id as readerId, id(report) as reportId, report, post.post_id as postId "+
+                            "ORDER BY report.id ASC " +
+                            "SKIP $offset " +
+                            "LIMIT $limit",
+                    parameters("reporterId", reporterId, "offset", offset, "limit", limit));
 
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("reporterId", reporterId);
-        parameters.put("offset", offset);
-        parameters.put("limit", limit);
-
-        List<Report> result = null;
-        Session session = neo4jConnection.getNeo4jSession();
-        Transaction tx = session.beginTransaction(Transaction.Type.READ_ONLY);
-        try {
-            result = (List<Report>) session.query(Report.class, query, parameters);
-            tx.commit();
+            return session.readTransaction(tx ->
+                    tx.run(query).list( record -> {
+                        Report rep = new ObjectMapper().convertValue(record.get("report").asMap(), Report.class);
+                        rep.setReportId(record.get("reportId").asLong());
+                        rep.setPostId(record.get("postId").asString());
+                        rep.setReaderId(record.get("readerId").asString());
+                        return rep;
+                    })
+            );
         } catch (Exception e){
             e.printStackTrace();
-            tx.rollback();
             throw new SocialNewsDataAccessException("Reports reading failed: "+ e.getMessage());
-        } finally {
-            tx.close();
         }
-
-        return result;
     }
 
 
     // DELETE OPERATIONS
 
     public void deleteReport(Long reportId) throws SocialNewsDataAccessException {
-        String query = "MATCH (:Reader) -[r:REPORT]-> (:Post) "+
-                "WHERE id(r) = $reportId "+
-                "DELETE r";
+        try(Session session = neo4jConnection.getNeo4jSession()){
+            Query query = new Query(
+                    "MATCH (:Reader) -[r:REPORT]-> (:Post) "+
+                            "WHERE id(r) = $reportId "+
+                            "DELETE r",
+                    parameters("reportId", reportId)
+            );
 
-        Map<String, Object> parameters = new HashMap<>();
-        parameters.put("reportId", reportId);
-
-        Session session = neo4jConnection.getNeo4jSession();
-        Transaction tx = session.beginTransaction();
-        try {
-            session.query(Report.class, query, parameters);
-            tx.commit();
+            session.writeTransaction(tx -> tx.run(query));
         } catch (Exception e){
             e.printStackTrace();
-            tx.rollback();
             throw new SocialNewsDataAccessException("Report deletion failed: "+ e.getMessage());
-        } finally {
-            tx.close();
         }
     }
 }
