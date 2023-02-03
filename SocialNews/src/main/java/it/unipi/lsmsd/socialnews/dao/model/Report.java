@@ -1,19 +1,16 @@
 package it.unipi.lsmsd.socialnews.dao.model;
 
-import java.time.LocalDateTime;
-
 public class Report {
     private Long reportId;
     private String readerId;
     private String postId;
-    private LocalDateTime timestamp;
+    private String timestamp;
     private String text;
 
     public Report() {
     }
 
-    public Report(Long reportId, String readerId, String postId, LocalDateTime timestamp, String text) {
-        this.reportId = reportId;
+    public Report(String readerId, String postId, String timestamp, String text) {
         this.readerId = readerId;
         this.postId = postId;
         this.timestamp = timestamp;
@@ -24,7 +21,7 @@ public class Report {
         return reportId;
     }
 
-    public LocalDateTime getTimestamp() {
+    public String getTimestamp() {
         return timestamp;
     }
 
@@ -44,7 +41,7 @@ public class Report {
         this.reportId = reportId;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
     }
 
@@ -63,11 +60,11 @@ public class Report {
     @Override
     public String toString() {
         return "Report{" +
-                "id=" + reportId +
+                "reportId=" + reportId +
                 ", timestamp='" + timestamp + '\'' +
                 ", text='" + text + '\'' +
-                ", reader=" + readerId +
-                ", post=" + postId +
+                ", readerId=" + readerId +
+                ", postId=" + postId +
                 '}';
     }
 }
