@@ -1,4 +1,4 @@
-package it.unipi.lsmsd.socialnews.dao.model.mongodb;
+package it.unipi.lsmsd.socialnews.dao.model;
 
 public class Admin extends User {
     Boolean isAdmin;
