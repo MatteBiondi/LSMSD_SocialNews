@@ -2,7 +2,7 @@ package it.unipi.lsmsd.socialnews.dao.implement;
 
 import it.unipi.lsmsd.socialnews.dao.CommentDAO;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Comment;
+import it.unipi.lsmsd.socialnews.dao.model.Comment;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoCommentDAO;
 import java.util.List;
 

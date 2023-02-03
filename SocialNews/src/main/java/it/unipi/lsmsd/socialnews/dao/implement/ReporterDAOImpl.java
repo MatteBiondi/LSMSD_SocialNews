@@ -2,8 +2,8 @@ package it.unipi.lsmsd.socialnews.dao.implement;
 
 import it.unipi.lsmsd.socialnews.dao.ReporterDAO;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Post;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Reporter;
+import it.unipi.lsmsd.socialnews.dao.model.Post;
+import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoReporterDAO;
 
 import java.util.List;

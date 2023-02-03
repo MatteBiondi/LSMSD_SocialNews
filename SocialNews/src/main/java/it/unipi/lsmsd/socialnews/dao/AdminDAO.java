@@ -1,7 +1,7 @@
 package it.unipi.lsmsd.socialnews.dao;
 
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Admin;
+import it.unipi.lsmsd.socialnews.dao.model.Admin;
 
 public interface AdminDAO {
     /**

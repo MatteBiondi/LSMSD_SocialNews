@@ -1,10 +1,10 @@
 package it.unipi.lsmsd.socialnews.service.util;
 
 import it.unipi.lsmsd.socialnews.dao.model.BaseEntity;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Admin;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Post;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Reader;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Reporter;
+import it.unipi.lsmsd.socialnews.dao.model.Admin;
+import it.unipi.lsmsd.socialnews.dao.model.Post;
+import it.unipi.lsmsd.socialnews.dao.model.Reader;
+import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import it.unipi.lsmsd.socialnews.dto.*;
 import org.modelmapper.ModelMapper;
 import java.nio.charset.StandardCharsets;
