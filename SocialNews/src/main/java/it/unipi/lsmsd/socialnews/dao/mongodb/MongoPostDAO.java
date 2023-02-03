@@ -93,11 +93,12 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
 
     public Long removePost(String reporterId, String postId) throws SocialNewsDataAccessException {
         try{
+            System.out.println(reporterId + " " + postId);
             return getCollection()
                     .updateOne(
                             Filters.eq("reporterId", reporterId),
-                            Updates.pullByFilter(Filters.eq("postId", postId))
-                    ).getModifiedCount();
+                            Updates.pullByFilter(Document.parse(String.format("{posts:{_id:'%s'}}", postId))))
+                    .getModifiedCount();
         }
         catch (MongoException me){
             me.printStackTrace();
