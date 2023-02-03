@@ -52,11 +52,11 @@ public class Report {
         this.text = text;
     }
 
-    public void setReader(String readerId) {
+    public void setReaderId(String readerId) {
         this.readerId = readerId;
     }
 
-    public void setPost(String postId) {
+    public void setPostId(String postId) {
         this.postId = postId;
     }
 
