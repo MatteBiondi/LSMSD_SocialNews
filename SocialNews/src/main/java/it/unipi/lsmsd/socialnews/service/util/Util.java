@@ -1,10 +1,6 @@
 package it.unipi.lsmsd.socialnews.service.util;
 
-import it.unipi.lsmsd.socialnews.dao.model.BaseEntity;
-import it.unipi.lsmsd.socialnews.dao.model.Admin;
-import it.unipi.lsmsd.socialnews.dao.model.Post;
-import it.unipi.lsmsd.socialnews.dao.model.Reader;
-import it.unipi.lsmsd.socialnews.dao.model.Reporter;
+import it.unipi.lsmsd.socialnews.dao.model.*;
 import it.unipi.lsmsd.socialnews.dto.*;
 import org.modelmapper.ModelMapper;
 import java.nio.charset.StandardCharsets;
@@ -112,5 +108,9 @@ public final class Util {
 
     public static Post buildPost(PostDTO source){
         return (Post) buildEntity(source, Post.class);
+    }
+
+    public static Comment buildComment(CommentDTO source){
+        return (Comment) buildEntity(source, Comment.class);
     }
 }
