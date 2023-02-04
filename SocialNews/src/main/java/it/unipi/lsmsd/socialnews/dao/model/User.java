@@ -1,4 +1,4 @@
-package it.unipi.lsmsd.socialnews.dao.model.mongodb;
+package it.unipi.lsmsd.socialnews.dao.model;
 
 import it.unipi.lsmsd.socialnews.dao.model.BaseEntity;
 

@@ -3,8 +3,8 @@ package it.unipi.lsmsd.socialnews.dao.mongodb;
 import com.mongodb.MongoException;
 import com.mongodb.client.model.*;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Post;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Reporter;
+import it.unipi.lsmsd.socialnews.dao.model.Post;
+import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import java.util.ArrayList;
@@ -93,11 +93,12 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
 
     public Long removePost(String reporterId, String postId) throws SocialNewsDataAccessException {
         try{
+            System.out.println(reporterId + " " + postId);
             return getCollection()
                     .updateOne(
                             Filters.eq("reporterId", reporterId),
-                            Updates.pullByFilter(Filters.eq("postId", postId))
-                    ).getModifiedCount();
+                            Updates.pullByFilter(Document.parse(String.format("{posts:{_id:'%s'}}", postId))))
+                    .getModifiedCount();
         }
         catch (MongoException me){
             me.printStackTrace();

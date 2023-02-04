@@ -37,6 +37,7 @@ public final class DAOLocator {
                 case REPORTER -> new ReporterDAOImpl();
                 case POST -> new PostDAOImpl();
                 case COMMENT -> new CommentDAOImpl();
+                case REPORT -> new ReportDAOImpl();
             };
         }
     }
@@ -49,7 +50,8 @@ public final class DAOLocator {
         READER(ReaderDAOImpl.class),
         REPORTER(ReporterDAO.class),
         POST(PostDAO.class),
-        COMMENT(CommentDAO.class);
+        COMMENT(CommentDAO.class),
+        REPORT(ReportDAO.class);
 
         private final Class<?> clazz;
 
@@ -121,4 +123,12 @@ public final class DAOLocator {
     public static CommentDAO getCommentDAO(){
         return (CommentDAO) getDAO(COMMENT);
    }
+
+    /**
+     * Retrieves an object implementing ReportDAO interface
+     * @return instance implementing ReportDAO interface
+     */
+    public static ReportDAO getReportDAO(){
+        return (ReportDAO) getDAO(REPORT);
+    }
 }

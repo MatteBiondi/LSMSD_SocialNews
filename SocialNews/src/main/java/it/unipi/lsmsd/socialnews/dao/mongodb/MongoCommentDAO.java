@@ -6,7 +6,7 @@ import com.mongodb.client.model.Sorts;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertOneResult;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Comment;
+import it.unipi.lsmsd.socialnews.dao.model.Comment;
 import org.bson.conversions.Bson;
 import java.util.ArrayList;
 import java.util.List;

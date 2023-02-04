@@ -14,15 +14,15 @@ public class ReporterDTO extends UserDTO{
 
     public ReporterDTO(){ }
 
-    public ReporterDTO(String email, String password, String fullName, String reporterId, String gender, String location, Date dateOfBirth, String cell, Byte[] picture, Integer numOfReport) {
-        super(email, password, fullName);
-        this.reporterId = reporterId;
+    public ReporterDTO(String email, String password, String firstName, String lastName, String gender, String location,
+                       Date dateOfBirth, String cell, Byte[] picture) {
+        super(email, password,firstName, lastName);
         this.gender = gender;
         this.location = location;
         this.dateOfBirth = dateOfBirth;
         this.cell = cell;
         this.picture = picture;
-        this.numOfReport = numOfReport;
+        this.numOfReport = null;
     }
 
     public String getReporterId() {

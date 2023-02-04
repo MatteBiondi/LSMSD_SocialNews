@@ -1,8 +1,8 @@
 package it.unipi.lsmsd.socialnews.dao;
 
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Post;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Reporter;
+import it.unipi.lsmsd.socialnews.dao.model.Post;
+import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import java.util.List;
 
 public interface PostDAO {

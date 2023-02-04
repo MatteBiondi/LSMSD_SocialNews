@@ -2,7 +2,7 @@ package it.unipi.lsmsd.socialnews.service.implement;
 
 import it.unipi.lsmsd.socialnews.dao.DAOLocator;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Reader;
+import it.unipi.lsmsd.socialnews.dao.model.Reader;
 import it.unipi.lsmsd.socialnews.dto.ReaderDTO;
 import it.unipi.lsmsd.socialnews.service.ReaderService;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;

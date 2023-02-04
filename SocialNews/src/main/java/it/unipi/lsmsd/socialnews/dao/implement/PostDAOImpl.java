@@ -2,20 +2,21 @@ package it.unipi.lsmsd.socialnews.dao.implement;
 
 import it.unipi.lsmsd.socialnews.dao.PostDAO;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Post;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Reporter;
+import it.unipi.lsmsd.socialnews.dao.model.Post;
+import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoPostDAO;
+import it.unipi.lsmsd.socialnews.dao.neo4j.Neo4jPostDAO;
 
 import java.util.List;
 
 public class PostDAOImpl implements PostDAO {
 
     private final MongoPostDAO mongoPostDAO;
-    // private final Neo4JPostDAO neo4jPostDAO;
+    private final Neo4jPostDAO neo4jPostDAO;
 
     public PostDAOImpl(){
         mongoPostDAO = new MongoPostDAO();
-        // neo4jPostDAO = new Neo4JPostDAO();
+        neo4jPostDAO = new Neo4jPostDAO();
     }
 
     /**
@@ -31,6 +32,7 @@ public class PostDAOImpl implements PostDAO {
         // TODO: Insert on Neo4J may be lazy
         Long modifiedDocs = mongoPostDAO.createPost(reporterId, newPost);
         if (modifiedDocs > 0)
+            //todo
             return newPost.getId();
         else
             throw new SocialNewsDataAccessException("Insertion failed");

@@ -1,7 +1,7 @@
 package it.unipi.lsmsd.socialnews.dao;
 
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Comment;
+import it.unipi.lsmsd.socialnews.dao.model.Comment;
 import java.util.List;
 
 public interface CommentDAO {

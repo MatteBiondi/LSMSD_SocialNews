@@ -2,7 +2,7 @@ package it.unipi.lsmsd.socialnews.dao.implement;
 
 import it.unipi.lsmsd.socialnews.dao.AdminDAO;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Admin;
+import it.unipi.lsmsd.socialnews.dao.model.Admin;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoAdminDAO;
 
 public class AdminDAOImpl implements AdminDAO {

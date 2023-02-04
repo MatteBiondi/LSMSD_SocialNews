@@ -15,15 +15,12 @@ public class PostDTO extends BaseDTO{
 
     public PostDTO(){ }
 
-    public PostDTO(String postId, String reporterId, String text, Date timestamp, List<String> links, List<String> hashtags, Integer numOfComment, List<CommentDTO> comments) {
-        this.id = postId;
+    public PostDTO(String reporterId, String text, List<String> links, List<String> hashtags) {
         this.reporterId = reporterId;
         this.text = text;
-        this.timestamp = timestamp;
+        this.timestamp = new Date();
         this.links = links;
         this.hashtags = hashtags;
-        this.numOfComment = numOfComment;
-        this.comments = comments;
     }
 
     public String getId() {
@@ -89,7 +86,6 @@ public class PostDTO extends BaseDTO{
     public void setComments(List<CommentDTO> comments) {
         this.comments = comments;
     }
-
     @Override
     public String toString() {
         return "PostDTO{" +

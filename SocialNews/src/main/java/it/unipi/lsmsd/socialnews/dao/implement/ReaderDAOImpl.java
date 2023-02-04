@@ -2,7 +2,7 @@ package it.unipi.lsmsd.socialnews.dao.implement;
 
 import it.unipi.lsmsd.socialnews.dao.ReaderDAO;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
-import it.unipi.lsmsd.socialnews.dao.model.mongodb.Reader;
+import it.unipi.lsmsd.socialnews.dao.model.Reader;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoReaderDAO;
 import java.util.List;
 
