@@ -9,10 +9,10 @@ import org.neo4j.driver.Session;
 
 import static org.neo4j.driver.Values.parameters;
 
-public class PostNeo4jDAO{
+public class Neo4jPostDAO {
     private final Neo4jConnection neo4jConnection;
 
-    public PostNeo4jDAO() {
+    public Neo4jPostDAO() {
         neo4jConnection = Neo4jConnection.getConnection();
     }
 

@@ -10,10 +10,10 @@ import java.util.List;
 
 import static org.neo4j.driver.Values.parameters;
 
-public class ReaderNeo4jDAO{
+public class Neo4jReaderDAO {
     private final Neo4jConnection neo4jConnection;
 
-    public ReaderNeo4jDAO() {
+    public Neo4jReaderDAO() {
         neo4jConnection = Neo4jConnection.getConnection();
     }
 

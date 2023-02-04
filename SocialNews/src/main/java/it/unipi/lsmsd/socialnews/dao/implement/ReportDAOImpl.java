@@ -3,16 +3,16 @@ package it.unipi.lsmsd.socialnews.dao.implement;
 import it.unipi.lsmsd.socialnews.dao.ReportDAO;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Report;
-import it.unipi.lsmsd.socialnews.dao.neo4j.ReportNeo4jDAO;
+import it.unipi.lsmsd.socialnews.dao.neo4j.Neo4jReportDAO;
 
 import java.util.List;
 
 public class ReportDAOImpl implements ReportDAO {
 
-    private final ReportNeo4jDAO reportNeo4jDAO;
+    private final Neo4jReportDAO neo4JReportDAO;
 
     public ReportDAOImpl(){
-        reportNeo4jDAO = new ReportNeo4jDAO();
+        neo4JReportDAO = new Neo4jReportDAO();
     }
 
     /**
@@ -23,7 +23,7 @@ public class ReportDAOImpl implements ReportDAO {
      */
     @Override
     public void addReport(Report report) throws SocialNewsDataAccessException {
-        reportNeo4jDAO.addReport(report);
+        neo4JReportDAO.addReport(report);
     }
 
     /**
@@ -35,7 +35,7 @@ public class ReportDAOImpl implements ReportDAO {
      */
     @Override
     public Report getReportById(Long reportId) throws SocialNewsDataAccessException {
-        return reportNeo4jDAO.getReportById(reportId);
+        return neo4JReportDAO.getReportById(reportId);
     }
 
     /**
@@ -49,7 +49,7 @@ public class ReportDAOImpl implements ReportDAO {
      */
     @Override
     public List<Report> getReportsByReporterId(String reporterId, int limit, int offset) throws SocialNewsDataAccessException {
-        return reportNeo4jDAO.getReportsByReporterId(reporterId, limit, offset);
+        return neo4JReportDAO.getReportsByReporterId(reporterId, limit, offset);
     }
 
     /**
@@ -60,6 +60,6 @@ public class ReportDAOImpl implements ReportDAO {
      */
     @Override
     public void deleteReport(Long reportId) throws SocialNewsDataAccessException {
-        reportNeo4jDAO.deleteReport(reportId);
+        neo4JReportDAO.deleteReport(reportId);
     }
 }
