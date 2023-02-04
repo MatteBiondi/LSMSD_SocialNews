@@ -1,6 +1,6 @@
 package it.unipi.lsmsd.socialnews.dto;
 
-public class UserDTO extends BaseDTO{
+public abstract class UserDTO extends BaseDTO{
     protected String id;
     protected String email;
     protected String password;
@@ -8,10 +8,10 @@ public class UserDTO extends BaseDTO{
 
     public UserDTO() { }
 
-    public UserDTO(String email, String password, String fullName) {
+    public UserDTO(String email, String password, String firstName, String lastName) {
         this.email = email;
         this.password = password;
-        this.fullName = fullName;
+        this.fullName = String.format("%s %s", firstName, lastName);
     }
 
     public String getId() {
@@ -45,6 +45,11 @@ public class UserDTO extends BaseDTO{
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }
+
+    public void setFullName(String firstName, String lastName) {
+        this.fullName = String.format("%s %s", firstName, lastName);
+    }
+
 
     @Override
     public String toString() {

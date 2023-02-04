@@ -5,8 +5,8 @@ public class AdminDTO extends UserDTO {
 
     public AdminDTO(){ }
 
-    public AdminDTO(String email, String password, String fullName) {
-        super(email, password, fullName);
+    public AdminDTO(String email, String password, String firstName, String lastName) {
+        super(email, password, firstName, lastName);
         this.isAdmin = true;
     }
 
