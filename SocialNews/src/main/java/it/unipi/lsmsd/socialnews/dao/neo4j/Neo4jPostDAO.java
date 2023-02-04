@@ -25,10 +25,7 @@ public class Neo4jPostDAO {
                             "CREATE (r) -[:WRITE]-> (p)",
                     parameters("reporterId", reporterId, "postId", post.getId()));
 
-            session.writeTransaction(tx -> {
-               tx.run(query);
-               return 1;
-            });
+            session.writeTransaction(tx -> tx.run(query));
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Post creation failed: "+ e.getMessage());
@@ -49,10 +46,7 @@ public class Neo4jPostDAO {
                             "DELETE p",
                     parameters("postId", postId));
 
-            session.writeTransaction(tx -> {
-                tx.run(query);
-                return 1;
-            });
+            session.writeTransaction(tx -> tx.run(query));
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Post deletion failed: "+ e.getMessage());
@@ -69,10 +63,7 @@ public class Neo4jPostDAO {
                             "DELETE p",
                     parameters("reporterId", reporterId));
 
-            session.writeTransaction(tx -> {
-                tx.run(query);
-                return 1;
-            });
+            session.writeTransaction(tx -> tx.run(query));
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Posts deletion failed: "+ e.getMessage());
