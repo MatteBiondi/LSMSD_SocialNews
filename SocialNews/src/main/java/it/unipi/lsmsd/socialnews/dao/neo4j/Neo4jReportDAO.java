@@ -12,11 +12,11 @@ import java.util.List;
 
 import static org.neo4j.driver.Values.parameters;
 
-public class ReportNeo4jDAO {
+public class Neo4jReportDAO {
 
     private final Neo4jConnection neo4jConnection;
 
-    public ReportNeo4jDAO() {
+    public Neo4jReportDAO() {
         neo4jConnection = Neo4jConnection.getConnection();
     }
 

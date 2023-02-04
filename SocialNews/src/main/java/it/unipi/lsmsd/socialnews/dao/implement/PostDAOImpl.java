@@ -5,18 +5,18 @@ import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Post;
 import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoPostDAO;
-import it.unipi.lsmsd.socialnews.dao.neo4j.PostNeo4jDAO;
+import it.unipi.lsmsd.socialnews.dao.neo4j.Neo4jPostDAO;
 
 import java.util.List;
 
 public class PostDAOImpl implements PostDAO {
 
     private final MongoPostDAO mongoPostDAO;
-    private final PostNeo4jDAO neo4jPostDAO;
+    private final Neo4jPostDAO neo4jPostDAO;
 
     public PostDAOImpl(){
         mongoPostDAO = new MongoPostDAO();
-        neo4jPostDAO = new PostNeo4jDAO();
+        neo4jPostDAO = new Neo4jPostDAO();
     }
 
     /**
