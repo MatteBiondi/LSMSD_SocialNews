@@ -11,12 +11,11 @@ public class CommentDTO extends BaseDTO{
 
     public CommentDTO(){ }
 
-    public CommentDTO(String id, ReaderDTO reader, String postId, String text, Date timestamp) {
-        this.id = id;
-        this.reader = reader;
+    public CommentDTO(String readerId, String readerFullName, String postId, String text) {
+        this.reader = new ReaderDTO(readerId, readerFullName);
         this.postId = postId;
         this.text = text;
-        this.timestamp = timestamp;
+        this.timestamp = new Date();
     }
 
     public String getId() {
