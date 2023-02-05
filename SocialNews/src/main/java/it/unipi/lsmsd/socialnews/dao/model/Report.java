@@ -1,6 +1,6 @@
 package it.unipi.lsmsd.socialnews.dao.model;
 
-public class Report {
+public class Report extends BaseEntity {
     private Long reportId;
     private String readerId;
     private String postId;
@@ -8,13 +8,6 @@ public class Report {
     private String text;
 
     public Report() {
-    }
-
-    public Report(String readerId, String postId, String timestamp, String text) {
-        this.readerId = readerId;
-        this.postId = postId;
-        this.timestamp = timestamp;
-        this.text = text;
     }
 
     public Long getReportId() {
