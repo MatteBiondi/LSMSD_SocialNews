@@ -19,7 +19,7 @@ public class Neo4jReporterDAO {
 
     // CREATION OPERATIONS
 
-    public int addReporter(Reporter reporter) throws SocialNewsDataAccessException{
+    public Integer addReporter(Reporter reporter) throws SocialNewsDataAccessException{
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "CREATE (:Reporter {reporterId: $reporterId, fullName: $name, picture: $picture})",
@@ -53,7 +53,7 @@ public class Neo4jReporterDAO {
         }
     }
 
-    public int getNumOfFollowers(String reporterId) throws SocialNewsDataAccessException{
+    public Integer getNumOfFollowers(String reporterId) throws SocialNewsDataAccessException{
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (:Reporter {reporterId: $reporterId}) <-[:FOLLOW]- (reader:Reader) " +
@@ -70,7 +70,7 @@ public class Neo4jReporterDAO {
 
     //DELETE OPERATIONS
 
-    public int deleteReporter(String reporterId) throws SocialNewsDataAccessException{
+    public Integer deleteReporter(String reporterId) throws SocialNewsDataAccessException{
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (r:Reporter {reporterId: $reporterId}) " +

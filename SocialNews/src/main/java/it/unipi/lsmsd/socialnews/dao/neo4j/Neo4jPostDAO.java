@@ -18,7 +18,7 @@ public class Neo4jPostDAO {
 
     // CREATION OPERATIONS
 
-    public int addPost(String reporterId, Post post) throws SocialNewsDataAccessException {
+    public Integer addPost(String reporterId, Post post) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query( "MATCH (r:Reporter {reporterId: $reporterId}) "+
                             "MERGE (p:Post {postId: $postId}) " +
@@ -35,7 +35,7 @@ public class Neo4jPostDAO {
 
     // DELETE OPERATIONS
 
-    public int deletePost(String postId) throws SocialNewsDataAccessException {
+    public Integer deletePost(String postId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (p:Post {postId: $postId}) <-[rel]-() " +
@@ -50,7 +50,7 @@ public class Neo4jPostDAO {
         }
     }
 
-    public int deletePostsByReporterId(String reporterId) throws SocialNewsDataAccessException {
+    public Integer deletePostsByReporterId(String reporterId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (p:Post) <-[w:WRITE]-(:Reporter {reporterId: $reporterId}) "+

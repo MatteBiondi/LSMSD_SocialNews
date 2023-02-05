@@ -22,7 +22,7 @@ public class Neo4jReportDAO {
 
     // CREATION OPERATIONS
 
-    public int addReport(Report report) throws SocialNewsDataAccessException {
+    public Integer addReport(Report report) throws SocialNewsDataAccessException {
         String postId = report.getPostId();
         String readerId = report.getReaderId();
 
@@ -100,7 +100,7 @@ public class Neo4jReportDAO {
 
     // DELETE OPERATIONS
 
-    public int deleteReport(Long reportId) throws SocialNewsDataAccessException {
+    public Integer deleteReport(Long reportId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (:Reader) -[r:REPORT]-> (:Post) "+
