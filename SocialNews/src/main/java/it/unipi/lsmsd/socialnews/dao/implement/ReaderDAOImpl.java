@@ -3,16 +3,19 @@ package it.unipi.lsmsd.socialnews.dao.implement;
 import it.unipi.lsmsd.socialnews.dao.ReaderDAO;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Reader;
+import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoReaderDAO;
+import it.unipi.lsmsd.socialnews.dao.neo4j.Neo4jReaderDAO;
+
 import java.util.List;
 
 public class ReaderDAOImpl implements ReaderDAO {
     private final MongoReaderDAO mongoReaderDAO;
-    // private final Neo4JReaderDAO neo4jReaderDAO;
+    private final Neo4jReaderDAO neo4jReaderDAO;
 
     public ReaderDAOImpl(){
         mongoReaderDAO = new MongoReaderDAO();
-        // neo4jReaderDAO = new Neo4JReaderDAO();
+        neo4jReaderDAO = new Neo4jReaderDAO();
     }
 
     /**
@@ -25,6 +28,8 @@ public class ReaderDAOImpl implements ReaderDAO {
     @Override
     public String register(Reader newReader) throws SocialNewsDataAccessException {
         // TODO: Insert on Neo4J may be lazy
+        // todo transaction
+        neo4jReaderDAO.addReader(newReader);
         return mongoReaderDAO.register(newReader);
     }
 
@@ -82,13 +87,68 @@ public class ReaderDAOImpl implements ReaderDAO {
     /**
      * Remove a reader from the database
      *
-     * @param email email of the reader to remove
+     * @param readerId id of the reader to remove
      * @return number of reader removed from database
      * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
      */
     @Override
-    public Long removeReader(String email) throws SocialNewsDataAccessException {
-        return mongoReaderDAO.removeReader(email);
-        //TODO: remove from Neo4J
+    public Long removeReader(String readerId) throws SocialNewsDataAccessException {
+        // todo transaction
+        neo4jReaderDAO.deleteReader(readerId);
+        return mongoReaderDAO.removeReader(readerId);
+    }
+
+    /**
+     * Add a following relationship between a reader and a reporter
+     *
+     * @param readerId id of the reader
+     * @param reporterId id of the reporter
+     * @return number of following relationship created
+     * @throws SocialNewsDataAccessException in case of failure of the creation operation of following relation
+     */
+    @Override
+    public int followReporter(String readerId, String reporterId) throws SocialNewsDataAccessException{
+        return neo4jReaderDAO.followReporter(readerId, reporterId);
+    }
+
+    /**
+     * Retrieve the followed reporters of a certain reader
+     *
+     * @param readerId id of the reader
+     * @param limit maximum number of reporters to retrieve per request
+     * @param offset reporter from which the query starts to retrieve information
+     * @return list of reporter objects containing basic information (id, name and picture)
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    @Override
+    public List<Reporter> getFollowingByReaderId(String readerId, int limit, int offset)
+            throws SocialNewsDataAccessException{
+        return neo4jReaderDAO.getFollowingByReaderId(readerId,limit,offset);
+    }
+
+    /**
+     * Remove a following relationship between a reader and a reporter
+     *
+     * @param readerId id of the reader
+     * @param reporterId id of the reporter
+     * @return number of following relationship removed from the database
+     * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
+     */
+    @Override
+    public int unfollowReporter(String readerId, String reporterId) throws SocialNewsDataAccessException{
+        return neo4jReaderDAO.unfollowReporter(readerId, reporterId);
+    }
+
+    /**
+     * Given a reader, suggest most popular reporters that are not in the reader's following
+     *
+     * @param readerId id of the reader
+     * @param limitListLen number of suggested reporters
+     * @return list of reporter objects containing basic information (id, name and picture)
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    @Override
+    public List<Reporter> suggestReporters(String readerId, int limitListLen) throws SocialNewsDataAccessException{
+        return neo4jReaderDAO.suggestReporters(readerId, limitListLen);
     }
 }

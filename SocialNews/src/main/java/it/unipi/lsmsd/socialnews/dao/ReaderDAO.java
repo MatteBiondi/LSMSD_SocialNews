@@ -2,6 +2,8 @@ package it.unipi.lsmsd.socialnews.dao;
 
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Reader;
+import it.unipi.lsmsd.socialnews.dao.model.Reporter;
+
 import java.util.List;
 
 public interface ReaderDAO {
@@ -57,9 +59,50 @@ public interface ReaderDAO {
     /**
      * Remove a reader from the database
      *
-     * @param email email of the reader to remove
+     * @param readerId email of the reader to remove
      * @return number of reader removed from database
      * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
      */
-    Long removeReader(String email) throws SocialNewsDataAccessException;
+    Long removeReader(String readerId) throws SocialNewsDataAccessException;
+
+    /**
+     * Add a following relationship between a reader and a reporter
+     *
+     * @param readerId id of the reader
+     * @param reporterId id of the reporter
+     * @return number of following relationship created
+     * @throws SocialNewsDataAccessException in case of failure of the creation operation of following relation
+     */
+    int followReporter(String readerId, String reporterId) throws SocialNewsDataAccessException;
+
+    /**
+     * Retrieve the followed reporters of a certain reader
+     *
+     * @param readerId id of the reader
+     * @param limit maximum number of reporters to retrieve per request
+     * @param offset reporter from which the query starts to retrieve information
+     * @return list of reporter objects containing basic information (id, name and picture)
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    List<Reporter> getFollowingByReaderId(String readerId, int limit, int offset) throws SocialNewsDataAccessException;
+
+    /**
+     * Remove a following relationship between a reader and a reporter
+     *
+     * @param readerId id of the reader
+     * @param reporterId id of the reporter
+     * @return number of following relationship removed from the database
+     * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
+     */
+    int unfollowReporter(String readerId, String reporterId) throws SocialNewsDataAccessException;
+
+    /**
+     * Given a reader, suggest most popular reporters that are not in the reader's following
+     *
+     * @param readerId id of the reader
+     * @param limitListLen number of suggested reporters
+     * @return list of reporter objects containing basic information (id, name and picture)
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    List<Reporter> suggestReporters(String readerId, int limitListLen) throws SocialNewsDataAccessException;
 }
