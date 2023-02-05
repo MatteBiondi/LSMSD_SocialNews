@@ -72,7 +72,7 @@ public class ReporterServiceImpl implements ReporterService {
      * @throws SocialNewsServiceException in case of failure of the operation or if the post is not in the system
      */
     @Override
-    public List<PostDTO> nextPagePosts(PostDTO postOffset) throws SocialNewsServiceException {
+    public List<PostDTO> nextReporterPagePosts(PostDTO postOffset) throws SocialNewsServiceException {
         try {
             Post offset = Util.buildPost(postOffset);
             System.out.println(offset);

@@ -12,7 +12,7 @@ import org.bson.conversions.Bson;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class MongoConnection {
+public final class MongoConnection {
     private static final Logger logger = LoggerFactory.getLogger(MongoConnection.class);
     private static volatile MongoConnection instance = null;
     private final MongoClient mongoClient;

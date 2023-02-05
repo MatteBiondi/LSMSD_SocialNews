@@ -24,7 +24,6 @@ public class PostServiceImpl implements PostService {
     @Override
     public String publishPost(PostDTO newPost) throws SocialNewsServiceException {
         try {
-            newPost.setId(UUID.randomUUID().toString()); // Ensure univocity of this field
             return DAOLocator.getPostDAO().createPost(newPost.getReporterId(), Util.buildPost(newPost));
         } catch (SocialNewsDataAccessException ex) {
             ex.printStackTrace();
@@ -45,7 +44,6 @@ public class PostServiceImpl implements PostService {
     @Override
     public String publishComment(CommentDTO newComment) throws SocialNewsServiceException {
         try {
-            newComment.setId(null); // Ensure univocity of this field TODO
             return DAOLocator.getCommentDAO().createComment(Util.buildComment(newComment));
         } catch (SocialNewsDataAccessException ex) {
             ex.printStackTrace();
@@ -54,6 +52,16 @@ public class PostServiceImpl implements PostService {
             ex.printStackTrace();
             throw new SocialNewsServiceException("Missing some required fields");
         }
+    }
+
+    @Override
+    public List<PostDTO> searchPostsByHashtag(String hashtag) throws SocialNewsServiceException {
+        throw new RuntimeException("Not yet implemented");//TODO
+    }
+
+    public List<CommentDTO> loadComments(PostDTO targetPost) throws SocialNewsServiceException {
+        throw new RuntimeException("Not yet implemented");//TODO
+
     }
 
     /**

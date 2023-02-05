@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.Date;
 
 public class ReporterDTO extends UserDTO{
-    String reporterId;
     String gender;
     String location;
     Date dateOfBirth;
@@ -23,14 +22,6 @@ public class ReporterDTO extends UserDTO{
         this.cell = cell;
         this.picture = picture;
         this.numOfReport = null;
-    }
-
-    public String getReporterId() {
-        return reporterId;
-    }
-
-    public void setReporterId(String reporterId) {
-        this.reporterId = reporterId;
     }
 
     public String getGender() {
@@ -88,7 +79,6 @@ public class ReporterDTO extends UserDTO{
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", fullName='" + fullName + '\'' +
-                ", reporterId='" + reporterId + '\'' +
                 ", gender='" + gender + '\'' +
                 ", location='" + location + '\'' +
                 ", dateOfBirth=" + dateOfBirth +

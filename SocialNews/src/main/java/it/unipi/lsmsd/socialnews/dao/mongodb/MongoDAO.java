@@ -12,7 +12,7 @@ import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
 import static org.bson.codecs.configuration.CodecRegistries.*;
 
 public abstract class MongoDAO<T>{
-    private final static String ENTITIES_PACKAGE = "it.unipi.lsmsd.socialnews.dao.model.mongodb";
+    private final static String ENTITIES_PACKAGE = "it.unipi.lsmsd.socialnews.dao.model";
 
     private final MongoConnection mongoConnection;
     private final Class<T> template;
