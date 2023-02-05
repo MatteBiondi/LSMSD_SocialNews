@@ -16,7 +16,6 @@ import it.unipi.lsmsd.socialnews.service.util.Util;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class AdminServiceImpl implements AdminService {
 
@@ -30,7 +29,6 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public String registerReporter(ReporterDTO newReporter) throws SocialNewsServiceException {
         try {
-            newReporter.setReporterId(UUID.randomUUID().toString()); // Ensure univocity of this field
             newReporter.setPassword(Util.hashPassword(newReporter.getPassword()));
             return DAOLocator.getReporterDAO().register(Util.buildReporter(newReporter));
         } catch (SocialNewsDataAccessException ex) {
@@ -132,6 +130,16 @@ public class AdminServiceImpl implements AdminService {
             ex.printStackTrace();
             throw new SocialNewsServiceException("Database error");
         }
+    }
+
+    @Override
+    public void removeReader(String email) throws SocialNewsServiceException {
+        throw new RuntimeException("Not yet implemented");//TODO
+    }
+
+    @Override
+    public void removeReporter(String reporterId) throws SocialNewsServiceException {
+        throw new RuntimeException("Not yet implemented");//TODO
     }
 
     /**

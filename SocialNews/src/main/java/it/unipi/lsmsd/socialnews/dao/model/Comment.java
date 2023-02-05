@@ -1,8 +1,7 @@
 package it.unipi.lsmsd.socialnews.dao.model;
 
-import it.unipi.lsmsd.socialnews.dao.model.BaseEntity;
-
 import java.util.Date;
+import java.util.UUID;
 
 public class Comment extends BaseEntity {
     String id;
@@ -11,14 +10,9 @@ public class Comment extends BaseEntity {
     String text;
     Date timestamp;
 
-    public Comment(){ reader = new Reader(); }
-
-    public Comment(String id, String readerId, String readerFullName, String postId, String text, Date timestamp) {
-        this.id = id;
-        this.reader = new Reader(readerId, readerFullName);
-        this.postId = postId;
-        this.text = text;
-        this.timestamp = timestamp;
+    public Comment(){
+        id = UUID.randomUUID().toString();
+        reader = new Reader();
     }
 
     public String getId() {
@@ -40,22 +34,6 @@ public class Comment extends BaseEntity {
     public void setReader(String readerId, String readerFullName) {
         this.reader = new Reader(readerId, readerFullName);
     }
-
-    //public String getReaderId() {
-    //    return this.reader.getId();
-    //}
-
-    //public void setReaderId(String readerId) {
-    //    this.reader.setId(readerId);
-    //}
-
-    //public String getReaderFullName() {
-    //    return this.reader.getFullName();
-    //}
-
-    //public void setReaderFullName(String readerFullName) {
-    //    this.reader.setFullName(readerFullName);
-    //}
 
     public String getPostId() {
         return postId;

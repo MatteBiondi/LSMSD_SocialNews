@@ -1,7 +1,5 @@
 package it.unipi.lsmsd.socialnews.dao.model;
 
-import it.unipi.lsmsd.socialnews.dao.model.BaseEntity;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -18,15 +16,6 @@ public class Post extends BaseEntity {
     public Post(){
         this.postId = UUID.randomUUID().toString();
         this.timestamp = Calendar.getInstance().getTime();
-    }
-
-    public Post(String postId, String text, Date timestamp, List<String> links, List<String> hashtags, Integer numOfComment) {
-        this.postId = postId;
-        this.text = text;
-        this.timestamp = timestamp;
-        this.links = links;
-        this.hashtags = hashtags;
-        this.numOfComment = numOfComment;
     }
 
     public String getId() {

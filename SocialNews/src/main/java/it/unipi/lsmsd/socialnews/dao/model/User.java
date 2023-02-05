@@ -1,6 +1,6 @@
 package it.unipi.lsmsd.socialnews.dao.model;
 
-import it.unipi.lsmsd.socialnews.dao.model.BaseEntity;
+import java.util.UUID;
 
 public class User extends BaseEntity {
     protected String id;
@@ -8,13 +8,7 @@ public class User extends BaseEntity {
     protected String password;
     protected String fullName;
 
-    public User() { }
-
-    public User(String email, String password, String fullName) {
-        this.email = email;
-        this.password = password;
-        this.fullName = fullName;
-    }
+    public User() { id = UUID.randomUUID().toString(); }
 
     public String getId() {
         return id;

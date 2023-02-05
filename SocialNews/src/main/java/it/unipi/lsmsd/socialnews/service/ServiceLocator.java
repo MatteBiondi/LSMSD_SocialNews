@@ -1,6 +1,7 @@
 package it.unipi.lsmsd.socialnews.service;
 
 import it.unipi.lsmsd.socialnews.service.implement.AdminServiceImpl;
+import it.unipi.lsmsd.socialnews.service.implement.PostServiceImpl;
 import it.unipi.lsmsd.socialnews.service.implement.ReaderServiceImpl;
 import it.unipi.lsmsd.socialnews.service.implement.ReporterServiceImpl;
 import org.slf4j.Logger;
@@ -35,6 +36,7 @@ public final class ServiceLocator {
                 case ADMIN -> new AdminServiceImpl();
                 case READER -> new ReaderServiceImpl();
                 case REPORTER -> new ReporterServiceImpl();
+                case POST -> new PostServiceImpl();
                 case STATISTICS -> null;
             };
         }
@@ -47,6 +49,7 @@ public final class ServiceLocator {
         ADMIN(AdminService.class),
         READER(ReaderService.class),
         REPORTER(ReporterService.class),
+        POST(PostService.class),
         STATISTICS(null);
 
         private final Class<?> clazz;
@@ -101,6 +104,14 @@ public final class ServiceLocator {
      */
     public static ReporterService getReporterService(){
         return (ReporterService) getService(REPORTER);
+    }
+
+    /**
+     * Retrieves an object implementing PostService interface
+     * @return instance implementing PostService interface
+     */
+    public static PostService getPostService(){
+        return (PostService) getService(POST);
     }
 
 }

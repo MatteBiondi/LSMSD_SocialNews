@@ -3,6 +3,7 @@ package it.unipi.lsmsd.socialnews.dao.model;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 public class Reporter extends User {
     String reporterId;
@@ -14,18 +15,8 @@ public class Reporter extends User {
     Integer numOfReport;
     List<Post> posts;
 
-    public Reporter(){ }
-
-    public Reporter(String email, String password, String fullName, String reporterId, String gender, String location, Date dateOfBirth, String cell, Byte[] picture, Integer numOfReport, List<Post> posts) {
-        super(email, password, fullName);
-        this.reporterId = reporterId;
-        this.gender = gender;
-        this.location = location;
-        this.dateOfBirth = dateOfBirth;
-        this.cell = cell;
-        this.picture = picture;
-        this.numOfReport = numOfReport;
-        this.posts = posts;
+    public Reporter(){
+        reporterId = UUID.randomUUID().toString();
     }
 
     public String getReporterId() {

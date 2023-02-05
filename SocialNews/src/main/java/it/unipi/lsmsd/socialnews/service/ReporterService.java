@@ -36,5 +36,5 @@ public interface ReporterService {
      * @return list of postDTO objects containing all the information
      * @throws SocialNewsServiceException in case of failure of the operation or if the post is not in the system
      */
-    List<PostDTO> nextPagePosts(PostDTO postOffset) throws SocialNewsServiceException;
+    List<PostDTO> nextReporterPagePosts(PostDTO postOffset) throws SocialNewsServiceException;
 }

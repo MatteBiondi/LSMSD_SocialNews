@@ -13,7 +13,33 @@ import java.util.Properties;
 public final class Util {
 
     private final static ModelMapper modelMapper = new ModelMapper();
-    private static Properties properties = null;
+    private static Properties properties;
+
+    static {// Customize conversion Entity-DTO and vice versa
+
+        // From Reporter entity to DTO
+        modelMapper.createTypeMap(Reporter.class, ReporterDTO.class)
+                .addMapping(Reporter::getReporterId, ReporterDTO::setId);
+
+        // From Reader DTO to entity
+        modelMapper.createTypeMap(ReaderDTO.class, Reader.class)
+                .addMappings(mapper -> mapper.skip(Reader::setId));
+
+        // From Reporter DTO to entity
+        modelMapper.createTypeMap(ReporterDTO.class, Reporter.class)
+               .addMappings(mapper -> mapper.skip(Reporter::setId))
+               .addMappings(mapper -> mapper.skip(Reporter::setReporterId));
+
+        // From Post DTO to entity
+        modelMapper.createTypeMap(PostDTO.class, Post.class)
+                .addMappings(mapper -> mapper.skip(Post::setId));
+
+        // From Comment DTO to entity
+        modelMapper.createTypeMap(CommentDTO.class, Comment.class)
+                .addMappings(mapper -> mapper.skip(Comment::setId));
+
+    }
+
     /**
      * Private constructor to prevent instantiation
      */
@@ -89,7 +115,7 @@ public final class Util {
     public static ReporterPageDTO buildReporterPageDTO(Reporter source) {
         ReporterDTO reporterDTO = (ReporterDTO) buildDTO(source, ReporterDTO.class);
         List<PostDTO> postListDTO = new ArrayList<>();
-        source.getPosts().forEach(post -> postListDTO.add(buildPostDTO(post, reporterDTO.getReporterId())));
+        source.getPosts().forEach(post -> postListDTO.add(buildPostDTO(post, reporterDTO.getId())));
 
         return new ReporterPageDTO(reporterDTO, postListDTO);
     }

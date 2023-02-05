@@ -29,7 +29,8 @@ public class ReporterDAOImpl implements ReporterDAO {
     @Override
     public String register(Reporter newReporter) throws SocialNewsDataAccessException {
         // TODO: Insert on Neo4J may be lazy
-        return mongoReporterDAO.register(newReporter);
+        mongoReporterDAO.register(newReporter);
+        return newReporter.getReporterId();
     }
 
     /**
