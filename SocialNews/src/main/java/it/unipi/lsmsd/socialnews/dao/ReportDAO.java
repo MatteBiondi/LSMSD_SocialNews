@@ -11,10 +11,10 @@ public interface ReportDAO {
      * Inserts new report into the database
      *
      * @param report report object containing information of the new report
-     * @return number of created report
+     * @return identifier of created report
      * @throws SocialNewsDataAccessException in case of failure of the insert operation on database
      */
-    Integer addReport(Report report) throws SocialNewsDataAccessException;
+    Long addReport(Report report) throws SocialNewsDataAccessException;
 
     /**
      * Retrieves information about the report identified by 'reportId' field

@@ -22,7 +22,7 @@ public class Neo4jReportDAO {
 
     // CREATION OPERATIONS
 
-    public Integer addReport(Report report) throws SocialNewsDataAccessException {
+    public Long addReport(Report report) throws SocialNewsDataAccessException {
         String postId = report.getPostId();
         String readerId = report.getReaderId();
 
@@ -30,14 +30,15 @@ public class Neo4jReportDAO {
             Query query = new Query(
                     "MATCH (reader:Reader {readerId: $readerId}) " +
                             "MATCH (p:Post {postId: $postId}) "+
-                            "CREATE (reader) -[:REPORT {timestamp: $timestamp, text: $text}]-> (p)",
+                            "CREATE (reader) -[report:REPORT {timestamp: $timestamp, text: $text}]-> (p) " +
+                            "RETURN id(report) as id",
                     parameters("readerId", readerId,
                             "postId", postId,
                             "timestamp", report.getTimestamp(),
                             "text", report.getText())
             );
 
-            return session.writeTransaction(tx -> tx.run(query)).consume().counters().relationshipsCreated();
+            return session.writeTransaction(tx -> tx.run(query)).single().get("id").asLong();
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Report creation by object failed: "+ e.getMessage());
