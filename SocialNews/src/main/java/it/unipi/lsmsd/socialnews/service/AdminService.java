@@ -70,6 +70,22 @@ public interface AdminService {
     //TODO: remove readers+comments and reporters+posts+comments
 
     /**
+     * Remove a reader from the databases
+     *
+     * @param readerId id associated to the reader to remove
+     * @throws SocialNewsServiceException in case of failure of the remove operation
+     */
+    void removeReader(String readerId) throws SocialNewsServiceException;
+
+    /**
+     * Remove a reporter from the databases
+     *
+     * @param reporterId id associated to the reporter to remove
+     * @throws SocialNewsServiceException in case of failure of the remove operation
+     */
+    void removeReporter(String reporterId) throws SocialNewsServiceException;
+
+    /**
      * Computes the statistics specified by arguments and pack them into a DTO containing the results
      *
      * @param statistics series of statistics that must be computed

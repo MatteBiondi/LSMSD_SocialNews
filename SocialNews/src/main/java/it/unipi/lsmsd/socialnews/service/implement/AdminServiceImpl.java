@@ -132,11 +132,24 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+    /**
+     * Remove a reader from the databases
+     *
+     * @param readerId id associated to the reader to remove
+     * @throws SocialNewsServiceException in case of failure of the remove operation
+     */
     @Override
-    public void removeReader(String email) throws SocialNewsServiceException {
+    public void removeReader(String readerId) throws SocialNewsServiceException {
         throw new RuntimeException("Not yet implemented");//TODO
     }
 
+
+    /**
+     * Remove a reporter from the databases
+     *
+     * @param reporterId id associated to the reporter to remove
+     * @throws SocialNewsServiceException in case of failure of the remove operation
+     */
     @Override
     public void removeReporter(String reporterId) throws SocialNewsServiceException {
         throw new RuntimeException("Not yet implemented");//TODO
