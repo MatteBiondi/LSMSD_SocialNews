@@ -19,7 +19,7 @@ public class Neo4jReaderDAO {
 
     // CREATION OPERATIONS
 
-    public int addReader(Reader reader) throws SocialNewsDataAccessException {
+    public Integer addReader(Reader reader) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query( "CREATE (:Reader {readerId: $readerId})",
                     parameters("readerId", reader.getId()));
@@ -31,7 +31,7 @@ public class Neo4jReaderDAO {
         }
     }
 
-    public int followReporter(String readerId, String reporterId) throws SocialNewsDataAccessException {
+    public Integer followReporter(String readerId, String reporterId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (rd:Reader {readerId: $readerId}) " +
@@ -70,7 +70,7 @@ public class Neo4jReaderDAO {
 
     // DELETE OPERATIONS
 
-    public int deleteReader(String readerId) throws SocialNewsDataAccessException {
+    public Integer deleteReader(String readerId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (r:Reader {readerId: $readerId}) "+
@@ -88,7 +88,7 @@ public class Neo4jReaderDAO {
         }
     }
 
-    public int unfollowReporter(String readerId, String reporterId) throws SocialNewsDataAccessException {
+    public Integer unfollowReporter(String readerId, String reporterId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (:Reader {readerId: $readerId}) -[f:FOLLOW]-> (:Reporter {reporterId: $reporterId}) "+

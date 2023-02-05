@@ -14,7 +14,7 @@ public interface ReportDAO {
      * @return number of created report
      * @throws SocialNewsDataAccessException in case of failure of the insert operation on database
      */
-    int addReport(Report report) throws SocialNewsDataAccessException;
+    Integer addReport(Report report) throws SocialNewsDataAccessException;
 
     /**
      * Retrieves information about the report identified by 'reportId' field
@@ -44,5 +44,5 @@ public interface ReportDAO {
      * @return number of reports deleted from the database
      * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
      */
-    int deleteReport(Long reportId) throws SocialNewsDataAccessException;
+    Integer deleteReport(Long reportId) throws SocialNewsDataAccessException;
 }

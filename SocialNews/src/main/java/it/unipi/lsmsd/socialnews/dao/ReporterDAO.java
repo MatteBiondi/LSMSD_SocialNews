@@ -120,7 +120,7 @@ public interface ReporterDAO {
      * @return number of follower for the reporter identified by 'reporterId'
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    int getNumOfFollowers(String reporterId) throws SocialNewsDataAccessException;
+    Integer getNumOfFollowers(String reporterId) throws SocialNewsDataAccessException;
 
     /**
      * Retrieve the most popular reporters. Popularity is given by the number of followers

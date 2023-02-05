@@ -171,7 +171,7 @@ public class ReporterDAOImpl implements ReporterDAO {
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
     @Override
-    public int getNumOfFollowers(String reporterId) throws SocialNewsDataAccessException{
+    public Integer getNumOfFollowers(String reporterId) throws SocialNewsDataAccessException{
         return neo4jReporterDAO.getNumOfFollowers(reporterId);
     }
 

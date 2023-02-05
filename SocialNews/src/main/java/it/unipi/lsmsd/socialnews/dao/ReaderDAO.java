@@ -73,7 +73,7 @@ public interface ReaderDAO {
      * @return number of following relationship created
      * @throws SocialNewsDataAccessException in case of failure of the creation operation of following relation
      */
-    int followReporter(String readerId, String reporterId) throws SocialNewsDataAccessException;
+    Integer followReporter(String readerId, String reporterId) throws SocialNewsDataAccessException;
 
     /**
      * Retrieve the followed reporters of a certain reader
@@ -94,7 +94,7 @@ public interface ReaderDAO {
      * @return number of following relationship removed from the database
      * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
      */
-    int unfollowReporter(String readerId, String reporterId) throws SocialNewsDataAccessException;
+    Integer unfollowReporter(String readerId, String reporterId) throws SocialNewsDataAccessException;
 
     /**
      * Given a reader, suggest most popular reporters that are not in the reader's following

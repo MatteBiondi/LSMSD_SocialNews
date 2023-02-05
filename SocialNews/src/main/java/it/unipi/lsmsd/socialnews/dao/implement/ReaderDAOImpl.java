@@ -107,7 +107,7 @@ public class ReaderDAOImpl implements ReaderDAO {
      * @throws SocialNewsDataAccessException in case of failure of the creation operation of following relation
      */
     @Override
-    public int followReporter(String readerId, String reporterId) throws SocialNewsDataAccessException{
+    public Integer followReporter(String readerId, String reporterId) throws SocialNewsDataAccessException{
         return neo4jReaderDAO.followReporter(readerId, reporterId);
     }
 
@@ -135,7 +135,7 @@ public class ReaderDAOImpl implements ReaderDAO {
      * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
      */
     @Override
-    public int unfollowReporter(String readerId, String reporterId) throws SocialNewsDataAccessException{
+    public Integer unfollowReporter(String readerId, String reporterId) throws SocialNewsDataAccessException{
         return neo4jReaderDAO.unfollowReporter(readerId, reporterId);
     }
 
