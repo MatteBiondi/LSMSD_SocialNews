@@ -4,6 +4,8 @@ import it.unipi.lsmsd.socialnews.dto.CommentDTO;
 import it.unipi.lsmsd.socialnews.dto.PostDTO;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
 
+import java.util.List;
+
 public interface PostService {
 
     /**
@@ -23,6 +25,25 @@ public interface PostService {
      * @throws SocialNewsServiceException in case of failure of the operation
      */
     String publishComment(CommentDTO newComment) throws SocialNewsServiceException;
+
+
+    /**
+     * Search all the posts that contain a hashtag passed as parameter
+     *
+     * @param hashtag hashtag to search in the posts
+     * @return list of posts that contain the hashtag
+     * @throws SocialNewsServiceException in case of failure of the query operation
+     */
+    List<PostDTO> searchPostsByHashtag(String hashtag) throws SocialNewsServiceException;
+
+    /**
+     * Load comments associated to a post
+     *
+     * @param targetPost post whose comments to upload
+     * @return list of comments associated to the post
+     * @throws SocialNewsServiceException in case of failure of the query operation
+     */
+    List<CommentDTO> loadComments(PostDTO targetPost) throws SocialNewsServiceException;
 
     /**
      * Remove a post from the system, removing the information stored in the database and all the associated comments

@@ -9,7 +9,6 @@ import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
 import it.unipi.lsmsd.socialnews.service.util.ServiceWorkerPool;
 import it.unipi.lsmsd.socialnews.service.util.Util;
 import java.util.List;
-import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -54,11 +53,27 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    /**
+     * Search all the posts that contain a hashtag passed as parameter
+     *
+     * @param hashtag hashtag to search in the posts
+     * @return list of posts that contain the hashtag
+     * @throws SocialNewsServiceException in case of failure of the query operation
+     */
     @Override
     public List<PostDTO> searchPostsByHashtag(String hashtag) throws SocialNewsServiceException {
         throw new RuntimeException("Not yet implemented");//TODO
     }
 
+
+    /**
+     * Load comments associated to a post
+     *
+     * @param targetPost post whose comments to upload
+     * @return list of comments associated to the post
+     * @throws SocialNewsServiceException in case of failure of the query operation
+     */
+    @Override
     public List<CommentDTO> loadComments(PostDTO targetPost) throws SocialNewsServiceException {
         throw new RuntimeException("Not yet implemented");//TODO
 
