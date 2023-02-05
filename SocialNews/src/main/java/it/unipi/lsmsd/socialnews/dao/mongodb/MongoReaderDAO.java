@@ -93,9 +93,9 @@ public class MongoReaderDAO extends MongoDAO<Reader> {
         }
     }
 
-    public Long removeReader(String email) throws SocialNewsDataAccessException {
+    public Long removeReader(String readerId) throws SocialNewsDataAccessException {
         try{
-            DeleteResult result = getCollection().deleteOne(Filters.eq("email", email));
+            DeleteResult result = getCollection().deleteOne(Filters.eq("_id", readerId));
             return result.getDeletedCount();
         }
         catch (MongoException me){
