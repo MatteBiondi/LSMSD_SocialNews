@@ -18,14 +18,14 @@ public class Neo4jPostDAO {
 
     // CREATION OPERATIONS
 
-    public void addPost(String reporterId, Post post) throws SocialNewsDataAccessException {
+    public int addPost(String reporterId, Post post) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query( "MATCH (r:Reporter {reporterId: $reporterId}) "+
                             "MERGE (p:Post {postId: $postId}) " +
                             "CREATE (r) -[:WRITE]-> (p)",
                     parameters("reporterId", reporterId, "postId", post.getId()));
 
-            session.writeTransaction(tx -> tx.run(query));
+            return session.writeTransaction(tx -> tx.run(query)).consume().counters().nodesCreated();
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Post creation failed: "+ e.getMessage());
@@ -33,12 +33,9 @@ public class Neo4jPostDAO {
     }
 
 
-    // READ OPERATIONS
-
-
     // DELETE OPERATIONS
 
-    public void deletePost(String postId) throws SocialNewsDataAccessException {
+    public int deletePost(String postId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (p:Post {postId: $postId}) <-[rel]-() " +
@@ -46,14 +43,14 @@ public class Neo4jPostDAO {
                             "DELETE p",
                     parameters("postId", postId));
 
-            session.writeTransaction(tx -> tx.run(query));
+            return session.writeTransaction(tx -> tx.run(query)).consume().counters().nodesDeleted();
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Post deletion failed: "+ e.getMessage());
         }
     }
 
-    public void deletePostsByReporterId(String reporterId) throws SocialNewsDataAccessException {
+    public int deletePostsByReporterId(String reporterId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (p:Post) <-[w:WRITE]-(:Reporter {reporterId: $reporterId}) "+
@@ -63,7 +60,7 @@ public class Neo4jPostDAO {
                             "DELETE p",
                     parameters("reporterId", reporterId));
 
-            session.writeTransaction(tx -> tx.run(query));
+            return session.writeTransaction(tx -> tx.run(query)).consume().counters().nodesDeleted();
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Posts deletion failed: "+ e.getMessage());

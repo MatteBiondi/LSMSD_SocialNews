@@ -22,7 +22,7 @@ public class Neo4jReportDAO {
 
     // CREATION OPERATIONS
 
-    public void addReport(Report report) throws SocialNewsDataAccessException {
+    public int addReport(Report report) throws SocialNewsDataAccessException {
         String postId = report.getPostId();
         String readerId = report.getReaderId();
 
@@ -37,7 +37,7 @@ public class Neo4jReportDAO {
                             "text", report.getText())
             );
 
-            session.writeTransaction(tx -> tx.run(query));
+            return session.writeTransaction(tx -> tx.run(query)).consume().counters().relationshipsCreated();
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Report creation by object failed: "+ e.getMessage());
@@ -100,7 +100,7 @@ public class Neo4jReportDAO {
 
     // DELETE OPERATIONS
 
-    public void deleteReport(Long reportId) throws SocialNewsDataAccessException {
+    public int deleteReport(Long reportId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (:Reader) -[r:REPORT]-> (:Post) "+
@@ -109,7 +109,7 @@ public class Neo4jReportDAO {
                     parameters("reportId", reportId)
             );
 
-            session.writeTransaction(tx -> tx.run(query));
+            return session.writeTransaction(tx -> tx.run(query)).consume().counters().relationshipsDeleted();
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Report deletion failed: "+ e.getMessage());

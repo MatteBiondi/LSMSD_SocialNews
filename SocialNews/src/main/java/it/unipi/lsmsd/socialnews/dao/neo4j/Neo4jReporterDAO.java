@@ -19,7 +19,7 @@ public class Neo4jReporterDAO {
 
     // CREATION OPERATIONS
 
-    public void addReporter(Reporter reporter) throws SocialNewsDataAccessException{
+    public int addReporter(Reporter reporter) throws SocialNewsDataAccessException{
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "CREATE (:Reporter {reporterId: $reporterId, fullName: $name, picture: $picture})",
@@ -28,7 +28,7 @@ public class Neo4jReporterDAO {
                             "picture", reporter.getPicture())
             );
 
-            session.writeTransaction(tx -> tx.run(query));
+            return session.writeTransaction(tx -> tx.run(query)).consume().counters().nodesCreated();
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Reporter creation failed: "+ e.getMessage());
@@ -70,7 +70,7 @@ public class Neo4jReporterDAO {
 
     //DELETE OPERATIONS
 
-    public void deleteReporter(String reporterId) throws SocialNewsDataAccessException{
+    public int deleteReporter(String reporterId) throws SocialNewsDataAccessException{
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (r:Reporter {reporterId: $reporterId}) " +
@@ -85,7 +85,7 @@ public class Neo4jReporterDAO {
                     parameters("reporterId", reporterId)
             );
 
-            session.writeTransaction(tx -> tx.run(query));
+            return session.writeTransaction(tx -> tx.run(query)).consume().counters().nodesDeleted();
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Reporter deletion failed: "+ e.getMessage());

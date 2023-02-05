@@ -19,19 +19,19 @@ public class Neo4jReaderDAO {
 
     // CREATION OPERATIONS
 
-    public void addReader(Reader reader) throws SocialNewsDataAccessException {
+    public int addReader(Reader reader) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query( "CREATE (:Reader {readerId: $readerId})",
                     parameters("readerId", reader.getId()));
 
-            session.writeTransaction(tx -> tx.run(query));
+            return session.writeTransaction(tx -> tx.run(query)).consume().counters().nodesCreated();
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Reader creation failed: "+ e.getMessage());
         }
     }
 
-    public void followReporter(String readerId, String reporterId) throws SocialNewsDataAccessException {
+    public int followReporter(String readerId, String reporterId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (rd:Reader {readerId: $readerId}) " +
@@ -39,7 +39,7 @@ public class Neo4jReaderDAO {
                             "CREATE (rd) -[:FOLLOW]-> (rp)",
                     parameters("readerId", readerId, "reporterId", reporterId));
 
-            session.writeTransaction(tx -> tx.run(query));
+            return session.writeTransaction(tx -> tx.run(query)).consume().counters().relationshipsCreated();
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Following action failed: "+ e.getMessage());
@@ -70,7 +70,7 @@ public class Neo4jReaderDAO {
 
     // DELETE OPERATIONS
 
-    public void deleteReader(String readerId) throws SocialNewsDataAccessException {
+    public int deleteReader(String readerId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (r:Reader {readerId: $readerId}) "+
@@ -81,21 +81,21 @@ public class Neo4jReaderDAO {
                             "DELETE r",
                     parameters("readerId", readerId));
 
-            session.writeTransaction(tx -> tx.run(query));
+            return session.writeTransaction(tx -> tx.run(query)).consume().counters().nodesDeleted();
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Reader deletion failed: "+ e.getMessage());
         }
     }
 
-    public void unfollowReporter(String readerId, String reporterId) throws SocialNewsDataAccessException {
+    public int unfollowReporter(String readerId, String reporterId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (:Reader {readerId: $readerId}) -[f:FOLLOW]-> (:Reporter {reporterId: $reporterId}) "+
                             "DELETE f",
                     parameters("readerId", readerId, "reporterId", reporterId));
 
-            session.writeTransaction(tx -> tx.run(query));
+            return session.writeTransaction(tx -> tx.run(query)).consume().counters().relationshipsDeleted();
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Unfollowing action failed: "+ e.getMessage());
