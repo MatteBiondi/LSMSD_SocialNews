@@ -5,17 +5,18 @@ import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Post;
 import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoReporterDAO;
+import it.unipi.lsmsd.socialnews.dao.neo4j.Neo4jReporterDAO;
 
 import java.util.List;
 
 public class ReporterDAOImpl implements ReporterDAO {
 
     private final MongoReporterDAO mongoReporterDAO;
-    // private final Neo4JReporterDAO neo4jReporterDAO;
+    private final Neo4jReporterDAO neo4jReporterDAO;
 
     public ReporterDAOImpl(){
         mongoReporterDAO = new MongoReporterDAO();
-        // neo4jReporterDAO = new Neo4JReporterDAO();
+        neo4jReporterDAO = new Neo4jReporterDAO();
     }
 
 
@@ -29,6 +30,8 @@ public class ReporterDAOImpl implements ReporterDAO {
     @Override
     public String register(Reporter newReporter) throws SocialNewsDataAccessException {
         // TODO: Insert on Neo4J may be lazy
+        // todo transaction
+        neo4jReporterDAO.addReporter(newReporter);
         mongoReporterDAO.register(newReporter);
         return newReporter.getReporterId();
     }
@@ -155,7 +158,32 @@ public class ReporterDAOImpl implements ReporterDAO {
      */
     @Override
     public Long removeReporter(String reporterId) throws SocialNewsDataAccessException {
+        // todo transaction
+        neo4jReporterDAO.deleteReporter(reporterId);
         return mongoReporterDAO.removeReporter(reporterId);
-        // TODO: remove from Neo4J
+    }
+
+    /**
+     * Retrieve the number of followers for a given reporter
+     *
+     * @param reporterId id of the reporter
+     * @return number of follower for the reporter identified by 'reporterId'
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    @Override
+    public int getNumOfFollowers(String reporterId) throws SocialNewsDataAccessException{
+        return neo4jReporterDAO.getNumOfFollowers(reporterId);
+    }
+
+    /**
+     * Retrieve the most popular reporters. Popularity is given by the number of followers
+     *
+     * @param limitTopRanking number of retrieved reporters
+     * @return list of reporter objects containing basic information (id, name and picture)
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    @Override
+    public List<Reporter> getMostPopularReporters(int limitTopRanking) throws SocialNewsDataAccessException{
+        return neo4jReporterDAO.getMostPopularReporters(limitTopRanking);
     }
 }

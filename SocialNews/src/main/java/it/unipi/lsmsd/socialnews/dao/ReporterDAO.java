@@ -112,4 +112,22 @@ public interface ReporterDAO {
      * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
      */
     Long removeReporter(String reporterId) throws SocialNewsDataAccessException;
+
+    /**
+     * Retrieve the number of followers for a given reporter
+     *
+     * @param reporterId id of the reporter
+     * @return number of follower for the reporter identified by 'reporterId'
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    int getNumOfFollowers(String reporterId) throws SocialNewsDataAccessException;
+
+    /**
+     * Retrieve the most popular reporters. Popularity is given by the number of followers
+     *
+     * @param limitTopRanking number of retrieved reporters
+     * @return list of reporter objects containing basic information (id, name and picture)
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    List<Reporter> getMostPopularReporters(int limitTopRanking) throws SocialNewsDataAccessException;
 }
