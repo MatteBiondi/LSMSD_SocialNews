@@ -101,6 +101,10 @@ public final class JSONConverter {
         return fromJSON(jsonObject, CommentDTO.class);
     }
 
+    public static ReportDTO ReportDTOFromJSON(String jsonObject){
+        return fromJSON(jsonObject, ReportDTO.class);
+    }
+
     public static List<AdminDTO> AdminDTOListFromJSON(String jsonArray){
         return fromJSONArray(jsonArray, AdminDTO.class);
     }
@@ -119,5 +123,9 @@ public final class JSONConverter {
 
     public static List<CommentDTO> CommentDTOListFromJSON(String jsonArray){
         return fromJSONArray(jsonArray, CommentDTO.class);
+    }
+
+    public static List<ReportDTO> ReportDTOListFromJSON(String jsonArray){
+        return fromJSONArray(jsonArray, ReportDTO.class);
     }
 }
