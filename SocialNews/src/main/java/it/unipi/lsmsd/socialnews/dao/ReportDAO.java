@@ -11,9 +11,10 @@ public interface ReportDAO {
      * Inserts new report into the database
      *
      * @param report report object containing information of the new report
+     * @return number of created report
      * @throws SocialNewsDataAccessException in case of failure of the insert operation on database
      */
-    void addReport(Report report) throws SocialNewsDataAccessException;
+    int addReport(Report report) throws SocialNewsDataAccessException;
 
     /**
      * Retrieves information about the report identified by 'reportId' field
@@ -40,7 +41,8 @@ public interface ReportDAO {
      * Deletes a report, identified by 'reportId' field, from the database
      *
      * @param reportId id of the report to remove
+     * @return number of reports deleted from the database
      * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
      */
-    void deleteReport(Long reportId) throws SocialNewsDataAccessException;
+    int deleteReport(Long reportId) throws SocialNewsDataAccessException;
 }
