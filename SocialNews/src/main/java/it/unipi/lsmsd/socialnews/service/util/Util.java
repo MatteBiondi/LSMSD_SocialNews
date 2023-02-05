@@ -2,6 +2,7 @@ package it.unipi.lsmsd.socialnews.service.util;
 
 import it.unipi.lsmsd.socialnews.dao.model.*;
 import it.unipi.lsmsd.socialnews.dto.*;
+import org.modelmapper.Conditions;
 import org.modelmapper.ModelMapper;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -15,7 +16,9 @@ public final class Util {
     private final static ModelMapper modelMapper = new ModelMapper();
     private static Properties properties;
 
-    static {// Customize conversion Entity-DTO and vice versa
+
+    // Customize conversion Entity-DTO and vice versa
+    static {
 
         // From Reporter entity to DTO
         modelMapper.createTypeMap(Reporter.class, ReporterDTO.class)
@@ -23,21 +26,21 @@ public final class Util {
 
         // From Reader DTO to entity
         modelMapper.createTypeMap(ReaderDTO.class, Reader.class)
-                .addMappings(mapper -> mapper.skip(Reader::setId));
+                .setPropertyCondition(Conditions.isNotNull());
 
         // From Reporter DTO to entity
         modelMapper.createTypeMap(ReporterDTO.class, Reporter.class)
-               .addMappings(mapper -> mapper.skip(Reporter::setId))
-               .addMappings(mapper -> mapper.skip(Reporter::setReporterId));
+                .addMappings(mapper -> mapper.skip(Reporter::setId))
+                .setPropertyCondition(Conditions.isNotNull());
+
 
         // From Post DTO to entity
         modelMapper.createTypeMap(PostDTO.class, Post.class)
-                .addMappings(mapper -> mapper.skip(Post::setId));
+                .setPropertyCondition(Conditions.isNotNull());
 
         // From Comment DTO to entity
         modelMapper.createTypeMap(CommentDTO.class, Comment.class)
-                .addMappings(mapper -> mapper.skip(Comment::setId));
-
+                .setPropertyCondition(Conditions.isNotNull());
     }
 
     /**
@@ -120,6 +123,10 @@ public final class Util {
         return new ReporterPageDTO(reporterDTO, postListDTO);
     }
 
+    public static ReportDTO buildReportDTO(Report source){
+        return (ReportDTO) buildDTO(source, Report.class);
+    }
+
     public static Admin buildAdmin(AdminDTO source){
         return (Admin) buildEntity(source, Admin.class);
     }
@@ -138,5 +145,9 @@ public final class Util {
 
     public static Comment buildComment(CommentDTO source){
         return (Comment) buildEntity(source, Comment.class);
+    }
+
+    public static Report buildReport(ReportDTO source) {
+        return (Report) buildEntity(source, Report.class);
     }
 }
