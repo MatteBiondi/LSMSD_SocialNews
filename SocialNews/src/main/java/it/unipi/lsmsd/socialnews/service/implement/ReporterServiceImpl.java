@@ -94,5 +94,26 @@ public class ReporterServiceImpl implements ReporterService {
         }
     }
 
+    /**
+     * Retrieves information about number of followers for a reporter passed as argument
+     *
+     * @param reporterId id of the reporter of interest
+     * @return number of followers for the specified reporter
+     * @throws SocialNewsServiceException in case of failure of the query operation
+     */
+    @Override
+    public Integer howManyFollowers(String reporterId) throws SocialNewsServiceException {
+        try {
+            return DAOLocator.getReporterDAO().getNumOfFollowers(reporterId);
+        } catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error");
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Unexpected error");
+        }
+    }
+
 
 }
