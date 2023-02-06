@@ -1,7 +1,9 @@
 package it.unipi.lsmsd.socialnews.service;
 
 import it.unipi.lsmsd.socialnews.dto.ReaderDTO;
+import it.unipi.lsmsd.socialnews.dto.ReporterDTO;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
+import java.util.List;
 
 public interface ReaderService {
     /**
@@ -31,4 +33,24 @@ public interface ReaderService {
      */
     ReaderDTO readerInfo(String email) throws SocialNewsServiceException;
 
+    /**
+     * Retrieves information about reporters matching full name pattern ordered by name, up to a configured number of
+     * reporters
+     *
+     * @param fullNamePattern full name regex pattern, matches all full names that contains a prefix in any of its word
+     * @return list of reporterDTO objects containing basic information
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    List<ReporterDTO> firstPageReportersByFullName(String fullNamePattern) throws SocialNewsServiceException;
+
+    /**
+     * Retrieves information about reporters matching full name pattern ordered by name starting from the offset
+     * passed as argument, up to a configured number of reporters
+     *
+     * @param fullNamePattern full name regex pattern, matches all full names that contains a prefix in any of its word
+     * @param reporterOffset reporter DTO containing the reporterId of the last reporter in the previous page
+     * @return  list of reporterDTO objects containing basic information
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    List<ReporterDTO> nextPageReportersByFullName(String fullNamePattern, ReporterDTO reporterOffset) throws SocialNewsServiceException;
 }

@@ -3,7 +3,6 @@ package it.unipi.lsmsd.socialnews.service;
 import it.unipi.lsmsd.socialnews.dto.CommentDTO;
 import it.unipi.lsmsd.socialnews.dto.PostDTO;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
-
 import java.util.List;
 
 public interface PostService {
@@ -28,22 +27,46 @@ public interface PostService {
 
 
     /**
-     * Search all the posts that contain a hashtag passed as parameter
+     * Retrieves all the posts that contains a hashtag passed as parameter, up to a configured number of posts
      *
      * @param hashtag hashtag to search in the posts
      * @return list of posts that contain the hashtag
      * @throws SocialNewsServiceException in case of failure of the query operation
      */
-    List<PostDTO> searchPostsByHashtag(String hashtag) throws SocialNewsServiceException;
+    List<PostDTO> firstPagePostsByHashtag(String hashtag) throws SocialNewsServiceException;
 
     /**
-     * Load comments associated to a post
+     * Retrieves all the posts that contains a hashtag passed as parameter starting from the offset passed as argument,
+     * up to a configured number of posts
      *
-     * @param targetPost post whose comments to upload
+     * @param hashtag hashtag to search in the posts
+     * @param postOffset post DTO containing the id of the last post in the previous page
+     * @return list of posts that contain the hashtag
+     * @throws SocialNewsServiceException in case of failure of the query operation
+     */
+    List<PostDTO> nextPagePostsByHashtag(String hashtag, PostDTO postOffset) throws SocialNewsServiceException;
+
+    /**
+     * Retrieves the comments associated to the post specified as argument, ordered by timestamp, up to a configured
+     * number of
+     * comments
+     *
+     * @param targetPostId post whose comments to load
      * @return list of comments associated to the post
      * @throws SocialNewsServiceException in case of failure of the query operation
      */
-    List<CommentDTO> loadComments(PostDTO targetPost) throws SocialNewsServiceException;
+    List<CommentDTO> firstPageComments(String targetPostId) throws SocialNewsServiceException;
+
+    /**
+     * Retrieves the comments associated to the post specified as argument ordered by timestamp starting from the offset
+     * passed as argument, up to a configured number of comments
+     *
+     * @param targetPostId post whose comments to load
+     * @param commentOffset comment DTO containing id the last comment in the previous page
+     * @return list of comments associated to the post
+     * @throws SocialNewsServiceException in case of failure of the query operation
+     */
+    List<CommentDTO> nextPageComments(String targetPostId, CommentDTO commentOffset) throws SocialNewsServiceException;
 
     /**
      * Remove a post from the system, removing the information stored in the database and all the associated comments
@@ -56,8 +79,8 @@ public interface PostService {
     /**
      * Remove a comment from the system, removing the information stored in the database
      *
-     * @param toRemoveComment DTO object containing the commentId of the comment to remove
+     * @param toRemoveCommentId identifier of the comment to remove
      * @throws SocialNewsServiceException in case of failure of the operation or if the comment is not in the system
      */
-    void removeComment(CommentDTO toRemoveComment) throws SocialNewsServiceException;
+    void removeComment(String toRemoveCommentId) throws SocialNewsServiceException;
 }
