@@ -119,12 +119,12 @@ public final class Util {
         return (CommentDTO) buildDTO(source, CommentDTO.class);
     }
 
-    public static ReporterPageDTO buildReporterPageDTO(Reporter source) {
+    public static ReporterPageDTO buildReporterPageDTO(Reporter source, Integer numOfFollower) {
         ReporterDTO reporterDTO = (ReporterDTO) buildDTO(source, ReporterDTO.class);
         List<PostDTO> postListDTO = new ArrayList<>();
         source.getPosts().forEach(post -> postListDTO.add(buildPostDTO(post, reporterDTO.getId())));
 
-        return new ReporterPageDTO(reporterDTO, postListDTO);
+        return new ReporterPageDTO(reporterDTO, postListDTO, numOfFollower);
     }
 
     public static ReportDTO buildReportDTO(Report source){

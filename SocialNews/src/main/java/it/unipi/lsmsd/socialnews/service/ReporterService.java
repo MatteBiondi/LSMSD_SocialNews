@@ -38,12 +38,4 @@ public interface ReporterService {
      */
     List<PostDTO> nextReporterPagePosts(PostDTO postOffset) throws SocialNewsServiceException;
 
-    /**
-     * Retrieves information about number of followers for a reporter passed as argument
-     *
-     * @param reporterId id of the reporter of interest
-     * @return number of followers for the specified reporter
-     * @throws SocialNewsServiceException in case of failure of the query operation
-     */
-    Integer howManyFollowers(String reporterId) throws SocialNewsServiceException;
 }

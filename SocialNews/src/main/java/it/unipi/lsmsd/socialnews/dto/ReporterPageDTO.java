@@ -5,10 +5,12 @@ import java.util.List;
 public class ReporterPageDTO extends BaseDTO{
     ReporterDTO reporter;
     List<PostDTO> posts;
+    Integer numOfFollower;
 
-    public ReporterPageDTO(ReporterDTO reporter, List<PostDTO> posts) {
+    public ReporterPageDTO(ReporterDTO reporter, List<PostDTO> posts, Integer numOfFollower) {
         this.reporter = reporter;
         this.posts = posts;
+        this.numOfFollower = numOfFollower;
     }
 
     public ReporterDTO getReporter() {
@@ -27,11 +29,20 @@ public class ReporterPageDTO extends BaseDTO{
         this.posts = posts;
     }
 
+    public Integer getNumOfFollower() {
+        return numOfFollower;
+    }
+
+    public void setNumOfFollower(Integer numOfFollower) {
+        this.numOfFollower = numOfFollower;
+    }
+
     @Override
     public String toString() {
         return "ReporterPageDTO{" +
                 "reporter=" + reporter +
                 ", posts=" + posts +
+                ", numOfFollower=" + numOfFollower +
                 '}';
     }
 }

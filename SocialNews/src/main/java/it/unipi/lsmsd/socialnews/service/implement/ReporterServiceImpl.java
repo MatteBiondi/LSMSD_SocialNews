@@ -9,10 +9,13 @@ import it.unipi.lsmsd.socialnews.dto.ReporterDTO;
 import it.unipi.lsmsd.socialnews.dto.ReporterPageDTO;
 import it.unipi.lsmsd.socialnews.service.ReporterService;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
+import it.unipi.lsmsd.socialnews.service.util.ServiceWorkerPool;
 import it.unipi.lsmsd.socialnews.service.util.Util;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class ReporterServiceImpl implements ReporterService {
 
@@ -50,16 +53,19 @@ public class ReporterServiceImpl implements ReporterService {
     @Override
     public ReporterPageDTO loadReporterPage(String reporterId) throws SocialNewsServiceException {
         try {
-            Reporter reporter = DAOLocator.getReporterDAO()
-                    .reporterByReporterId(reporterId, Util.getIntProperty("listPostPageSize",10));
-            return Util.buildReporterPageDTO(reporter);
-        } catch (SocialNewsDataAccessException ex) {
-            ex.printStackTrace();
-            throw new SocialNewsServiceException("Database error");
-        }
-        catch (IllegalArgumentException ex){
+            List<Future<?>> futures = ServiceWorkerPool.getPool().submitTask(List.of(
+                    () -> DAOLocator.getReporterDAO()
+                            .reporterByReporterId(reporterId, Util.getIntProperty("listPostPageSize",10)),
+                    () -> DAOLocator.getReporterDAO().getNumOfFollowers(reporterId)
+            ));
+            Reporter reporter = (Reporter) futures.get(0).get();
+            Integer numFollowers = (Integer) futures.get(1).get();
+            return Util.buildReporterPageDTO(reporter, numFollowers);
+        } catch (IllegalArgumentException ex){
             ex.printStackTrace();
             throw new SocialNewsServiceException("Reporter not in the system");
+        } catch (ExecutionException | InterruptedException ex) {
+            throw new SocialNewsServiceException("Parallel execution error: " + ex.getMessage());
         }
     }
 
@@ -92,27 +98,5 @@ public class ReporterServiceImpl implements ReporterService {
             throw new SocialNewsServiceException("Post not in the system");
         }
     }
-
-    /**
-     * Retrieves information about number of followers for a reporter passed as argument
-     *
-     * @param reporterId id of the reporter of interest
-     * @return number of followers for the specified reporter
-     * @throws SocialNewsServiceException in case of failure of the query operation
-     */
-    @Override
-    public Integer howManyFollowers(String reporterId) throws SocialNewsServiceException {
-        try {
-            return DAOLocator.getReporterDAO().getNumOfFollowers(reporterId);
-        } catch (SocialNewsDataAccessException ex) {
-            ex.printStackTrace();
-            throw new SocialNewsServiceException("Database error");
-        }
-        catch (Exception ex){
-            ex.printStackTrace();
-            throw new SocialNewsServiceException("Unexpected error");
-        }
-    }
-
 
 }
