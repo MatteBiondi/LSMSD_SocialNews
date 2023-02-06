@@ -45,9 +45,16 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
             stages.add(Aggregates.match(Filters.eq("reporterId", reporterId)));
             stages.add(Aggregates.unwind("$posts"));
             if(offset != null){
-                stages.add(Aggregates.match(Filters.lt("posts.timestamp", offset.getTimestamp())));
+                stages.add(Aggregates.match(
+                        Filters.or(
+                                Filters.and(
+                                        Filters.lte("posts.timestamp", offset.getTimestamp()),
+                                        Filters.lt("posts._id", offset.getId())
+                                ),
+                                Filters.lt("posts.timestamp", offset.getTimestamp()))
+                ));
             }
-            stages.add(Aggregates.sort(Sorts.descending("posts.timestamp")));
+            stages.add(Aggregates.sort(Sorts.descending("posts.timestamp", "posts._id")));
             stages.add(Aggregates.limit(pageSize));
             stages.add(Aggregates.group("$reporterId",Accumulators.push("posts", "$posts")));
 
@@ -64,7 +71,7 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
         }
     }
 
-    public List<Reporter> postsByHashtag(String hashtag) throws SocialNewsDataAccessException {
+    public List<Reporter> postsByHashtag(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
         try{
             List<Reporter> reporters = new ArrayList<>();
             List<Bson> stages = new ArrayList<>();
@@ -77,6 +84,18 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
                             "{$filter:{input:'$posts',as:'p',cond:{$in:['%s','$$p.hashtags']}}}", hashtag))))
             ));
             stages.add(Aggregates.unwind("$posts"));
+            if(offset != null){
+                stages.add(Aggregates.match(
+                        Filters.or(
+                                Filters.and(
+                                        Filters.lte("posts.timestamp", offset.getTimestamp()),
+                                        Filters.lt("posts._id", offset.getId())
+                                ),
+                                Filters.lt("posts.timestamp", offset.getTimestamp()))
+                        ));
+            }
+            stages.add(Aggregates.sort(Sorts.descending("posts.timestamp", "posts._id")));
+            stages.add(Aggregates.limit(pageSize));
             stages.add(Aggregates.group("$reporterId",
                     List.of(
                             Accumulators.push("posts", "$posts"),
