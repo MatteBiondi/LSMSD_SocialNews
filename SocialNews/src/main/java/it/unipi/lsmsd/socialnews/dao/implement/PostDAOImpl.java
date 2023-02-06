@@ -69,6 +69,21 @@ public class PostDAOImpl implements PostDAO {
     }
 
     /**
+     * Retrieves the posts, along with basic information of the reporter associated, that contain the specified
+     * hashtag, limiting the number of posts to the dimension specified
+     *
+     * @param hashtag  hashtag used to filter the posts
+     * @param pageSize number of posts to retrieve
+     * @return list of reporters objects containing basic information of the reporter and the list of posts that
+     * contain the hashtag
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    @Override
+    public List<Reporter> postsByHashtag(String hashtag, Integer pageSize) throws SocialNewsDataAccessException {
+        return postsByHashtag(hashtag, null, pageSize);
+    }
+
+    /**
      * Retrieves all the posts, along with basic information of the reporter associated, that contain the specified
      * hashtag
      *
@@ -78,8 +93,8 @@ public class PostDAOImpl implements PostDAO {
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
     @Override
-    public List<Reporter> postsByHashtag(String hashtag) throws SocialNewsDataAccessException {
-        return mongoPostDAO.postsByHashtag(hashtag);
+    public List<Reporter> postsByHashtag(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
+        return mongoPostDAO.postsByHashtag(hashtag, offset, pageSize);
     }
 
     /**
