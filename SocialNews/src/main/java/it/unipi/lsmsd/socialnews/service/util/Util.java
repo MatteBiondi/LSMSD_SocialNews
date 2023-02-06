@@ -115,6 +115,10 @@ public final class Util {
         return postDTO;
     }
 
+    public static CommentDTO buildCommentDTO(Comment source){
+        return (CommentDTO) buildDTO(source, CommentDTO.class);
+    }
+
     public static ReporterPageDTO buildReporterPageDTO(Reporter source) {
         ReporterDTO reporterDTO = (ReporterDTO) buildDTO(source, ReporterDTO.class);
         List<PostDTO> postListDTO = new ArrayList<>();
