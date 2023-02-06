@@ -5,10 +5,7 @@ import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Admin;
 import it.unipi.lsmsd.socialnews.dao.model.Reader;
 import it.unipi.lsmsd.socialnews.dao.model.Reporter;
-import it.unipi.lsmsd.socialnews.dto.AdminDTO;
-import it.unipi.lsmsd.socialnews.dto.ReaderDTO;
-import it.unipi.lsmsd.socialnews.dto.ReporterDTO;
-import it.unipi.lsmsd.socialnews.dto.StatisticPageDTO;
+import it.unipi.lsmsd.socialnews.dto.*;
 import it.unipi.lsmsd.socialnews.service.AdminService;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
 import it.unipi.lsmsd.socialnews.service.util.Statistic;
@@ -132,6 +129,48 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+
+    /**
+     * Retrieves information about report, ordered by id, associated to a reporter, up to a configured number of report
+     *
+     * @param reporterId id of the reporter for which retrieve associated reports
+     * @return list of reportDTO objects containing all the information
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    @Override
+    public List<ReportDTO> firstPageReports(String reporterId) throws SocialNewsServiceException{
+        return nextPageReports(reporterId, 0);
+    }
+
+
+    /**
+     * Retrieves information about reports (ordered by id starting), from the offset passed as argument, of a reporter,
+     * up to a configured number of reports
+     *
+     * @param reporterId id of the reporter for which retrieve associated reports
+     * @param reportOffset integer containing the number of the last report in the previous page with respect the total
+     *                     number of results
+     * @return list of reportDTO objects containing all the information
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    @Override
+    public List<ReportDTO> nextPageReports(String reporterId, Integer reportOffset) throws SocialNewsServiceException{
+        try {
+            reportOffset = reportOffset != null ? reportOffset : Integer.valueOf(0);
+            List<ReportDTO> firstPageReportDTO = new ArrayList<>();
+            DAOLocator.getReportDAO()
+                    .getReportsByReporterId(reporterId,
+                            Util.getIntProperty("listReportPageSize",25),
+                            reportOffset )
+                    .forEach(report -> firstPageReportDTO.add(Util.buildReportDTO(report)));
+            return firstPageReportDTO;
+        } catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error");
+        }
+    }
+
+
     /**
      * Remove a reader from the databases
      *
@@ -154,6 +193,25 @@ public class AdminServiceImpl implements AdminService {
     public void removeReporter(String reporterId) throws SocialNewsServiceException {
         throw new RuntimeException("Not yet implemented");//TODO
     }
+
+    /**
+     * Remove a report from the database
+     *
+     * @param reportId id associated to the report to remove
+     * @throws SocialNewsServiceException in case of failure of the remove operation
+     */
+    @Override
+    public void removeReport(Long reportId) throws SocialNewsServiceException{
+        try{
+            int removedCounter = DAOLocator.getReportDAO().deleteReport(reportId);
+            if (removedCounter == 0){
+                throw new SocialNewsServiceException("Report not in the system");
+            }
+        }catch (SocialNewsDataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     /**
      * Computes the statistics specified by arguments and pack them into a DTO containing the results

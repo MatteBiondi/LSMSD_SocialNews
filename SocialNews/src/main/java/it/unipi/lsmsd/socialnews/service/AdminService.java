@@ -1,9 +1,6 @@
 package it.unipi.lsmsd.socialnews.service;
 
-import it.unipi.lsmsd.socialnews.dto.AdminDTO;
-import it.unipi.lsmsd.socialnews.dto.ReaderDTO;
-import it.unipi.lsmsd.socialnews.dto.ReporterDTO;
-import it.unipi.lsmsd.socialnews.dto.StatisticPageDTO;
+import it.unipi.lsmsd.socialnews.dto.*;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
 import it.unipi.lsmsd.socialnews.service.util.Statistic;
 
@@ -70,6 +67,29 @@ public interface AdminService {
     //TODO: remove readers+comments and reporters+posts+comments
 
     /**
+     * Retrieves information about report, ordered by id, associated to a reporter, up to a configured number of report
+     *
+     * @param reporterId id of the reporter for which retrieve associated reports
+     * @return list of reportDTO objects containing all the information
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    List<ReportDTO> firstPageReports(String reporterId) throws SocialNewsServiceException;
+
+
+    /**
+     * Retrieves information about reports (ordered by id starting), from the offset passed as argument, of a reporter,
+     * up to a configured number of reports
+     *
+     * @param reporterId id of the reporter for which retrieve associated reports
+     * @param reportOffset integer containing the number of the last report in the previous page with respect the total
+     *                     number of results
+     * @return list of reportDTO objects containing all the information
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    List<ReportDTO> nextPageReports(String reporterId, Integer reportOffset) throws SocialNewsServiceException;
+
+
+    /**
      * Remove a reader from the databases
      *
      * @param readerId id associated to the reader to remove
@@ -84,6 +104,14 @@ public interface AdminService {
      * @throws SocialNewsServiceException in case of failure of the remove operation
      */
     void removeReporter(String reporterId) throws SocialNewsServiceException;
+
+    /**
+     * Remove a report from the database
+     *
+     * @param reportId id associated to the report to remove
+     * @throws SocialNewsServiceException in case of failure of the remove operation
+     */
+    void removeReport(Long reportId) throws SocialNewsServiceException;
 
     /**
      * Computes the statistics specified by arguments and pack them into a DTO containing the results
