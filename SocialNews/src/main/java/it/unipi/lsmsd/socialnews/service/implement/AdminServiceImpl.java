@@ -224,4 +224,25 @@ public class AdminServiceImpl implements AdminService {
     public StatisticPageDTO computeStatistics(Statistic... statistics) throws SocialNewsServiceException {
         return null; //TODO
     }
+
+    /**
+     * Retrieve the top 5 most popular reporters of the system
+     *
+     * @return list of ReporterDTO objects containing basic information of the most popular reporters
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    @Override
+    public List<ReporterDTO> rankReportersByPopularity() throws SocialNewsServiceException{
+        try {
+            List<ReporterDTO> listReporterDTO = new ArrayList<>();
+            DAOLocator.getReporterDAO()
+                    .getMostPopularReporters(Util.getIntProperty("listReportersPopularityRank",5))
+                    .forEach(reporter -> listReporterDTO.add(Util.buildReporterDTO(reporter)));
+            return listReporterDTO;
+        } catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error");
+        }
+    }
+
 }
