@@ -1,6 +1,5 @@
 package it.unipi.lsmsd.socialnews.dao.model;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -15,7 +14,7 @@ public class Post extends BaseEntity {
 
     public Post(){
         this.postId = UUID.randomUUID().toString();
-        this.timestamp = Calendar.getInstance().getTime();
+        this.timestamp = new Date();
     }
 
     public String getId() {

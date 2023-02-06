@@ -75,7 +75,6 @@ public class ReporterServiceImpl implements ReporterService {
     public List<PostDTO> nextReporterPagePosts(PostDTO postOffset) throws SocialNewsServiceException {
         try {
             Post offset = Util.buildPost(postOffset);
-            System.out.println(offset);
             List<PostDTO> postDTOList = new ArrayList<>();
             DAOLocator.getPostDAO()
                     .postsByReporterId(

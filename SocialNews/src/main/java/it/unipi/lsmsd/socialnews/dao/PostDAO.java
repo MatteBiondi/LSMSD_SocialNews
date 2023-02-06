@@ -40,15 +40,29 @@ public interface PostDAO {
     List<Post> postsByReporterId(String reporterId, Post offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
-     * Retrieves all the posts, along with basic information of the reporter associated, that contain the specified
-     * hashtag
+     * Retrieves the posts, along with basic information of the reporter associated, that contain the specified
+     * hashtag, limiting the number of posts to the dimension specified
      *
      * @param hashtag hashtag used to filter the posts
+     * @param pageSize number of posts to retrieve
      * @return list of reporters objects containing basic information of the reporter and the list of posts that
      * contain the hashtag
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    List<Reporter> postsByHashtag(String hashtag) throws SocialNewsDataAccessException;//TODO: pagination ?
+    List<Reporter> postsByHashtag(String hashtag, Integer pageSize) throws SocialNewsDataAccessException;
+
+    /**
+     * Retrieves the posts, along with basic information of the reporter associated, that contain the specified
+     * hashtag, limiting the number of posts to the dimension specified, starting from the post specified as argument
+     *
+     * @param hashtag hashtag used to filter the posts
+     * @param offset post from which the query starts to retrieve information
+     * @param pageSize number of posts to retrieve
+     * @return list of reporters objects containing basic information of the reporter and the list of posts that
+     * contain the hashtag
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    List<Reporter> postsByHashtag(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
      *

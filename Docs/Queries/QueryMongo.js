@@ -1,11 +1,15 @@
 /****************************
  1) Search posts by hashtags
  ****************************/
+let hashtag = 'news'
+let offset = ISODate("2023-02-01T21:57:05.536Z");
 db.reporters.aggregate([
-        {$match:{'posts.hashtags':'sport'}},
-        {$project:{reporterId:1, posts:{$filter:{input:'$posts', as:'posts', cond:{$in:['sport', '$$posts.hashtags']}}}}},
-        {$unwind:'$posts'},
-        {$group:{reporterId: {$first: '$reporterId'}, _id: '$reporterId', posts: { $push: '$posts'}}}
+    {$match:{'posts.hashtags':hashtag}},
+    {$project:{reporterId:1, posts:{$filter:{input:'$posts', as:'posts', cond:{$in:[hashtag, '$$posts.hashtags']}}}}},
+    {$unwind:'$posts'},
+    {$match:{'posts.timestamp':{$lt:offset}}},
+    {$limit:25},
+    {$group:{reporterId: {$first: '$reporterId'}, _id: '$reporterId', posts: { $push: '$posts'}}}
 ])
 
 /********************************************

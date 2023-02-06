@@ -85,4 +85,24 @@ public interface ReaderService {
      * @throws SocialNewsServiceException in case of failure of the deletion operation on database
      */
     Integer unfollowReporter(String readerId, String reporterId) throws SocialNewsServiceException;
+    /**
+     * Retrieves information about reporters matching full name pattern ordered by name, up to a configured number of
+     * reporters
+     *
+     * @param fullNamePattern full name regex pattern, matches all full names that contains a prefix in any of its word
+     * @return list of reporterDTO objects containing basic information
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    List<ReporterDTO> firstPageReportersByFullName(String fullNamePattern) throws SocialNewsServiceException;
+
+    /**
+     * Retrieves information about reporters matching full name pattern ordered by name starting from the offset
+     * passed as argument, up to a configured number of reporters
+     *
+     * @param fullNamePattern full name regex pattern, matches all full names that contains a prefix in any of its word
+     * @param reporterOffset reporter DTO containing the reporterId of the last reporter in the previous page
+     * @return  list of reporterDTO objects containing basic information
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    List<ReporterDTO> nextPageReportersByFullName(String fullNamePattern, ReporterDTO reporterOffset) throws SocialNewsServiceException;
 }
