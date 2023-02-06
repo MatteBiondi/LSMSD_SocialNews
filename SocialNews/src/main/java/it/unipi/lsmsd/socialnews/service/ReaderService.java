@@ -105,4 +105,13 @@ public interface ReaderService {
      * @throws SocialNewsServiceException in case of failure of the operation
      */
     List<ReporterDTO> nextPageReportersByFullName(String fullNamePattern, ReporterDTO reporterOffset) throws SocialNewsServiceException;
+
+    /**
+     * Retrieves a list of the suggested reporters to the reader identified by id passed as parameter
+     *
+     * @param readerId id of the reader that want the reporters suggestion
+     * @return list of reporterDTO objects containing basic information of the suggested reporters
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    List<ReporterDTO> readSuggestedReporters (String readerId) throws SocialNewsServiceException;
 }

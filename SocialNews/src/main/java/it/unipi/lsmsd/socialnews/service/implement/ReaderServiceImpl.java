@@ -222,4 +222,25 @@ public class ReaderServiceImpl implements ReaderService {
             throw new SocialNewsServiceException("Database error");
         }
     }
+
+    /**
+     * Retrieves a list of the suggested reporters to the reader identified by id passed as parameter
+     *
+     * @param readerId id of the reader that want the reporters suggestion
+     * @return list of reporterDTO objects containing basic information of the suggested reporters
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    @Override
+    public List<ReporterDTO> readSuggestedReporters (String readerId) throws SocialNewsServiceException{
+        try {
+            List<ReporterDTO> listReporterDTO = new ArrayList<>();
+            DAOLocator.getReaderDAO()
+                    .suggestReporters(readerId, Util.getIntProperty("listSuggestedReportersSize",10))
+                    .forEach(reporter -> listReporterDTO.add(Util.buildReporterDTO(reporter)));
+            return listReporterDTO;
+        } catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error");
+        }
+    }
 }
