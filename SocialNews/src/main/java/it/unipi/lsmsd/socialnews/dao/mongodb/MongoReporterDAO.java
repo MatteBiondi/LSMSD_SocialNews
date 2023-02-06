@@ -104,10 +104,8 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
 
         StringBuilder regex = new StringBuilder();
         String[] subPatterns = fullNamePattern.trim().split(" ");
-        for (Iterator<String> iter = Arrays.stream(subPatterns).iterator(); iter.hasNext(); ) {
-            regex.append(String.format("(%s.*)\\s%s", iter.next(), iter.hasNext() ? "+":"*"));
-        }
-
+        Arrays.stream(subPatterns).forEach(subPattern -> regex.append(String.format("(?=.*\\b%s.*\\b)", subPattern)));
+        regex.append(".*");
         Bson filter = Filters.and(
                 Filters.exists("email", true),
                 Filters.regex("fullName", regex.toString(),"i")
