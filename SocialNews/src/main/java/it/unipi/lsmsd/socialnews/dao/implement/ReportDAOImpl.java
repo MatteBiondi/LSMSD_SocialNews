@@ -19,12 +19,13 @@ public class ReportDAOImpl implements ReportDAO {
      * Inserts new report into the database
      *
      * @param report report object containing information of the new report
+     * @param reporterId id of the reporter, owner of the interested post
      * @return identifier of created report
      * @throws SocialNewsDataAccessException in case of failure of the insert operation on database
      */
     @Override
-    public Long addReport(Report report) throws SocialNewsDataAccessException {
-        return neo4JReportDAO.addReport(report);
+    public Long addReport(Report report, String reporterId) throws SocialNewsDataAccessException {
+        return neo4JReportDAO.addReport(report, reporterId);
     }
 
     /**

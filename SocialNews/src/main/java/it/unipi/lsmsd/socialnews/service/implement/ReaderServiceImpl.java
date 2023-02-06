@@ -85,13 +85,14 @@ public class ReaderServiceImpl implements ReaderService {
      * Publish a report related to a selected post
      *
      * @param newReport DTO object containing the information of the new report to publish
+     * @param reporterId id of the reporter, owner of the interested post
      * @return the identifier assigned to the new report
      * @throws SocialNewsServiceException in case of failure of the operation
      */
     @Override
-    public Long publishReport(ReportDTO newReport) throws SocialNewsServiceException{
+    public Long publishReport(ReportDTO newReport, String reporterId) throws SocialNewsServiceException{
         try {
-            return DAOLocator.getReportDAO().addReport(Util.buildReport(newReport));
+            return DAOLocator.getReportDAO().addReport(Util.buildReport(newReport), reporterId);
         } catch (SocialNewsDataAccessException ex) {
             ex.printStackTrace();
             throw new SocialNewsServiceException("Database error");

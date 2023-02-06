@@ -22,17 +22,19 @@ public class Neo4jReportDAO {
 
     // CREATION OPERATIONS
 
-    public Long addReport(Report report) throws SocialNewsDataAccessException {
+    public Long addReport(Report report, String reporterId) throws SocialNewsDataAccessException {
         String postId = report.getPostId();
         String readerId = report.getReaderId();
 
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
-                    "MATCH (reader:Reader {readerId: $readerId}) " +
-                            "MATCH (p:Post {postId: $postId}) "+
+                    "MATCH (reporter:Reporter {reporterId: $reporterId})" +
+                            "MERGE (p:Post {postId: $postId}) <-[:WRITE]- (reporter) "+
+                            "MERGE (reader:Reader {readerId: $readerId}) " +
                             "CREATE (reader) -[report:REPORT {timestamp: $timestamp, text: $text}]-> (p) " +
                             "RETURN id(report) as id",
                     parameters("readerId", readerId,
+                            "reporterId", reporterId,
                             "postId", postId,
                             "timestamp", report.getTimestamp(),
                             "text", report.getText())

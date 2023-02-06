@@ -39,10 +39,11 @@ public interface ReaderService {
      * Publish a report related to a selected post
      *
      * @param newReport DTO object containing the information of the new report to publish
+     * @param reporterId id of the reporter, owner of the interested post
      * @return the identifier assigned to the new report
      * @throws SocialNewsServiceException in case of failure of the operation
      */
-    Long publishReport(ReportDTO newReport) throws SocialNewsServiceException;
+    Long publishReport(ReportDTO newReport, String reporterId) throws SocialNewsServiceException;
 
     /**
      * A reader (identify by id) starts to follow a reporter (identify by id)

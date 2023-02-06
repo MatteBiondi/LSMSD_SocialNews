@@ -34,8 +34,8 @@ public class Neo4jReaderDAO {
     public Integer followReporter(String readerId, String reporterId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
-                    "MATCH (rd:Reader {readerId: $readerId}) " +
-                            "MATCH (rp:Reporter {reporterId: $reporterId}) " +
+                    "MATCH (rp:Reporter {reporterId: $reporterId}) " +
+                            "MERGE (rd:Reader {readerId: $readerId}) " +
                             "CREATE (rd) -[:FOLLOW]-> (rp)",
                     parameters("readerId", readerId, "reporterId", reporterId));
 
