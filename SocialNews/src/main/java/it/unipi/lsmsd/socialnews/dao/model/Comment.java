@@ -13,6 +13,7 @@ public class Comment extends BaseEntity {
     public Comment(){
         id = UUID.randomUUID().toString();
         reader = new Reader();
+        timestamp = new Date();
     }
 
     public String getId() {
