@@ -24,8 +24,12 @@ public class ReportDAOImpl implements ReportDAO {
      * @throws SocialNewsDataAccessException in case of failure of the insert operation on database
      */
     @Override
-    public Long addReport(Report report, String reporterId) throws SocialNewsDataAccessException {
-        return neo4JReportDAO.addReport(report, reporterId);
+    public String addReport(Report report, String reporterId) throws SocialNewsDataAccessException {
+        Integer counter = neo4JReportDAO.addReport(report, reporterId);
+        if (counter > 0)
+            return report.getReportId();
+        else
+            throw new SocialNewsDataAccessException("Insertion failed");
     }
 
     /**
@@ -36,7 +40,7 @@ public class ReportDAOImpl implements ReportDAO {
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
     @Override
-    public Report getReportById(Long reportId) throws SocialNewsDataAccessException {
+    public Report getReportById(String reportId) throws SocialNewsDataAccessException {
         return neo4JReportDAO.getReportById(reportId);
     }
 
@@ -62,7 +66,7 @@ public class ReportDAOImpl implements ReportDAO {
      * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
      */
     @Override
-    public Integer deleteReport(Long reportId) throws SocialNewsDataAccessException {
+    public Integer deleteReport(String reportId) throws SocialNewsDataAccessException {
         return neo4JReportDAO.deleteReport(reportId);
     }
 }

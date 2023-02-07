@@ -201,7 +201,7 @@ public class AdminServiceImpl implements AdminService {
      * @throws SocialNewsServiceException in case of failure of the remove operation
      */
     @Override
-    public void removeReport(Long reportId) throws SocialNewsServiceException{
+    public void removeReport(String reportId) throws SocialNewsServiceException{
         try{
             int removedCounter = DAOLocator.getReportDAO().deleteReport(reportId);
             if (removedCounter == 0){

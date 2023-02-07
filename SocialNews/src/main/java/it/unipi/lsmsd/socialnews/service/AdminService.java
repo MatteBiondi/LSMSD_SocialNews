@@ -111,7 +111,7 @@ public interface AdminService {
      * @param reportId id associated to the report to remove
      * @throws SocialNewsServiceException in case of failure of the remove operation
      */
-    void removeReport(Long reportId) throws SocialNewsServiceException;
+    void removeReport(String reportId) throws SocialNewsServiceException;
 
     /**
      * Computes the statistics specified by arguments and pack them into a DTO containing the results

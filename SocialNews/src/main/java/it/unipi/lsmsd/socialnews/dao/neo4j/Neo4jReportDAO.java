@@ -22,7 +22,7 @@ public class Neo4jReportDAO {
 
     // CREATION OPERATIONS
 
-    public Long addReport(Report report, String reporterId) throws SocialNewsDataAccessException {
+    public Integer addReport(Report report, String reporterId) throws SocialNewsDataAccessException {
         String postId = report.getPostId();
         String readerId = report.getReaderId();
 
@@ -31,16 +31,16 @@ public class Neo4jReportDAO {
                     "MATCH (reporter:Reporter {reporterId: $reporterId})" +
                             "MERGE (p:Post {postId: $postId}) <-[:WRITE]- (reporter) "+
                             "MERGE (reader:Reader {readerId: $readerId}) " +
-                            "CREATE (reader) -[report:REPORT {timestamp: $timestamp, text: $text}]-> (p) " +
-                            "RETURN id(report) as id",
+                            "CREATE (reader) -[report:REPORT {reportId:$reportId, timestamp: $timestamp, text: $text}]-> (p) ",
                     parameters("readerId", readerId,
                             "reporterId", reporterId,
                             "postId", postId,
+                            "reportId", report.getReportId(),
                             "timestamp", report.getTimestamp(),
                             "text", report.getText())
             );
 
-            return session.writeTransaction(tx -> tx.run(query)).single().get("id").asLong();
+            return session.writeTransaction(tx -> tx.run(query)).consume().counters().relationshipsCreated();
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Report creation by object failed: "+ e.getMessage());
@@ -50,11 +50,11 @@ public class Neo4jReportDAO {
 
     // READ OPERATIONS
 
-    public Report getReportById(Long reportId) throws SocialNewsDataAccessException {
+    public Report getReportById(String reportId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (rr:Reader) -[r:REPORT]-> (p: Post) " +
-                            "WHERE id(r) = $reportId " +
+                            "WHERE r.reportId = $reportId " +
                             "RETURN rr.readerId as readerId,r as report,p.postId as postId",
                     parameters("reportId", reportId));
             return session.readTransaction(tx -> {
@@ -79,7 +79,7 @@ public class Neo4jReportDAO {
             Query query = new Query(
                     "MATCH (reporter:Reporter) -[:WRITE]-> (post:Post) <-[report:REPORT]- (reader:Reader) " +
                             "WHERE reporter.reporterId = $reporterId " +
-                            "RETURN reader.readerId as readerId, id(report) as reportId, report, post.postId as postId "+
+                            "RETURN reader.readerId as readerId, report, post.postId as postId "+
                             "ORDER BY report.id ASC " +
                             "SKIP $offset " +
                             "LIMIT $limit",
@@ -88,7 +88,6 @@ public class Neo4jReportDAO {
             return session.readTransaction(tx ->
                     tx.run(query).list( record -> {
                         Report rep = new ObjectMapper().convertValue(record.get("report").asMap(), Report.class);
-                        rep.setReportId(record.get("reportId").asLong());
                         rep.setPostId(record.get("postId").asString());
                         rep.setReaderId(record.get("readerId").asString());
                         return rep;
@@ -103,11 +102,11 @@ public class Neo4jReportDAO {
 
     // DELETE OPERATIONS
 
-    public Integer deleteReport(Long reportId) throws SocialNewsDataAccessException {
+    public Integer deleteReport(String reportId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (:Reader) -[r:REPORT]-> (:Post) "+
-                            "WHERE id(r) = $reportId "+
+                            "WHERE r.reportId = $reportId "+
                             "DELETE r",
                     parameters("reportId", reportId)
             );
