@@ -43,7 +43,7 @@ public interface ReaderService {
      * @return the identifier assigned to the new report
      * @throws SocialNewsServiceException in case of failure of the operation
      */
-    Long publishReport(ReportDTO newReport, String reporterId) throws SocialNewsServiceException;
+    String publishReport(ReportDTO newReport, String reporterId) throws SocialNewsServiceException;
 
     /**
      * A reader (identify by id) starts to follow a reporter (identify by id)

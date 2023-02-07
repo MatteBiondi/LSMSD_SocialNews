@@ -1,16 +1,23 @@
 package it.unipi.lsmsd.socialnews.dao.model;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.UUID;
+
 public class Report extends BaseEntity {
-    private Long reportId;
+    private String reportId;
     private String readerId;
     private String postId;
     private String timestamp;
     private String text;
 
     public Report() {
+        this.reportId = UUID.randomUUID().toString();
+        this.timestamp = LocalDateTime.now()
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
-    public Long getReportId() {
+    public String getReportId() {
         return reportId;
     }
 
@@ -30,7 +37,7 @@ public class Report extends BaseEntity {
         return postId;
     }
 
-    public void setReportId(Long reportId) {
+    public void setReportId(String reportId) {
         this.reportId = reportId;
     }
 

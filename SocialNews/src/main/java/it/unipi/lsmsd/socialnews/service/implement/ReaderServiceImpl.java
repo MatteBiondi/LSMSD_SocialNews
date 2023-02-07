@@ -90,7 +90,7 @@ public class ReaderServiceImpl implements ReaderService {
      * @throws SocialNewsServiceException in case of failure of the operation
      */
     @Override
-    public Long publishReport(ReportDTO newReport, String reporterId) throws SocialNewsServiceException{
+    public String publishReport(ReportDTO newReport, String reporterId) throws SocialNewsServiceException{
         try {
             return DAOLocator.getReportDAO().addReport(Util.buildReport(newReport), reporterId);
         } catch (SocialNewsDataAccessException ex) {

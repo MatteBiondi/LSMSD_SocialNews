@@ -15,7 +15,7 @@ public interface ReportDAO {
      * @return identifier of created report
      * @throws SocialNewsDataAccessException in case of failure of the insert operation on database
      */
-    Long addReport(Report report, String reporterId) throws SocialNewsDataAccessException;
+    String addReport(Report report, String reporterId) throws SocialNewsDataAccessException;
 
     /**
      * Retrieves information about the report identified by 'reportId' field
@@ -24,7 +24,7 @@ public interface ReportDAO {
      * @return report object containing all the information
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    Report getReportById(Long reportId) throws SocialNewsDataAccessException;
+    Report getReportById(String reportId) throws SocialNewsDataAccessException;
 
     /**
      * Retrieves information about the reports associated with a reporter identified by 'reporterId' field
@@ -45,5 +45,5 @@ public interface ReportDAO {
      * @return number of reports deleted from the database
      * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
      */
-    Integer deleteReport(Long reportId) throws SocialNewsDataAccessException;
+    Integer deleteReport(String reportId) throws SocialNewsDataAccessException;
 }

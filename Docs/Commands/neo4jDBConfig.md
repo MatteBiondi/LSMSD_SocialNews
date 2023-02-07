@@ -1,11 +1,44 @@
 # INDEXES SETUP:
+Reporter:
 ```
-
+CREATE POINT INDEX reporter_id_index IF NOT EXISTS
+FOR (r:Reporter)
+ON (r.reporterId)
 ```
+Reader:
+```
+CREATE POINT INDEX reader_id_index IF NOT EXISTS
+FOR (r:Reader)
+ON (r.readerId)
+```
+Post:
+```
+CREATE POINT INDEX post_id_index IF NOT EXISTS
+FOR (p:Post)
+ON (p.postId)
+```
+Report:
+```
+CREATE POINT INDEX report_id_index IF NOT EXISTS
+FOR ()-[r:REPORT]-()
+ON (r.reportId)
+```
+___
+To ensure that everything is successfully completed:
+```
+SHOW ALL INDEXES
+```
+To delete in case of error:
+```
+DROP INDEX index_name [IF EXISTS]
+```
+___
+**Notes:**
+* Creating an index requires the *CREATE INDEX* privilege
+* Dropping an index requires the *DROP INDEX* privilege
+* Listing indexes require the *SHOW INDEX* privilege.
 
 # CONSTRAINTS SETUP:
-*To use this commands, CREATE_CONSTRAINT privilege is needed* 
-
 Reporter node:
 ```
 CREATE CONSTRAINT reporter_id_existence_constraints IF NOT EXISTS
@@ -46,6 +79,10 @@ REQUIRE p.postId IS UNIQUE
 ```
 Report relationship:
 ```
+CREATE CONSTRAINT report_id_existence_constraints IF NOT EXISTS
+FOR ()-[r:REPORT]-()
+REQUIRE r.reportId IS NOT NULL
+
 CREATE CONSTRAINT report_text_existence_constraints IF NOT EXISTS
 FOR ()-[r:REPORT]-()
 REQUIRE r.text IS NOT NULL
@@ -54,8 +91,8 @@ CREATE CONSTRAINT report_timestamp_existence_constraints IF NOT EXISTS
 FOR ()-[r:REPORT]-()
 REQUIRE r.timestamp IS NOT NULL
 ```
-
-To ensure that everything is accepted:
+___
+To ensure that everything is successfully completed:
 ```
 SHOW ALL CONSTRAINTS
 ```
@@ -64,3 +101,9 @@ To delete in case of error:
 ```
 DROP CONSTRAINT constraint_name [IF EXISTS]
 ```
+___
+**Notes:**
+* Creating a constraint requires the *CREATE CONSTRAINT* privilege.
+* Dropping a constraint requires the *DROP CONSTRAINT* privilege.
+* Listing constraints requires the *SHOW CONSTRAINTS* privilege.
+* 'IS UNIQUE' does not allow relationship patterns, so the constraint will be ensured by code
