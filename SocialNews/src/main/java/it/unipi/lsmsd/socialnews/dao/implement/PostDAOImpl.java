@@ -29,10 +29,9 @@ public class PostDAOImpl implements PostDAO {
      */
     @Override
     public String createPost(String reporterId, Post newPost) throws SocialNewsDataAccessException {
-        // TODO: Insert on Neo4J may be lazy
+        // Insert on Neo4J is lazy
         Long modifiedDocs = mongoPostDAO.createPost(reporterId, newPost);
         if (modifiedDocs > 0)
-            //todo
             return newPost.getId();
         else
             throw new SocialNewsDataAccessException("Insertion failed");
@@ -107,8 +106,9 @@ public class PostDAOImpl implements PostDAO {
      */
     @Override
     public Long removePost(String reporterId, String postId) throws SocialNewsDataAccessException {
+        // todo : transaction
+        neo4jPostDAO.deletePost(postId);
         return mongoPostDAO.removePost(reporterId, postId);
-        //TODO: remove from Neo4J
     }
 
     /**
