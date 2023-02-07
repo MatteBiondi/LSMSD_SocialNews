@@ -1,8 +1,8 @@
 package it.unipi.lsmsd.socialnews.dao;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Comment;
-import org.json.JSONArray;
 import java.util.Date;
 import java.util.List;
 
@@ -67,7 +67,7 @@ public interface CommentDAO {
      * @return JSON array containing the information computed by aggregation pipeline
      * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
      */
-    JSONArray latestMostActiveReaders(Integer topN, Date from) throws SocialNewsDataAccessException;
+    ArrayNode latestMostActiveReaders(Integer topN, Date from) throws SocialNewsDataAccessException;
 
     /**
      * Computes the number of comments in each time window of the day, starting from a given instant
@@ -77,5 +77,5 @@ public interface CommentDAO {
      * @return JSON array containing the information computed by aggregation pipeline
      * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
      */
-    JSONArray latestHottestMomentsOfDay(Integer windowSize, Date from) throws SocialNewsDataAccessException;
+    ArrayNode latestHottestMomentsOfDay(Integer windowSize, Date from) throws SocialNewsDataAccessException;
 }

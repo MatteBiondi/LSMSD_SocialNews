@@ -1,10 +1,10 @@
 package it.unipi.lsmsd.socialnews.dao;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Reader;
 import it.unipi.lsmsd.socialnews.dao.model.Reporter;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -114,7 +114,7 @@ public interface ReaderDAO {
      * @return JSON object containing the information computed by aggregation pipeline
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    JSONObject genderStatistic() throws SocialNewsDataAccessException;
+    ObjectNode genderStatistic() throws SocialNewsDataAccessException;
 
     /**
      * Compute the number of registered readers grouped by his/her nationality
@@ -122,5 +122,5 @@ public interface ReaderDAO {
      * @return JSON object containing the information computed by aggregation pipeline
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    JSONArray nationalityStatistic() throws SocialNewsDataAccessException;
+    ArrayNode nationalityStatistic() throws SocialNewsDataAccessException;
 }

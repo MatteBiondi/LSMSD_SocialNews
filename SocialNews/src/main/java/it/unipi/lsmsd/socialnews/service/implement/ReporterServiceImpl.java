@@ -12,7 +12,11 @@ import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
 import it.unipi.lsmsd.socialnews.service.util.ServiceWorkerPool;
 import it.unipi.lsmsd.socialnews.service.util.Util;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -99,4 +103,30 @@ public class ReporterServiceImpl implements ReporterService {
         }
     }
 
+    /**
+     * Retrieves the top N most commented posts of a given reporter, considering the last N unit of times
+     *
+     * @param reporterId reporter identifier
+     * @param lastN      compute statistic on last N unit of times
+     * @param unitOfTime unit of time
+     * @return list of postDTO objects containing the information about the top N posts of the reporter specified
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    @Override
+    public List<PostDTO> latestHottestPost(String reporterId, Integer lastN, TemporalUnit unitOfTime) throws SocialNewsServiceException {
+        try {
+            List<PostDTO> postDTOList = new ArrayList<>();
+            DAOLocator.getPostDAO().latestHottestPosts(
+                    reporterId,
+                    Util.getIntProperty("topNPosts",10),
+                    Date.from(LocalDateTime.now().minus(lastN, unitOfTime)
+                            .atZone(ZoneOffset.systemDefault()).toInstant()
+                    )
+            ).forEach(post -> postDTOList.add(Util.buildPostDTO(post, reporterId)));
+            return postDTOList;
+        } catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error");
+        }
+    }
 }

@@ -4,7 +4,7 @@ import it.unipi.lsmsd.socialnews.dto.PostDTO;
 import it.unipi.lsmsd.socialnews.dto.ReporterDTO;
 import it.unipi.lsmsd.socialnews.dto.ReporterPageDTO;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
-
+import java.time.temporal.TemporalUnit;
 import java.util.List;
 
 public interface ReporterService {
@@ -37,5 +37,16 @@ public interface ReporterService {
      * @throws SocialNewsServiceException in case of failure of the operation or if the post is not in the system
      */
     List<PostDTO> nextReporterPagePosts(PostDTO postOffset) throws SocialNewsServiceException;
+
+    /**
+     * Retrieves the top N most commented posts of a given reporter, considering the last N unit of times
+     *
+     * @param reporterId reporter identifier
+     * @param lastN compute statistic on last N unit of times
+     * @param unitOfTime unit of time
+     * @return list of postDTO objects containing the information about the top N posts of the reporter specified
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    List<PostDTO> latestHottestPost(String reporterId, Integer lastN, TemporalUnit unitOfTime) throws SocialNewsServiceException;
 
 }

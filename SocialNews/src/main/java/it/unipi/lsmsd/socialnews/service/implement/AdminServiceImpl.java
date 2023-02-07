@@ -11,7 +11,11 @@ import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
 import it.unipi.lsmsd.socialnews.service.util.Statistic;
 import it.unipi.lsmsd.socialnews.service.util.Util;
 import java.security.NoSuchAlgorithmException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 public class AdminServiceImpl implements AdminService {
@@ -222,7 +226,38 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public StatisticPageDTO computeStatistics(Statistic... statistics) throws SocialNewsServiceException {
-        return null; //TODO
+        try {
+            HashMap<String, Object> computedStatistics = new HashMap<>();
+
+            for(Statistic statistic: statistics){
+                computedStatistics.put(
+                        statistic.toString(),
+                        switch (statistic){
+                            case MOST_ACTIVE_READERS -> DAOLocator.getCommentDAO()
+                                    .latestMostActiveReaders(
+                                            Util.getIntProperty("topNReaders",10),
+                                            Date.from(LocalDateTime.now().minus(statistic.getLastN(), statistic.getUnitOfTime())
+                                                    .atZone(ZoneOffset.systemDefault()).toInstant()
+                                    ));
+                            case GENDER_STATISTIC-> DAOLocator.getReaderDAO().genderStatistic();
+                            case NATIONALITY_STATISTIC-> DAOLocator.getReaderDAO().nationalityStatistic();
+                            case HOTTEST_MOMENTS_OF_DAY-> DAOLocator.getCommentDAO().latestHottestMomentsOfDay(
+                                    statistic.getWindowSize(),
+                                    Date.from(LocalDateTime.now().minus(statistic.getLastN(), statistic.getUnitOfTime())
+                                            .atZone(ZoneOffset.systemDefault()).toInstant()
+                                    ));
+                        }
+                );
+            }
+            return new StatisticPageDTO(computedStatistics);
+        } catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error");
+        }
+        catch (NullPointerException ex){
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Missing some args");
+        }
     }
 
     /**

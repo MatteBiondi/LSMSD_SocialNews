@@ -1,13 +1,13 @@
 package it.unipi.lsmsd.socialnews.dao.implement;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unipi.lsmsd.socialnews.dao.ReaderDAO;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Reader;
 import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoReaderDAO;
 import it.unipi.lsmsd.socialnews.dao.neo4j.Neo4jReaderDAO;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -159,7 +159,7 @@ public class ReaderDAOImpl implements ReaderDAO {
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
     @Override
-    public JSONObject genderStatistic() throws SocialNewsDataAccessException {
+    public ObjectNode genderStatistic() throws SocialNewsDataAccessException {
         return mongoReaderDAO.genderStatistic();
     }
 
@@ -170,7 +170,7 @@ public class ReaderDAOImpl implements ReaderDAO {
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
     @Override
-    public JSONArray nationalityStatistic() throws SocialNewsDataAccessException {
+    public ArrayNode nationalityStatistic() throws SocialNewsDataAccessException {
         return mongoReaderDAO.nationalityStatistic();
     }
 }
