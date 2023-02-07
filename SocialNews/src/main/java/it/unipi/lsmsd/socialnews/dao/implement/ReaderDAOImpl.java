@@ -29,9 +29,7 @@ public class ReaderDAOImpl implements ReaderDAO {
      */
     @Override
     public String register(Reader newReader) throws SocialNewsDataAccessException {
-        // TODO: Insert on Neo4J may be lazy
-        // todo transaction
-        neo4jReaderDAO.addReader(newReader);
+        // Insert on Neo4J is lazy
         return mongoReaderDAO.register(newReader);
     }
 
