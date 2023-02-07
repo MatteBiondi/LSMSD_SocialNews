@@ -3,6 +3,7 @@ package it.unipi.lsmsd.socialnews.dao;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Post;
 import it.unipi.lsmsd.socialnews.dao.model.Reporter;
+import java.util.Date;
 import java.util.List;
 
 public interface PostDAO {
@@ -65,6 +66,7 @@ public interface PostDAO {
     List<Reporter> postsByHashtag(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
+     * Remove a post from the system
      *
      * @param reporterId reporter identifier
      * @param postId post identifier
@@ -72,4 +74,15 @@ public interface PostDAO {
      * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
      */
     Long removePost(String reporterId, String postId) throws SocialNewsDataAccessException;
+
+    /**
+     * Retrieves the top N most commented posts of a given reporter, starting from a given instant
+     *
+     * @param reporterId reporter identifier
+     * @param nTop top N posts returned by the query
+     * @param from instant from which starts the computation
+     * @return list of post objects containing the information about the top N posts of the reporter specified
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    List<Post> latestHottestPosts(String reporterId, Integer nTop, Date from) throws SocialNewsDataAccessException;
 }

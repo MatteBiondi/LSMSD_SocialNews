@@ -4,6 +4,8 @@ import it.unipi.lsmsd.socialnews.dao.CommentDAO;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Comment;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoCommentDAO;
+import org.json.JSONArray;
+import java.util.Date;
 import java.util.List;
 
 public class CommentDAOImpl implements CommentDAO {
@@ -78,5 +80,32 @@ public class CommentDAOImpl implements CommentDAO {
     @Override
     public Long removeComment(String commentId) throws SocialNewsDataAccessException {
         return mongoCommentDAO.removeComment(commentId);
+    }
+
+    /**
+     * Computes the top N most active readers in the system, ranked by the number of comments written, starting from
+     * a given instant
+     *
+     * @param topN top N readers returned by the query
+     * @param from instant from which starts the computation
+     * @return JSON array containing the information computed by aggregation pipeline
+     * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
+     */
+    @Override
+    public JSONArray latestMostActiveReaders(Integer topN, Date from) throws SocialNewsDataAccessException {
+        return mongoCommentDAO.latestMostActiveReaders(topN, from);
+    }
+
+    /**
+     * Computes the number of comments in each time window of the day, starting from a given instant
+     *
+     * @param windowSize size of temporal window, must be a divisor of 24
+     * @param from       instant from which starts the computation
+     * @return JSON array containing the information computed by aggregation pipeline
+     * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
+     */
+    @Override
+    public JSONArray latestHottestMomentsOfDay(Integer windowSize, Date from) throws SocialNewsDataAccessException {
+        return mongoCommentDAO.latestHottestMomentsOfDay(windowSize, from);
     }
 }

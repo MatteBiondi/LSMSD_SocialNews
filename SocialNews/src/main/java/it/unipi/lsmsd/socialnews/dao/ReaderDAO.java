@@ -3,6 +3,8 @@ package it.unipi.lsmsd.socialnews.dao;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Reader;
 import it.unipi.lsmsd.socialnews.dao.model.Reporter;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -105,4 +107,20 @@ public interface ReaderDAO {
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
     List<Reporter> suggestReporters(String readerId, int limitListLen) throws SocialNewsDataAccessException;
+
+    /**
+     * Compute the number of registered readers grouped by male\female\others
+     *
+     * @return JSON object containing the information computed by aggregation pipeline
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    JSONObject genderStatistic() throws SocialNewsDataAccessException;
+
+    /**
+     * Compute the number of registered readers grouped by his/her nationality
+     *
+     * @return JSON object containing the information computed by aggregation pipeline
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    JSONArray nationalityStatistic() throws SocialNewsDataAccessException;
 }

@@ -3,6 +3,7 @@ package it.unipi.lsmsd.socialnews.dao.mongodb;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import it.unipi.lsmsd.socialnews.config.environment.MongoEnvironment;
+import org.bson.Document;
 import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.*;
@@ -52,6 +53,12 @@ public abstract class MongoDAO<T>{
                 .withCodecRegistry(pojoCodecRegistry);
 
         return database.getCollection(collectionName, template);
+    }
+
+    protected MongoCollection<Document> getRawCollection(String collectionName){
+        return mongoConnection
+                .getDatabase(MongoEnvironment.getMongoDatabase())
+                .getCollection(collectionName);
     }
 }
 

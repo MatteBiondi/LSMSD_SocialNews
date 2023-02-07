@@ -6,6 +6,8 @@ import it.unipi.lsmsd.socialnews.dao.model.Reader;
 import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoReaderDAO;
 import it.unipi.lsmsd.socialnews.dao.neo4j.Neo4jReaderDAO;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -150,5 +152,27 @@ public class ReaderDAOImpl implements ReaderDAO {
     @Override
     public List<Reporter> suggestReporters(String readerId, int limitListLen) throws SocialNewsDataAccessException{
         return neo4jReaderDAO.suggestReporters(readerId, limitListLen);
+    }
+
+    /**
+     * Compute the number of registered readers grouped by male\female\others
+     *
+     * @return JSON object containing the information computed by aggregation pipeline
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    @Override
+    public JSONObject genderStatistic() throws SocialNewsDataAccessException {
+        return mongoReaderDAO.genderStatistic();
+    }
+
+    /**
+     * Compute the number of registered readers grouped by his/her nationality
+     *
+     * @return SON object containing the information computed by aggregation pipeline
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    @Override
+    public JSONArray nationalityStatistic() throws SocialNewsDataAccessException {
+        return mongoReaderDAO.nationalityStatistic();
     }
 }

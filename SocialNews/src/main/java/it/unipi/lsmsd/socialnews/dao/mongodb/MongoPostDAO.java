@@ -8,6 +8,7 @@ import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class MongoPostDAO extends MongoDAO<Reporter> {
@@ -122,6 +123,38 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
         catch (MongoException me){
             me.printStackTrace();
             throw new SocialNewsDataAccessException("Deletion failed: " + me.getMessage());
+        }
+    }
+
+    public List<Post> latestHottestPosts(String reporterId, Integer nTop, Date from)
+            throws SocialNewsDataAccessException{
+        try{
+            List<Bson> stages = new ArrayList<>();
+
+            stages.add(Aggregates.match(Filters.eq("reporterId", reporterId)));
+            stages.add(Aggregates.project(Projections.fields(
+                        Projections.exclude("_id"),
+                        Projections.include("posts", "reporterId"))));
+            stages.add(Aggregates.unwind("$posts"));
+            stages.add(Aggregates.match(Filters.and(
+                    Filters.gte("posts.timestamp", from),
+                    Filters.exists("posts.numOfComment", true))));
+            stages.add(Aggregates.sort(Sorts.descending("posts.numOfComment", "posts.timestamp")));
+            stages.add(Aggregates.limit(nTop));
+            stages.add(Aggregates.group("$reporterId",
+                    Accumulators.first("reporterId","$reporterId"),
+                    Accumulators.push("posts","$posts")));
+
+            Reporter reporter = getCollection().aggregate(stages).first();
+
+            if(reporter == null)
+                return new ArrayList<>();// Empty list
+            else
+                return reporter.getPosts();
+        }
+        catch (MongoException me){
+            me.printStackTrace();
+            throw new SocialNewsDataAccessException("Query failed: " + me.getMessage());
         }
     }
 }
