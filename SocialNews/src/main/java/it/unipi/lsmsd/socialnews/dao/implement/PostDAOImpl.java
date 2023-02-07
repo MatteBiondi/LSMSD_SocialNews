@@ -6,7 +6,7 @@ import it.unipi.lsmsd.socialnews.dao.model.Post;
 import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoPostDAO;
 import it.unipi.lsmsd.socialnews.dao.neo4j.Neo4jPostDAO;
-
+import java.util.Date;
 import java.util.List;
 
 public class PostDAOImpl implements PostDAO {
@@ -98,6 +98,8 @@ public class PostDAOImpl implements PostDAO {
     }
 
     /**
+     * Remove a post from the system
+     *
      * @param reporterId reporter identifier
      * @param postId     post identifier
      * @return number of posts removed from database
@@ -107,5 +109,19 @@ public class PostDAOImpl implements PostDAO {
     public Long removePost(String reporterId, String postId) throws SocialNewsDataAccessException {
         return mongoPostDAO.removePost(reporterId, postId);
         //TODO: remove from Neo4J
+    }
+
+    /**
+     * Retrieves the top N most commented posts of a given reporter, starting from a given instant
+     *
+     * @param reporterId reporter identifier
+     * @param nTop       top N posts returned by the query
+     * @param from       instant from which starts the computation
+     * @return list of post objects containing the information about the top N posts of the reporter specified
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    @Override
+    public List<Post> latestHottestPosts(String reporterId, Integer nTop, Date from) throws SocialNewsDataAccessException {
+        return mongoPostDAO.latestHottestPosts(reporterId, nTop, from);
     }
 }

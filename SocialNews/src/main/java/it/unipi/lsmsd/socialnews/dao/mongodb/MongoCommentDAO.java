@@ -1,16 +1,17 @@
 package it.unipi.lsmsd.socialnews.dao.mongodb;
 
 import com.mongodb.MongoException;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Sorts;
+import com.mongodb.client.model.*;
+import com.mongodb.client.model.densify.DensifyRange;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertOneResult;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Comment;
+import org.bson.Document;
 import org.bson.conversions.Bson;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import org.json.JSONArray;
+import java.util.*;
+import java.util.stream.IntStream;
 
 public class MongoCommentDAO extends MongoDAO<Comment> {
 
@@ -80,6 +81,67 @@ public class MongoCommentDAO extends MongoDAO<Comment> {
         catch (MongoException me){
             me.printStackTrace();
             throw new SocialNewsDataAccessException("Deletion failed: " + me.getMessage());
+        }
+    }
+
+    public JSONArray latestMostActiveReaders(Integer topN, Date from) throws SocialNewsDataAccessException{
+        try{
+            List<Bson> stages = new ArrayList<>();
+            stages.add(Aggregates.match(Filters.gte("timestamp", from)));
+            stages.add(Aggregates.group(
+                    "$reader._id",
+                    Accumulators.first("fullName","$reader.fullName"),
+                    Accumulators.sum("numOfComment",1)));
+            stages.add(Aggregates.sort(Sorts.descending("numOfComment")));
+            stages.add(Aggregates.limit(topN));
+
+            List<Document> docs = new ArrayList<>();
+            getRawCollection("comments").aggregate(stages).into(docs);
+
+            return new JSONArray(docs);
+        }
+        catch (MongoException me){
+            me.printStackTrace();
+            throw new SocialNewsDataAccessException("Query failed: " + me.getMessage());
+        }
+    }
+
+    public JSONArray latestHottestMomentsOfDay(Integer windowSize, Date from)
+            throws SocialNewsDataAccessException{
+        try{
+            if(24 % windowSize != 0)
+                throw new IllegalArgumentException();
+            List<Integer> boundaries = new ArrayList<>();
+            IntStream.iterate(0, n -> n + windowSize).limit(24/ windowSize + 1).forEach(boundaries::add);
+
+            List<Bson> stages = new ArrayList<>();
+            stages.add(Aggregates.match(Filters.gte("timestamp", from)));
+            stages.add(Aggregates.bucket(
+                    Document.parse("{$hour:'$timestamp'}"),
+                    boundaries,
+                    new BucketOptions().output(new BsonField("count", Document.parse("{ $sum: 1 }")))));
+            stages.add(Aggregates.densify("_id", DensifyRange.rangeWithStep(0,24, windowSize)));
+            stages.add(Aggregates.set(
+                    new Field<>("count", Document.parse("{$cond: [{$not: ['$count']}, 0, '$count']}"))));
+            stages.add(Aggregates.project(Projections.fields(
+                    Projections.exclude("_id"),
+                    Projections.include("count"),
+                    Projections.computed("lowerBound", Document.parse("{$mod:['$_id',24]}")),
+                    Projections.computed("upperBound", Document.parse(String.format("{$mod:[{$add:['$_id',%d]},24]}",
+                            windowSize))
+            ))));
+
+            List<Document> docs = new ArrayList<>();
+            getRawCollection("comments").aggregate(stages).into(docs);
+
+            return new JSONArray(docs);
+        }
+        catch (MongoException me){
+            me.printStackTrace();
+            throw new SocialNewsDataAccessException("Query failed: " + me.getMessage());
+        }
+        catch (IllegalArgumentException ex){
+            throw new SocialNewsDataAccessException("Query failed: windowSize not divisor of 24");
         }
     }
 }

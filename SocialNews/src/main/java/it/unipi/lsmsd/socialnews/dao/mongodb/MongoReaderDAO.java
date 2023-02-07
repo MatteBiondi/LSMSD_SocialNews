@@ -1,13 +1,15 @@
 package it.unipi.lsmsd.socialnews.dao.mongodb;
 
 import com.mongodb.MongoException;
-import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.Sorts;
+import com.mongodb.client.model.*;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertOneResult;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Reader;
+import org.bson.Document;
 import org.bson.conversions.Bson;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -101,6 +103,57 @@ public class MongoReaderDAO extends MongoDAO<Reader> {
         catch (MongoException me){
             me.printStackTrace();
             throw new SocialNewsDataAccessException("Deletion failed: " + me.getMessage());
+        }
+    }
+
+    public JSONObject genderStatistic() throws SocialNewsDataAccessException{
+        try{
+            List<Bson> stages = new ArrayList<>();
+            stages.add(Aggregates.match(Filters.exists("isAdmin", false)));
+            stages.add(Aggregates.bucket(Document.parse(
+                            "        {$switch: { branches: [" +
+                                    "            {case: {$eq:[{$toLower: '$gender'}, 'male']}, then: 0 }," +
+                                    "            {case: {$eq:[{$toLower: '$gender'}, 'female']}, then: 1 }]," +
+                                    "            default: -1}}}"),
+                    List.of(0,1,2),
+                    new BucketOptions()
+                            .defaultBucket("-1")
+                            .output(List.of(
+                                    new BsonField("count", Document.parse("{ $sum: 1 }")),
+                                    new BsonField("gender", Document.parse("{$first: {$cond: {if:{$in:['$gender',['male','female']]}, then:'$gender', else:'other'}}}"))))));
+            stages.add(Aggregates.project(Projections.exclude("_id")));
+
+            List<Document> docs = new ArrayList<>();
+            getRawCollection("users").aggregate(stages).into(docs);
+            JSONObject obj = new JSONObject();
+            for(Document doc : docs){
+                obj.put(doc.getString("gender"), doc.getInteger("count"));
+            }
+            return obj;
+        }
+        catch (MongoException me){
+            me.printStackTrace();
+            throw new SocialNewsDataAccessException("Query failed: " + me.getMessage());
+        }
+    }
+
+    public JSONArray nationalityStatistic() throws SocialNewsDataAccessException{
+        try{
+            List<Bson> stages = new ArrayList<>();
+            stages.add(Aggregates.match(Filters.exists("isAdmin", false)));
+            stages.add(Aggregates.group(Document.parse("{$toLower: '$country'}"),
+                    Accumulators.first("country","$country"),
+                    Accumulators.sum("count",1)));
+            stages.add(Aggregates.project(Projections.exclude("_id")));
+            stages.add(Aggregates.sort(Sorts.descending("count")));
+
+            List<Document> docs = new ArrayList<>();
+            getRawCollection("users").aggregate(stages).into(docs);
+            return new JSONArray(docs);
+        }
+        catch (MongoException me){
+            me.printStackTrace();
+            throw new SocialNewsDataAccessException("Query failed: " + me.getMessage());
         }
     }
 }
