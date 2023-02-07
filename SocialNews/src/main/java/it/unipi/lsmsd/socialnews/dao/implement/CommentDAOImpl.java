@@ -1,10 +1,10 @@
 package it.unipi.lsmsd.socialnews.dao.implement;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import it.unipi.lsmsd.socialnews.dao.CommentDAO;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Comment;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoCommentDAO;
-import org.json.JSONArray;
 import java.util.Date;
 import java.util.List;
 
@@ -92,7 +92,7 @@ public class CommentDAOImpl implements CommentDAO {
      * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
      */
     @Override
-    public JSONArray latestMostActiveReaders(Integer topN, Date from) throws SocialNewsDataAccessException {
+    public ArrayNode latestMostActiveReaders(Integer topN, Date from) throws SocialNewsDataAccessException {
         return mongoCommentDAO.latestMostActiveReaders(topN, from);
     }
 
@@ -105,7 +105,7 @@ public class CommentDAOImpl implements CommentDAO {
      * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
      */
     @Override
-    public JSONArray latestHottestMomentsOfDay(Integer windowSize, Date from) throws SocialNewsDataAccessException {
+    public ArrayNode latestHottestMomentsOfDay(Integer windowSize, Date from) throws SocialNewsDataAccessException {
         return mongoCommentDAO.latestHottestMomentsOfDay(windowSize, from);
     }
 }

@@ -1,5 +1,8 @@
 package it.unipi.lsmsd.socialnews.dao.mongodb;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.MongoException;
 import com.mongodb.client.model.*;
 import com.mongodb.client.result.DeleteResult;
@@ -8,8 +11,6 @@ import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Reader;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -106,7 +107,7 @@ public class MongoReaderDAO extends MongoDAO<Reader> {
         }
     }
 
-    public JSONObject genderStatistic() throws SocialNewsDataAccessException{
+    public ObjectNode genderStatistic() throws SocialNewsDataAccessException{
         try{
             List<Bson> stages = new ArrayList<>();
             stages.add(Aggregates.match(Filters.exists("isAdmin", false)));
@@ -125,7 +126,8 @@ public class MongoReaderDAO extends MongoDAO<Reader> {
 
             List<Document> docs = new ArrayList<>();
             getRawCollection("users").aggregate(stages).into(docs);
-            JSONObject obj = new JSONObject();
+            ObjectMapper mapper = new ObjectMapper();
+            ObjectNode obj = mapper.createObjectNode();
             for(Document doc : docs){
                 obj.put(doc.getString("gender"), doc.getInteger("count"));
             }
@@ -137,7 +139,7 @@ public class MongoReaderDAO extends MongoDAO<Reader> {
         }
     }
 
-    public JSONArray nationalityStatistic() throws SocialNewsDataAccessException{
+    public ArrayNode nationalityStatistic() throws SocialNewsDataAccessException{
         try{
             List<Bson> stages = new ArrayList<>();
             stages.add(Aggregates.match(Filters.exists("isAdmin", false)));
@@ -149,7 +151,7 @@ public class MongoReaderDAO extends MongoDAO<Reader> {
 
             List<Document> docs = new ArrayList<>();
             getRawCollection("users").aggregate(stages).into(docs);
-            return new JSONArray(docs);
+            return new ObjectMapper().valueToTree(docs);
         }
         catch (MongoException me){
             me.printStackTrace();

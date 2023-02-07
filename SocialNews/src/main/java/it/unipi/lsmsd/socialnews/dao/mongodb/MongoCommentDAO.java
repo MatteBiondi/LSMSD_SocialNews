@@ -1,5 +1,7 @@
 package it.unipi.lsmsd.socialnews.dao.mongodb;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.mongodb.MongoException;
 import com.mongodb.client.model.*;
 import com.mongodb.client.model.densify.DensifyRange;
@@ -9,7 +11,6 @@ import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Comment;
 import org.bson.Document;
 import org.bson.conversions.Bson;
-import org.json.JSONArray;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -84,7 +85,7 @@ public class MongoCommentDAO extends MongoDAO<Comment> {
         }
     }
 
-    public JSONArray latestMostActiveReaders(Integer topN, Date from) throws SocialNewsDataAccessException{
+    public ArrayNode latestMostActiveReaders(Integer topN, Date from) throws SocialNewsDataAccessException{
         try{
             List<Bson> stages = new ArrayList<>();
             stages.add(Aggregates.match(Filters.gte("timestamp", from)));
@@ -98,7 +99,7 @@ public class MongoCommentDAO extends MongoDAO<Comment> {
             List<Document> docs = new ArrayList<>();
             getRawCollection("comments").aggregate(stages).into(docs);
 
-            return new JSONArray(docs);
+            return new ObjectMapper().valueToTree(docs);
         }
         catch (MongoException me){
             me.printStackTrace();
@@ -106,7 +107,7 @@ public class MongoCommentDAO extends MongoDAO<Comment> {
         }
     }
 
-    public JSONArray latestHottestMomentsOfDay(Integer windowSize, Date from)
+    public ArrayNode latestHottestMomentsOfDay(Integer windowSize, Date from)
             throws SocialNewsDataAccessException{
         try{
             if(24 % windowSize != 0)
@@ -134,7 +135,7 @@ public class MongoCommentDAO extends MongoDAO<Comment> {
             List<Document> docs = new ArrayList<>();
             getRawCollection("comments").aggregate(stages).into(docs);
 
-            return new JSONArray(docs);
+            return new ObjectMapper().valueToTree(docs);
         }
         catch (MongoException me){
             me.printStackTrace();
