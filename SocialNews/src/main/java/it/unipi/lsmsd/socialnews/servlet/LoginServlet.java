@@ -30,7 +30,7 @@ public class LoginServlet extends HttpServlet {
         if (session == null || session.getAttribute("email") == null) {
             // Not logged in user
             response.setContentType("text/html");
-            String TargetJSP = "pages/jsp/login.jsp"; //fixme: pages/jsp/login.jsp
+            String TargetJSP = "pages/jsp/login.jsp";
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(TargetJSP);
             requestDispatcher.forward(request, response);
         }
