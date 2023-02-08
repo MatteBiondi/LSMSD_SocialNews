@@ -16,7 +16,7 @@ public class ReaderHomepageServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html");
-        String TargetJSP = "/pages/jsp/readerHomepage.jsp";
-        request.getRequestDispatcher(TargetJSP).forward(request, response);
+        String targetJSP = "/pages/jsp/readerHomepage.jsp";
+        request.getRequestDispatcher(targetJSP).forward(request, response);
     }
 }
