@@ -8,6 +8,7 @@ import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import it.unipi.lsmsd.socialnews.dto.*;
 import it.unipi.lsmsd.socialnews.service.AdminService;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
+import it.unipi.lsmsd.socialnews.service.util.ServiceWorkerPool;
 import it.unipi.lsmsd.socialnews.service.util.Statistic;
 import it.unipi.lsmsd.socialnews.service.util.Util;
 import java.security.NoSuchAlgorithmException;
@@ -17,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 public class AdminServiceImpl implements AdminService {
 
@@ -242,35 +245,45 @@ public class AdminServiceImpl implements AdminService {
     public StatisticPageDTO computeStatistics(Statistic... statistics) throws SocialNewsServiceException {
         try {
             HashMap<String, Object> computedStatistics = new HashMap<>();
+            HashMap<String, Future<?>> futures = new HashMap<>();
 
             for(Statistic statistic: statistics){
-                computedStatistics.put(
+                futures.put(
                         statistic.toString(),
                         switch (statistic){
-                            case MOST_ACTIVE_READERS -> DAOLocator.getCommentDAO()
-                                    .latestMostActiveReaders(
-                                            Util.getIntProperty("topNReaders",10),
-                                            Date.from(LocalDateTime.now().minus(statistic.getLastN(), statistic.getUnitOfTime())
-                                                    .atZone(ZoneOffset.systemDefault()).toInstant()
-                                    ));
-                            case GENDER_STATISTIC-> DAOLocator.getReaderDAO().genderStatistic();
-                            case NATIONALITY_STATISTIC-> DAOLocator.getReaderDAO().nationalityStatistic();
-                            case HOTTEST_MOMENTS_OF_DAY-> DAOLocator.getCommentDAO().latestHottestMomentsOfDay(
+                            case MOST_ACTIVE_READERS -> ServiceWorkerPool.getPool().submitTask(
+                                    () -> DAOLocator.getCommentDAO()
+                                            .latestMostActiveReaders(
+                                                    Util.getIntProperty("topNReaders",10),
+                                                    Date.from(LocalDateTime.now().minus(statistic.getLastN(),
+                                                                    statistic.getUnitOfTime())
+                                                            .atZone(ZoneOffset.systemDefault()).toInstant()
+                                                    )));
+                            case GENDER_STATISTIC-> ServiceWorkerPool.getPool().submitTask(
+                                    () -> DAOLocator.getReaderDAO().genderStatistic());
+                            case NATIONALITY_STATISTIC-> ServiceWorkerPool.getPool().submitTask(
+                                    () -> DAOLocator.getReaderDAO().nationalityStatistic());
+                            case HOTTEST_MOMENTS_OF_DAY-> ServiceWorkerPool.getPool().submitTask(
+                                    () -> DAOLocator.getCommentDAO().latestHottestMomentsOfDay(
                                     statistic.getWindowSize(),
                                     Date.from(LocalDateTime.now().minus(statistic.getLastN(), statistic.getUnitOfTime())
                                             .atZone(ZoneOffset.systemDefault()).toInstant()
-                                    ));
+                                    )));
                         }
                 );
             }
+            for (Statistic statistic: statistics){
+                computedStatistics.put(statistic.toString(), futures.get(statistic.toString()).get());
+            }
             return new StatisticPageDTO(computedStatistics);
-        } catch (SocialNewsDataAccessException ex) {
-            ex.printStackTrace();
-            throw new SocialNewsServiceException("Database error");
         }
         catch (NullPointerException ex){
             ex.printStackTrace();
             throw new SocialNewsServiceException("Missing some args");
+        }
+        catch (ExecutionException | InterruptedException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error");
         }
     }
 

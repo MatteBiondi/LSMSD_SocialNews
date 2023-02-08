@@ -38,6 +38,10 @@ public final class ServiceWorkerPool {
         return futures;
     }
 
+    public Future<?> submitTask(Callable<?> task){
+        return pool.submit(task);
+    }
+
     public void shutdown() throws SocialNewsServiceException {
         pool.shutdown();
         try {
