@@ -8,6 +8,7 @@ import com.mongodb.client.result.InsertOneResult;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Post;
 import it.unipi.lsmsd.socialnews.dao.model.Reporter;
+import org.bson.Document;
 import org.bson.conversions.Bson;
 import java.util.*;
 
@@ -191,4 +192,45 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
         }
     }
 
+    public Boolean checkAndSwapDocument(String reporterEmail) throws SocialNewsDataAccessException{
+        try (ClientSession session = openSession()){
+            return session.withTransaction(() -> {
+                try {
+                    List<Bson> stages = new ArrayList<>();
+                    stages.add(Aggregates.match(Filters.eq("email", reporterEmail)));
+                    stages.add(Aggregates.project(Projections.computed(
+                            "sizeMB",
+                            Document.parse(String.format("{$divide:[{$bsonSize:'$$ROOT'}, %d]}}", 1024*1024))))
+                    );
+                    Document docSize = getRawCollection("reporters").aggregate(session, stages).first();
+
+                    if (docSize.getDouble("sizeMB") > MAX_DOC_SIZE_MB) {
+                        Reporter reporter = reporterByEmail(reporterEmail);
+                        reporter.setId(UUID.randomUUID().toString());
+                        getCollection().updateOne(session, Filters.eq("email", reporterEmail), Updates.combine(
+                                Updates.unset("email"),
+                                Updates.unset("password"),
+                                Updates.unset("gender"),
+                                Updates.unset("location"),
+                                Updates.unset("dateOfBirth"),
+                                Updates.unset("cell"),
+                                Updates.unset("picture"),
+                                Updates.unset("numOfReport")
+
+                        ));
+                        register(session, reporter);
+                        return true;
+                    }
+                    return false;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                    throw new RuntimeException();
+                }
+            });
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+            throw new SocialNewsDataAccessException("Operation failed: " + ex.getMessage());
+        }
+    }
 }

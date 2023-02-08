@@ -14,6 +14,7 @@ import static org.bson.codecs.configuration.CodecRegistries.*;
 
 public abstract class MongoDAO<T>{
     private final static String ENTITIES_PACKAGE = "it.unipi.lsmsd.socialnews.dao.model";
+    protected final Double MAX_DOC_SIZE_MB = 16.0;
 
     private final MongoConnection mongoConnection;
     private final Class<T> template;
