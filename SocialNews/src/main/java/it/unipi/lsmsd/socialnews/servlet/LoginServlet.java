@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 /**
  * This class implement the login behind the user login and login page visualization
  */
-@WebServlet(name = "loginServlet", value = "/")
+@WebServlet(name = "loginServlet", value = "/login")
 public class LoginServlet extends HttpServlet {
 
     @Override
@@ -30,7 +30,7 @@ public class LoginServlet extends HttpServlet {
         if (session == null || session.getAttribute("email") == null) {
             // Not logged in user
             response.setContentType("text/html");
-            String TargetJSP = "/pages/jsp/login.jsp";
+            String TargetJSP = "pages/jsp/login.jsp"; //fixme: pages/jsp/login.jsp
             RequestDispatcher requestDispatcher = request.getRequestDispatcher(TargetJSP);
             requestDispatcher.forward(request, response);
         }
