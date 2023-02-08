@@ -59,7 +59,7 @@ public interface ReaderDAO {
     List<Reader> allReaders(Reader offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
-     * Remove a reader from the database
+     *Remove a reader from the database and the associated comments
      *
      * @param readerId email of the reader to remove
      * @return number of reader removed from database

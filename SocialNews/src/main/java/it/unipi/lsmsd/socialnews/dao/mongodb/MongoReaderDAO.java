@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.MongoException;
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.model.*;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertOneResult;
@@ -96,9 +97,14 @@ public class MongoReaderDAO extends MongoDAO<Reader> {
         }
     }
 
-    public Long removeReader(String readerId) throws SocialNewsDataAccessException {
+    public Long removeReader(ClientSession session, String readerId) throws SocialNewsDataAccessException {
         try{
-            DeleteResult result = getCollection().deleteOne(Filters.eq("_id", readerId));
+            // Delete reader
+            DeleteResult result = getCollection().deleteOne(session, Filters.eq("_id", readerId));
+
+            //Delete associated comments
+            getRawCollection("comments").deleteMany(session, Filters.eq("reader._id", readerId));
+
             return result.getDeletedCount();
         }
         catch (MongoException me){

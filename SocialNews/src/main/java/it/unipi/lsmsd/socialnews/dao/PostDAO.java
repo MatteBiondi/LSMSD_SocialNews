@@ -66,7 +66,7 @@ public interface PostDAO {
     List<Reporter> postsByHashtag(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
-     * Remove a post from the system
+     * Remove a post and associated comments from the system
      *
      * @param reporterId reporter identifier
      * @param postId post identifier

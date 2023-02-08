@@ -23,7 +23,7 @@ public interface ReporterDAO {
      * @return if authentication succeed reporter object containing all the information, <b>null</b> otherwise
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    Reporter authenticate(String email, String password) throws SocialNewsDataAccessException;//TODO: include posts ?
+    Reporter authenticate(String email, String password) throws SocialNewsDataAccessException;
 
     /**
      * Retrieves information about the reporter identified by email field
@@ -105,7 +105,7 @@ public interface ReporterDAO {
     List<Reporter> allReporters(Reporter offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
-     * Remove a reporter from the database
+     * Remove a reporter, all posts and associated comments from the database
      *
      * @param reporterId reporter identifier
      * @return number of reporter removed from database
