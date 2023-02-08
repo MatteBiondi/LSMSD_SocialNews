@@ -38,15 +38,14 @@ public class AuthenticationFilter implements Filter {
 
         // Each requested URI will be logged
         String uri = req.getRequestURI();
-        LOGGER.info(String.format("Requested Resource:: %s", uri));
 
         // Get session. Don't create it if not exist
         HttpSession session = req.getSession(false);
 
 
-        if(!uri.endsWith("login") && !uri.endsWith("login") && !uri.endsWith("signup") &&
+        if(!uri.equals(req.getContextPath()+"/") && !uri.endsWith("login") && !uri.endsWith("login") && !uri.endsWith("signup") &&
                 (session == null || session.getAttribute("email") == null) &&
-                !(uri.contains("login.css") || uri.contains("signUp.css") || uri.contains("logo.svg")))
+                !(uri.contains("login.css") || uri.contains("signUp.css") || uri.contains("index.css") || uri.contains("logo.svg")))
         {
             // This filter is applied to request user to perform login.
             // This filter is applied in the following cases:
