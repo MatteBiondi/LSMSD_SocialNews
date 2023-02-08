@@ -29,8 +29,8 @@ public class RequestLoggingFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws ServletException, IOException {
-        LOGGER.info("Request received");
         HttpServletRequest req = (HttpServletRequest) request;
+        LOGGER.info("Request received: "+ req.getRequestURI());
         // Get and write all the request parameters
         Enumeration<String> params = req.getParameterNames();
         while(params.hasMoreElements()){
