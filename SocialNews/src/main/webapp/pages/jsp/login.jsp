@@ -77,6 +77,11 @@
                 New member?
                 <a href="<%= request.getContextPath()%>/signup"> Click here to signup </a>
             </div>
+            <!-- Section with link to presentation page -->
+            <div class="form-text">
+                Or
+                <a href="<%= request.getContextPath()%>/"> go back at presentation page </a>
+            </div>
         </div>
     </form>
 </main>
