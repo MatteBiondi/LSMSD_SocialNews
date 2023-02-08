@@ -10,8 +10,6 @@ public class PostDTO extends BaseDTO{
     Date timestamp;
     List<String> links;
     List<String> hashtags;
-    Integer numOfComment; //TODO: necessary ?
-    List<CommentDTO> comments;
 
     public PostDTO(){ }
 
@@ -71,21 +69,6 @@ public class PostDTO extends BaseDTO{
         this.hashtags = hashtags;
     }
 
-    public Integer getNumOfComment() {
-        return numOfComment;
-    }
-
-    public void setNumOfComment(Integer numOfComment) {
-        this.numOfComment = numOfComment;
-    }
-
-    public List<CommentDTO> getComments() {
-        return comments;
-    }
-
-    public void setComments(List<CommentDTO> comments) {
-        this.comments = comments;
-    }
     @Override
     public String toString() {
         return "PostDTO{" +
@@ -95,8 +78,6 @@ public class PostDTO extends BaseDTO{
                 ", timestamp=" + timestamp +
                 ", links=" + links +
                 ", hashtags=" + hashtags +
-                ", numOfComment=" + numOfComment +
-                ", comments=" + comments +
                 '}';
     }
 }
