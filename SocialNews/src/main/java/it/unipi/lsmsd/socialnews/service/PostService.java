@@ -71,10 +71,11 @@ public interface PostService {
     /**
      * Remove a post from the system, removing the information stored in the database and all the associated comments
      *
-     * @param toRemovePost DTO object containing the postId and reporterId of the comment to remove
+     * @param toRemovePostId post identifier of the post to remove
+     * @param reporterId reporter identifier of the report that published the post to remove
      * @throws SocialNewsServiceException in case of failure of the operation or if the post is not in the system
      */
-    void removePost(PostDTO toRemovePost) throws SocialNewsServiceException;
+    void removePost(String toRemovePostId, String reporterId) throws SocialNewsServiceException;
 
     /**
      * Remove a comment from the system, removing the information stored in the database

@@ -174,28 +174,42 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-
     /**
      * Remove a reader from the databases
      *
-     * @param readerId id associated to the reader to remove
+     * @param toRemoveReaderId id associated to the reader to remove
      * @throws SocialNewsServiceException in case of failure of the remove operation
      */
     @Override
-    public void removeReader(String readerId) throws SocialNewsServiceException {
-        throw new RuntimeException("Not yet implemented");//TODO
+    public void removeReader(String toRemoveReaderId) throws SocialNewsServiceException {
+        try {
+            Long removedCounter = DAOLocator.getReaderDAO().removeReader(toRemoveReaderId);
+            if (removedCounter == 0){
+                throw new SocialNewsServiceException("Reader not in the system");
+            }
+        } catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error");
+        }
     }
-
 
     /**
      * Remove a reporter from the databases
      *
-     * @param reporterId id associated to the reporter to remove
+     * @param toRemoveReporterId id associated to the reporter to remove
      * @throws SocialNewsServiceException in case of failure of the remove operation
      */
     @Override
-    public void removeReporter(String reporterId) throws SocialNewsServiceException {
-        throw new RuntimeException("Not yet implemented");//TODO
+    public void removeReporter(String toRemoveReporterId) throws SocialNewsServiceException {
+        try {
+            Long removedCounter = DAOLocator.getReporterDAO().removeReporter(toRemoveReporterId);
+            if (removedCounter == 0){
+                throw new SocialNewsServiceException("Reporter not in the system");
+            }
+        } catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error");
+        }
     }
 
     /**
@@ -211,11 +225,11 @@ public class AdminServiceImpl implements AdminService {
             if (removedCounter == 0){
                 throw new SocialNewsServiceException("Report not in the system");
             }
-        }catch (SocialNewsDataAccessException e) {
-            throw new RuntimeException(e);
+        }catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error");
         }
     }
-
 
     /**
      * Computes the statistics specified by arguments and pack them into a DTO containing the results
