@@ -23,6 +23,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public String publishPost(PostDTO newPost) throws SocialNewsServiceException {
         try {
+            if(newPost.getText().length() > Util.getIntProperty("maxPostLength", 5000)){
+                throw new SocialNewsServiceException("Post text too long");
+            }
             return DAOLocator.getPostDAO().createPost(newPost.getReporterId(), Util.buildPost(newPost));
         } catch (SocialNewsDataAccessException ex) {
             ex.printStackTrace();
