@@ -4,16 +4,16 @@ import java.util.Date;
 
 public class CommentDTO extends BaseDTO{
     String id;
-    ReaderDTO reader;
-    String postId;
+    InnerReaderDTO reader;
+    InnerPostDTO post;
     String text;
     Date timestamp;
 
     public CommentDTO(){ }
 
-    public CommentDTO(String readerId, String readerFullName, String postId, String text) {
-        this.reader = new ReaderDTO(readerId, readerFullName);
-        this.postId = postId;
+    public CommentDTO(String readerId, String readerFullName, String postId, String reporterId, String text) {
+        this.reader = new InnerReaderDTO(readerId, readerFullName);
+        this.post = new InnerPostDTO(postId, reporterId);
         this.text = text;
         this.timestamp = new Date();
     }
@@ -26,20 +26,20 @@ public class CommentDTO extends BaseDTO{
         this.id = id;
     }
 
-    public ReaderDTO getReader() {
+    public InnerReaderDTO getReader() {
         return reader;
     }
 
-    public void setReader(ReaderDTO reader) {
+    public void setReader(InnerReaderDTO reader) {
         this.reader = reader;
     }
 
-    public String getPostId() {
-        return postId;
+    public InnerPostDTO getPost() {
+        return post;
     }
 
-    public void setPostId(String postId) {
-        this.postId = postId;
+    public void setPost(InnerPostDTO post) {
+        this.post = post;
     }
 
     public String getText() {
@@ -58,24 +58,13 @@ public class CommentDTO extends BaseDTO{
         this.timestamp = timestamp;
     }
 
-    @Override
-    public String toString() {
-        return "CommentDTO{" +
-                "id='" + id + '\'' +
-                ", reader=" + reader +
-                ", postId='" + postId + '\'' +
-                ", text='" + text + '\'' +
-                ", timestamp=" + timestamp +
-                '}';
-    }
-
-    public static class ReaderDTO{
+    public static class InnerReaderDTO{
         String id;
         String fullName;
 
-        public ReaderDTO(){ }
+        public InnerReaderDTO(){ }
 
-        public ReaderDTO(String id, String fullName) {
+        public InnerReaderDTO(String id, String fullName) {
             this.id = id;
             this.fullName = fullName;
         }
@@ -103,5 +92,52 @@ public class CommentDTO extends BaseDTO{
                     ", fullName='" + fullName + '\'' +
                     '}';
         }
+    }
+
+    public static class InnerPostDTO{
+        String id;
+        String reporterId;
+
+        public InnerPostDTO(){ }
+
+        public InnerPostDTO(String id, String reporterId) {
+            this.id = id;
+            this.reporterId = reporterId;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getReporterId() {
+            return reporterId;
+        }
+
+        public void setReporterId(String reporterId) {
+            this.reporterId = reporterId;
+        }
+
+        @Override
+        public String toString() {
+            return "InnerPostDTO{" +
+                    "id='" + id + '\'' +
+                    ", reporterId='" + reporterId + '\'' +
+                    '}';
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "CommentDTO{" +
+                "id='" + id + '\'' +
+                ", reader=" + reader +
+                ", post=" + post +
+                ", text='" + text + '\'' +
+                ", timestamp=" + timestamp +
+                '}';
     }
 }

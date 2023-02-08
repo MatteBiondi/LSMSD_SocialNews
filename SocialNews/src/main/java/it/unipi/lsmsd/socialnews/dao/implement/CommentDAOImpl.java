@@ -59,18 +59,6 @@ public class CommentDAOImpl implements CommentDAO {
     }
 
     /**
-     * Remove all comments associated to the postId specified as argument
-     *
-     * @param postId post identifier used to filter the comments
-     * @return number of comments removed from database
-     * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
-     */
-    @Override
-    public Long removeCommentsByPostId(String postId) throws SocialNewsDataAccessException {
-        return mongoCommentDAO.removeCommentsByPostId(postId);
-    }
-
-    /**
      * Remove a comment from the database
      *
      * @param commentId comment identifier

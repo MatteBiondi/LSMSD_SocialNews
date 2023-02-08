@@ -41,15 +41,6 @@ public interface CommentDAO {
     List<Comment> commentsByPostId(String postId, Comment offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
-     * Remove all comments associated to the postId specified as argument
-     *
-     * @param postId post identifier used to filter the comments
-     * @return number of comments removed from database
-     * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
-     */
-    Long removeCommentsByPostId(String postId) throws SocialNewsDataAccessException;
-
-    /**
      * Remove a comment from the database
      *
      * @param commentId comment identifier

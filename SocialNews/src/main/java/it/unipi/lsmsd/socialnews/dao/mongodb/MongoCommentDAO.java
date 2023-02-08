@@ -38,7 +38,7 @@ public class MongoCommentDAO extends MongoDAO<Comment> {
     public List<Comment> commentsByPostId(String postId, Comment offset, Integer pageSize) throws SocialNewsDataAccessException {
         try{
             List<Comment> comments = new ArrayList<>();
-            Bson filter = Filters.eq("postId", postId);
+            Bson filter = Filters.eq("post._id", postId);
             if(offset != null)
                 filter = Filters.and(
                         filter,
@@ -65,7 +65,18 @@ public class MongoCommentDAO extends MongoDAO<Comment> {
 
     public Long removeCommentsByPostId(String postId) throws SocialNewsDataAccessException {
         try{
-            DeleteResult result = getCollection().deleteMany(Filters.eq("postId", postId));
+            DeleteResult result = getCollection().deleteMany(Filters.eq("post._id", postId));
+            return result.getDeletedCount();
+        }
+        catch (MongoException me){
+            me.printStackTrace();
+            throw new SocialNewsDataAccessException("Deletion failed: " + me.getMessage());
+        }
+    }
+
+    public Long removeCommentsByReaderId(String readerId) throws SocialNewsDataAccessException {
+        try{
+            DeleteResult result = getCollection().deleteMany(Filters.eq("reader._id", readerId));
             return result.getDeletedCount();
         }
         catch (MongoException me){
