@@ -15,7 +15,6 @@
           integrity="sha384-xeJqLiuOvjUBq3iGOjvSQSIlwrpqjSHXpduPd6rQpuiM3f5/ijby8pCsnbu5S81n"
           crossorigin="anonymous">
 
-    <script>$('.country-field').countrypicker();</script>
     <script src="//unpkg.com/jquery@3.4.1/dist/jquery.min.js"></script>
     <script src="//unpkg.com/bootstrap-select-country@4.0.0/dist/js/bootstrap-select-country.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
@@ -91,6 +90,8 @@
         </div>
     </form>
 </main>
-
+<script>
+    $('.country-field').countrypicker();
+</script>
 </body>
 </html>
