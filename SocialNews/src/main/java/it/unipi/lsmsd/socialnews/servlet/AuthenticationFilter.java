@@ -15,7 +15,8 @@ import java.util.logging.Logger;
  */
 @WebFilter(
         filterName = "AuthenticationFilter",
-        urlPatterns = {"/SocialNews/*"},
+        urlPatterns = {"/*"},
+        dispatcherTypes = DispatcherType.REQUEST,
         description = "Check if the user is logged or not. If not, redirect the user to login page"
 )
 
@@ -42,9 +43,10 @@ public class AuthenticationFilter implements Filter {
         // Get session. Don't create it if not exist
         HttpSession session = req.getSession(false);
 
-        if(!uri.endsWith("login") && !uri.endsWith("signup") &&
+
+        if(!uri.endsWith("login") && !uri.endsWith("login") && !uri.endsWith("signup") &&
                 (session == null || session.getAttribute("email") == null) &&
-                !(uri.contains("login.css") || uri.contains("signup.css") || uri.contains("logo.svg")))
+                !(uri.contains("login.css") || uri.contains("signUp.css") || uri.contains("logo.svg")))
         {
             // This filter is applied to request user to perform login.
             // This filter is applied in the following cases:
