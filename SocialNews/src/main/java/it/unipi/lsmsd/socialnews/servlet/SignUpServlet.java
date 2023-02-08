@@ -34,7 +34,7 @@ public class SignUpServlet extends HttpServlet {
         else{
             // Already logged user
             response.setContentType("text/html");
-            response.sendRedirect(request.getContextPath());
+            response.sendRedirect(request.getContextPath()+"/"+session.getAttribute("userType")+"Homepage");
         }
     }
 
@@ -56,14 +56,14 @@ public class SignUpServlet extends HttpServlet {
         new_user.setEmail(email);
         new_user.setGender(gender);
         new_user.setCountry(country);
-        new_user.setFullName(name+" "+surname); //TODO CHANGE FUNCTION
+        new_user.setFullName(name, surname);
         try {
             ServiceLocator.getReaderService().register(new_user);
             // Saving success. User is redirected to login page
             request.getSession().setAttribute("message", "User created");
             request.getSession().setAttribute("messageType", "success-message");
             response.setContentType("text/html");
-            response.sendRedirect(request.getContextPath()); //TODO TOCHECK
+            response.sendRedirect(request.getContextPath() + "/login");
         }
         catch (Exception e) {
             String resourceURL;
