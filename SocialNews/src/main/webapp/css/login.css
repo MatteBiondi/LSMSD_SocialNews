@@ -43,6 +43,17 @@ body {
     color: green!important;
 }
 
-.admin-check-label{
-    margin-bottom: 10px;
+
+button {
+    margin: 20px;
+}
+
+.login-type-div{
+    width: 35%;
+    margin: auto
+}
+
+.login-radio-button{
+    float: left;
+    padding-left: 1em;
 }
