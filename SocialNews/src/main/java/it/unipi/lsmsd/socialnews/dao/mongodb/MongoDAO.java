@@ -1,5 +1,6 @@
 package it.unipi.lsmsd.socialnews.dao.mongodb;
 
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import it.unipi.lsmsd.socialnews.config.environment.MongoEnvironment;
@@ -8,7 +9,6 @@ import org.bson.codecs.configuration.CodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.*;
 import org.bson.types.ObjectId;
-
 import static com.mongodb.MongoClientSettings.getDefaultCodecRegistry;
 import static org.bson.codecs.configuration.CodecRegistries.*;
 
@@ -60,6 +60,8 @@ public abstract class MongoDAO<T>{
                 .getDatabase(MongoEnvironment.getMongoDatabase())
                 .getCollection(collectionName);
     }
+
+    public ClientSession openSession() { return mongoConnection.openSession(); }
 }
 
 

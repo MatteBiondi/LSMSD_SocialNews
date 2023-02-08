@@ -1,6 +1,7 @@
 package it.unipi.lsmsd.socialnews.dao.mongodb;
 
 import com.mongodb.*;
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
@@ -77,4 +78,6 @@ public final class MongoConnection {
         }
         return false;
     }
+
+    public ClientSession openSession(){ return mongoClient.startSession(); }
 }

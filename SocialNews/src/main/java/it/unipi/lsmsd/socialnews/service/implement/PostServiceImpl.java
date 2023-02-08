@@ -8,12 +8,9 @@ import it.unipi.lsmsd.socialnews.dto.CommentDTO;
 import it.unipi.lsmsd.socialnews.dto.PostDTO;
 import it.unipi.lsmsd.socialnews.service.PostService;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
-import it.unipi.lsmsd.socialnews.service.util.ServiceWorkerPool;
 import it.unipi.lsmsd.socialnews.service.util.Util;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 public class PostServiceImpl implements PostService {
     /**
@@ -135,23 +132,20 @@ public class PostServiceImpl implements PostService {
     /**
      * Remove a post from the system, removing the information stored in the database and all the associated comments
      *
-     * @param toRemovePost DTO object containing the postId and reporterId of the comment to remove
+     * @param toRemovePostId post identifier of the post to remove
+     * @param reporterId reporter identifier of the report that published the post to remove
      * @throws SocialNewsServiceException in case of failure of the operation or if the post is not in the system
      */
     @Override
-    public void removePost(PostDTO toRemovePost) throws SocialNewsServiceException {
+    public void removePost(String toRemovePostId, String reporterId) throws SocialNewsServiceException {
         try {
-            List<Future<?>> removedPostCounter = ServiceWorkerPool.getPool().submitTask(List.of(
-                    () -> DAOLocator.getPostDAO().removePost(toRemovePost.getReporterId(), toRemovePost.getId()),
-                    () -> DAOLocator.getCommentDAO().removeCommentsByPostId(toRemovePost.getId())
-            ));
-            //TODO: transaction ?
-            if ((Long) removedPostCounter.get(0).get() == 0){
+            Long removedPostCounter = DAOLocator.getPostDAO().removePost(reporterId, toRemovePostId);
+            if (removedPostCounter == 0){
                 throw new SocialNewsServiceException("Post not in the system");
             }
-        } catch (ExecutionException | InterruptedException ex) {
+        } catch (SocialNewsDataAccessException ex) {
             ex.printStackTrace();
-            throw new SocialNewsServiceException("Parallel execution error: " + ex.getMessage());
+            throw new SocialNewsServiceException("Database error");
         }
     }
 

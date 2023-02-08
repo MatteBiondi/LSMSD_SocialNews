@@ -1,15 +1,18 @@
 package it.unipi.lsmsd.socialnews.dao.implement;
 
+import com.mongodb.client.ClientSession;
 import it.unipi.lsmsd.socialnews.dao.ReporterDAO;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Post;
 import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoReporterDAO;
 import it.unipi.lsmsd.socialnews.dao.neo4j.Neo4jReporterDAO;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 
 public class ReporterDAOImpl implements ReporterDAO {
+    private static final Logger logger = LoggerFactory.getLogger(ReporterDAO.class);
 
     private final MongoReporterDAO mongoReporterDAO;
     private final Neo4jReporterDAO neo4jReporterDAO;
@@ -29,9 +32,25 @@ public class ReporterDAOImpl implements ReporterDAO {
      */
     @Override
     public String register(Reporter newReporter) throws SocialNewsDataAccessException {
-        // todo transaction
-        neo4jReporterDAO.addReporter(newReporter);
-        mongoReporterDAO.register(newReporter);
+        ClientSession session = mongoReporterDAO.openSession();
+        boolean resultNeo = false;
+
+        try {
+            session.startTransaction();
+            mongoReporterDAO.register(session, newReporter);
+            resultNeo = neo4jReporterDAO.addReporter(newReporter) != null;
+            session.commitTransaction();
+        }
+        catch (Exception ex){
+            if(resultNeo){
+                logger.error(String.format("Reporter %s, check consistency on databases", newReporter.getReporterId()));
+            }
+            session.abortTransaction();
+            session.close();
+            throw new SocialNewsDataAccessException(ex.getMessage());
+        }
+        session.close();
+
         return newReporter.getReporterId();
     }
 
@@ -149,7 +168,7 @@ public class ReporterDAOImpl implements ReporterDAO {
     }
 
     /**
-     * Remove a reporter from the database
+     * Remove a reporter, all posts and associated comments from the database
      *
      * @param reporterId reporter identifier
      * @return number of reporter removed from database
@@ -157,9 +176,26 @@ public class ReporterDAOImpl implements ReporterDAO {
      */
     @Override
     public Long removeReporter(String reporterId) throws SocialNewsDataAccessException {
-        // todo transaction
-        neo4jReporterDAO.deleteReporter(reporterId);
-        return mongoReporterDAO.removeReporter(reporterId);
+        ClientSession session = mongoReporterDAO.openSession();
+        Long resultMongo;
+        boolean resultNeo = false;
+        try {
+            session.startTransaction();
+            resultMongo = mongoReporterDAO.removeReporter(session, reporterId);
+            resultNeo = String.valueOf(neo4jReporterDAO.deleteReporter(reporterId)).equals(reporterId);
+            session.commitTransaction();
+        }
+        catch (Exception ex){
+            if(resultNeo){
+                logger.error(String.format("Reporter %s, check consistency on databases", reporterId));
+            }
+            session.abortTransaction();
+            session.close();
+            throw new SocialNewsDataAccessException(ex.getMessage());
+        }
+        session.close();
+
+        return resultMongo;
     }
 
     /**

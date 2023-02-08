@@ -5,14 +5,15 @@ import java.util.UUID;
 
 public class Comment extends BaseEntity {
     String id;
-    Reader reader;
-    String postId;
+    InnerReader reader;
+    InnerPost post;
     String text;
     Date timestamp;
 
     public Comment(){
         id = UUID.randomUUID().toString();
-        reader = new Reader();
+        reader = new InnerReader();
+        post = new InnerPost();
         timestamp = new Date();
     }
 
@@ -24,24 +25,20 @@ public class Comment extends BaseEntity {
         this.id = id;
     }
 
-    public Reader getReader() {
+    public InnerReader getReader() {
         return reader;
     }
 
-    public void setReader(Reader reader) {
+    public void setReader(InnerReader reader) {
         this.reader = reader;
     }
 
-    public void setReader(String readerId, String readerFullName) {
-        this.reader = new Reader(readerId, readerFullName);
+    public InnerPost getPost() {
+        return post;
     }
 
-    public String getPostId() {
-        return postId;
-    }
-
-    public void setPostId(String postId) {
-        this.postId = postId;
+    public void setPost(InnerPost post) {
+        this.post = post;
     }
 
     public String getText() {
@@ -65,19 +62,19 @@ public class Comment extends BaseEntity {
         return "Comment{" +
                 "id='" + id + '\'' +
                 ", reader=" + reader +
-                ", postId='" + postId + '\'' +
+                ", post=" + post +
                 ", text='" + text + '\'' +
                 ", timestamp=" + timestamp +
                 '}';
     }
 
-    public static class Reader{
+    public static class InnerReader{
         String id;
         String fullName;
 
-        public Reader(){ }
+        public InnerReader(){ }
 
-        public Reader(String id, String fullName) {
+        public InnerReader(String id, String fullName) {
             this.id = id;
             this.fullName = fullName;
         }
@@ -107,5 +104,35 @@ public class Comment extends BaseEntity {
         }
     }
 
+    public static class InnerPost {
+        String id;
+        String reporterId;
+
+        public InnerPost(){ }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getReporterId() {
+            return reporterId;
+        }
+
+        public void setReporterId(String reporterId) {
+            this.reporterId = reporterId;
+        }
+
+        @Override
+        public String toString() {
+            return "Post{" +
+                    "postId='" + id + '\'' +
+                    ", reporterId='" + reporterId + '\'' +
+                    '}';
+        }
+    }
 }
 

@@ -1,6 +1,7 @@
 package it.unipi.lsmsd.socialnews.dao.mongodb;
 
 import com.mongodb.MongoException;
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.model.*;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertOneResult;
@@ -16,9 +17,9 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
         super("reporters", Reporter.class);
     }
 
-    public String register(Reporter newReporter) throws SocialNewsDataAccessException {
+    public String register(ClientSession session, Reporter newReporter) throws SocialNewsDataAccessException {
         try {
-            InsertOneResult result = getCollection().insertOne(newReporter);
+            InsertOneResult result = getCollection().insertOne(session, newReporter);
             return Objects.requireNonNull(result.getInsertedId()).asString().getValue();
         }
         catch (NullPointerException | MongoException me){
@@ -172,10 +173,16 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
         }
     }
 
-    public Long removeReporter(String reporterId) throws SocialNewsDataAccessException {
+    public Long removeReporter(ClientSession session, String reporterId) throws SocialNewsDataAccessException {
         try{
+            // Remove reporter and posts
             DeleteResult result = getCollection()
-                    .deleteMany(Filters.eq("reporterId", reporterId));
+                    .deleteMany(session, Filters.eq("reporterId", reporterId));
+
+            // Remove associated comments
+            getRawCollection("comments")
+                    .deleteMany(session, Filters.eq("post.reporterId", reporterId));
+
             return result.getDeletedCount();
         }
         catch (MongoException me){

@@ -64,8 +64,6 @@ public interface AdminService {
      */
     List<ReporterDTO> nextPageReporters(ReporterDTO reporterOffset) throws SocialNewsServiceException;
 
-    //TODO: remove readers+comments and reporters+posts+comments
-
     /**
      * Retrieves information about report, ordered by id, associated to a reporter, up to a configured number of report
      *
@@ -90,20 +88,24 @@ public interface AdminService {
 
 
     /**
-     * Remove a reader from the databases
+     * Removes a reader from the system, deleting all the information stored into the database, including the
+     * comments published by the reader
      *
-     * @param readerId id associated to the reader to remove
-     * @throws SocialNewsServiceException in case of failure of the remove operation
+     * @param toRemoveReaderId reader identifier
+     * @throws SocialNewsServiceException in case of failure of the operation or if the reader is not present in the
+     *                                    system
      */
-    void removeReader(String readerId) throws SocialNewsServiceException;
+    void removeReader(String toRemoveReaderId) throws SocialNewsServiceException;
 
     /**
-     * Remove a reporter from the databases
+     * Removes a reporter from the system, deleting all the information stored into the database, including the post
+     * published by the reporter and the associated comments
      *
-     * @param reporterId id associated to the reporter to remove
-     * @throws SocialNewsServiceException in case of failure of the remove operation
+     * @param toRemoveReporterId reporter identifier
+     * @throws SocialNewsServiceException in case of failure of the operation or if the reporter is not present in the
+     *                                    system
      */
-    void removeReporter(String reporterId) throws SocialNewsServiceException;
+    void removeReporter(String toRemoveReporterId) throws SocialNewsServiceException;
 
     /**
      * Remove a report from the database

@@ -9,7 +9,6 @@ public class ReporterDTO extends UserDTO{
     Date dateOfBirth;
     String cell;
     Byte[] picture;
-    Integer numOfReport;
 
     public ReporterDTO(){ }
 
@@ -21,7 +20,6 @@ public class ReporterDTO extends UserDTO{
         this.dateOfBirth = dateOfBirth;
         this.cell = cell;
         this.picture = picture;
-        this.numOfReport = null;
     }
 
     public String getGender() {
@@ -64,14 +62,6 @@ public class ReporterDTO extends UserDTO{
         this.picture = picture;
     }
 
-    public Integer getNumOfReport() {
-        return numOfReport;
-    }
-
-    public void setNumOfReport(Integer numOfReport) {
-        this.numOfReport = numOfReport;
-    }
-
     @Override
     public String toString() {
         return "ReporterDTO{" +
@@ -84,7 +74,6 @@ public class ReporterDTO extends UserDTO{
                 ", dateOfBirth=" + dateOfBirth +
                 ", cell='" + cell + '\'' +
                 ", picture=" + Arrays.toString(picture) +
-                ", numOfReport=" + numOfReport +
                 '}';
     }
 }

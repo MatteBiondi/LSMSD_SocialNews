@@ -1,6 +1,7 @@
 package it.unipi.lsmsd.socialnews.dao.mongodb;
 
 import com.mongodb.MongoException;
+import com.mongodb.client.ClientSession;
 import com.mongodb.client.model.*;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Post;
@@ -24,9 +25,7 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
                             Filters.and(
                                     Filters.eq("reporterId", reporterId),
                                     Filters.exists("email",true)),
-                            Updates.combine(
-                                    Updates.push("posts", newPost),
-                                    Updates.inc("numOfPost",1)))//TODO: redundancy ?
+                                    Updates.push("posts", newPost))
                     .getModifiedCount();
         }
         catch (MongoException me){
@@ -111,14 +110,20 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
         }
     }
 
-    public Long removePost(String reporterId, String postId) throws SocialNewsDataAccessException {
+    public Long removePost(ClientSession session, String reporterId, String postId) throws SocialNewsDataAccessException {
         try{
-            System.out.println(reporterId + " " + postId);
-            return getCollection()
+            // Remove the post
+            Long postRemoved = getCollection()
                     .updateOne(
+                            session,
                             Filters.eq("reporterId", reporterId),
                             Updates.pullByFilter(Document.parse(String.format("{posts:{_id:'%s'}}", postId))))
                     .getModifiedCount();
+
+            // Removes all associated comments
+            getRawCollection("comments").deleteMany(session, Filters.eq("post._id", postId));
+
+            return postRemoved;
         }
         catch (MongoException me){
             me.printStackTrace();
