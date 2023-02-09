@@ -221,4 +221,16 @@ public class ReporterDAOImpl implements ReporterDAO {
     public List<Reporter> getMostPopularReporters(int limitTopRanking) throws SocialNewsDataAccessException{
         return neo4jReporterDAO.getMostPopularReporters(limitTopRanking);
     }
+
+    /**
+     * Checks the current size of the reporter into the database and performs some maintenance operations if needed
+     *
+     * @param email of the reporter
+     * @return true if documents have been changed, false otherwise
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    @Override
+    public Boolean checkAndSwap(String email) throws SocialNewsDataAccessException {
+        return mongoReporterDAO.checkAndSwapDocument(email);
+    }
 }

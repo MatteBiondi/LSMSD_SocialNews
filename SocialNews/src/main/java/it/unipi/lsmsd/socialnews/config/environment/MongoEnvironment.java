@@ -1,13 +1,15 @@
 package it.unipi.lsmsd.socialnews.config.environment;
 
 public final class MongoEnvironment {
+
     private static final String DEFAULT_PROTOCOL = "mongodb";
-    private static final String DEFAULT_USERNAME = "admin";
+    private static final String DEFAULT_USERNAME = "socialnews";
     private static final String DEFAULT_PASSWORD = "root";
-    private static final String DEFAULT_HOSTNAME = "localhost:27019";
-    private static final String DEFAULT_OPTS = "";
+    private static final String DEFAULT_HOSTNAME = "172.16.5.20:27017,172.16.5.21:27017,172.16.5.20:27017";
     private static final String DEFAULT_DATABASE = "socialNewsDB";
-    private static final String DEFAULT_URI_FORMAT = "%s://%s:%s@%s/%s?";// <protocol>://<username>:<password>@<hostname>/?<options>
+    private static final String DEFAULT_OPTS = "authSource=admin&replicaSet=socialNews&appname=SocialNewsWebapp&ssl=false";
+    // <protocol>://<username>:<password>@<hostname>/defaultDB/?<options>
+    private static final String DEFAULT_URI_FORMAT = "%s://%s:%s@%s/%s?%s";
 
     /**
      * Private constructor to prevent instantiation
@@ -60,12 +62,14 @@ public final class MongoEnvironment {
     }
 
     public static String getMongoURI() {
-        return String.format(
+        return String
+                .format(
                 DEFAULT_URI_FORMAT,
                 getMongoProtocol(),
                 getMongoUsername(),
                 getMongoPassword(),
                 getMongoHostname(),
+                getMongoDatabase(),
                 getMongoOptions()
         );
     }

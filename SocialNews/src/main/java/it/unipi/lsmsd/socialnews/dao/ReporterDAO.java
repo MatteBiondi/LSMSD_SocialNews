@@ -130,4 +130,13 @@ public interface ReporterDAO {
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
     List<Reporter> getMostPopularReporters(int limitTopRanking) throws SocialNewsDataAccessException;
+
+    /**
+     * Checks the current size of the reporter into the database and performs some maintenance operations if needed
+     *
+     * @param email of the reporter
+     * @return true if documents have been changed, false otherwise
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    Boolean checkAndSwap(String email) throws SocialNewsDataAccessException;
 }
