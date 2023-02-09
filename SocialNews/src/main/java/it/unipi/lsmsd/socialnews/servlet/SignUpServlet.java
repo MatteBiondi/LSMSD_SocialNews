@@ -27,7 +27,7 @@ public class SignUpServlet extends HttpServlet {
         if (session == null || session.getAttribute("email") == null) {
             // User is not logged in
             response.setContentType("text/html");
-            String resourceURL = "/pages/jsp/signUp.jsp";
+            String resourceURL = "/pages/jsp/signup.jsp";
             RequestDispatcher rd = request.getRequestDispatcher(resourceURL);
             rd.forward(request, response);
         }
@@ -69,7 +69,7 @@ public class SignUpServlet extends HttpServlet {
             String resourceURL;
             // Saving failed
             response.setContentType("text/html");
-            resourceURL = "/pages/jsp/signUp.jsp";
+            resourceURL = "/pages/jsp/signup.jsp";
             request.setAttribute("message", "User already exists");
             RequestDispatcher rd = request.getRequestDispatcher(resourceURL);
             rd.forward(request, response);
