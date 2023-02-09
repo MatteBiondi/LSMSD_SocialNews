@@ -1,7 +1,7 @@
 package it.unipi.lsmsd.socialnews.config.environment;
 
 public class Neo4jEnvironment {
-    private static final String DEFAULT_HOST = "localhost";
+    private static final String DEFAULT_HOST = "172.16.5.22";
     private static final Integer DEFAULT_PORT = 7687;
 
     private static final String DEFAULT_DATABASE = "socialnews";
