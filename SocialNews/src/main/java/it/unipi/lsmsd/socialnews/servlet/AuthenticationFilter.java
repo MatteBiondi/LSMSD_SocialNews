@@ -43,9 +43,9 @@ public class AuthenticationFilter implements Filter {
         HttpSession session = req.getSession(false);
 
 
-        if(!uri.equals(req.getContextPath()+"/") && !uri.endsWith("login") && !uri.endsWith("login") && !uri.endsWith("signup") &&
+        if(!uri.equals(req.getContextPath()+"/") && !uri.endsWith("login") && !uri.endsWith("signup") &&
                 (session == null || session.getAttribute("email") == null) &&
-                !(uri.contains("login.css") || uri.contains("signUp.css") || uri.contains("index.css") || uri.contains("logo.svg")))
+                !(uri.contains("login.css") || uri.contains("signup.css") || uri.contains("index.css") || uri.contains("logo.svg")))
         {
             // This filter is applied to request user to perform login.
             // This filter is applied in the following cases:
