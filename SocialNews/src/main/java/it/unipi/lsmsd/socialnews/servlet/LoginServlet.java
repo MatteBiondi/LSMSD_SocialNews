@@ -72,7 +72,7 @@ public class LoginServlet extends HttpServlet {
                     session.setMaxInactiveInterval(30 * 60);
 
                     response.setContentType("text/html");
-                    response.sendRedirect(request.getContextPath() + "/readerHomepage");
+                    response.sendRedirect(request.getContextPath() + "/reader/homepage");
                     return;
                 }
             }
@@ -90,7 +90,7 @@ public class LoginServlet extends HttpServlet {
                     session.setMaxInactiveInterval(30 * 60);
 
                     response.setContentType("text/html");
-                    response.sendRedirect(request.getContextPath() + "/reporterHomepage");
+                    response.sendRedirect(request.getContextPath() + "/reporter/homepage");
                     return;
                 }
             }
@@ -108,7 +108,7 @@ public class LoginServlet extends HttpServlet {
                     session.setMaxInactiveInterval(30 * 60);
 
                     response.setContentType("text/html");
-                    response.sendRedirect(request.getContextPath() + "/adminHomepage");
+                    response.sendRedirect(request.getContextPath() + "/admin/homepage");
                     return;
                 }
             }
