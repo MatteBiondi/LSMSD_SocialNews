@@ -39,9 +39,9 @@ public class LoginServlet extends HttpServlet {
             response.setContentType("text/html");
             String type = (String) session.getAttribute("userType");
             String page = switch (type) {
-                case "reader" -> "/readerHomepage";
-                case "reporter" -> "/reporterHomepage";
-                default -> "/adminHomepage";
+                case "reader" -> "/reader/homepage";
+                case "reporter" -> "/reporter/homepage";
+                default -> "/admin/homepage";
             };
             response.sendRedirect(request.getContextPath() + page);
         }
