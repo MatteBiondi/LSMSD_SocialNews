@@ -1,38 +1,62 @@
-<nav class="navbar navbar-light bg-light justify-content-between">
-    <div class="d-flex">
-        <div class="btn-group" role="group">
-            <button class="nav-button btn btn-outline-primary" type="button">
-                <i class="fas fa-home"></i>
-            </button>
-            <button class="nav-button btn btn-outline-primary" type="button">
-                <i class="fas fa-chart-bar"></i>
-            </button>
-            <button class="nav-button btn btn-outline-primary" type="button">
-                <i class="fas fa-cog"></i>
-            </button>
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css" type="text/css" media="screen">
+<script src="${pageContext.request.contextPath}/scripts/navbar.js"></script>
+
+<nav class="navbar-top navbar navbar-light bg-light">
+    <div id="logo">
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/${param.userType}/homepage">
+            <h1 class="fs-3">
+                <!--img id="logo-img" src="${pageContext.request.contextPath}/images/icon.svg" alt="Logo"
+                         class="d-inline-block align-text-middle img-fluid"-->
+                <span>Social News</span>
+            </h1>
+        </a>
+    </div>
+    <c:if test="${ param.userType == \"reader\" }">
+        <div class="d-flex align-items-center" id="search">
+            <div class="input-group">
+                <button type="button" class="btn btn-primary">Search by</button>
+                <input id="search-text" type="text" class="form-control">
+                <div class="btn-group">
+                    <button id="search-chooser" type="button" data-bs-toggle="dropdown"
+                            class="btn btn-primary dropdown-toggle dropdown-toggle-split"></button>
+                    <i id="search-clear" class="bi bi-x-circle"></i>
+                    <div class="dropdown-menu">
+                        <span class="dropdown-item search-item">Reporter Name</span>
+                        <span class="dropdown-item search-item">Keyword</span>
+                    </div>
+                </div>
+            </div>
         </div>
-        <form class="form-inline">
-            <select class="form-control mr-sm-2" id="category-select" required>
-                <option id="title-option" disabled selected hidden></option>
-                <option value="reader">Reader</option>
-                <option value="reporter">Reporter</option>
-            </select>
-            <input class="form-control mr-sm-2" type="text" placeholder="Search">
-            <button class="nav-button btn btn-outline-primary my-2 my-sm-0 search-button" type="submit">
-                <i class="fas fa-search"></i>
-            </button>
-        </form>
-        <a class="navbar-brand" href="#" >Social News</a>
+    </c:if>
+    <div class="d-flex flex-row align-items-center" id="icons">
+        <div class="d-flex flex-row align-items-center">
+            <a class="icon-button" href="${pageContext.request.contextPath}/${param.userType}/homepage">
+                <i class="fs-3 bi bi-house"></i>
+            </a>
+            <a class="icon-button" href="${pageContext.request.contextPath}/${param.userType}/statistics">
+                <i class="fs-3 bi bi-bar-chart"></i>
+            </a>
+        </div>
+
+        <div id="user" class="icon-button dropdown">
+            <span class="text-reset hidden-arrow" data-bs-toggle="dropdown">
+                <i class="bi bi-gear fs-3"></i>
+            </span>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <c:if test="${ param.userType == \"reader\" }">
+                    <li>
+                        <a id="profile" class="dropdown-item" href="${pageContext.request.contextPath}/${param.userType}/Profile">My Profile</a>
+                    </li>
+                </c:if>
+                <li>
+                    <a id="logout" class="dropdown-item" href="${pageContext.request.contextPath}/logout">Logout</a>
+                </li>
+            </ul>
+        </div>
     </div>
 </nav>
 
-<script>
-    document.querySelector('.search-button').addEventListener('click', function() {
-        const select = document.querySelector('select');
-        if (!select.value) {
-            event.preventDefault();
-            let titleOption = document.querySelector('#title-option');
-            titleOption.textContent = "Select category";
-        }
-    });
-</script>
