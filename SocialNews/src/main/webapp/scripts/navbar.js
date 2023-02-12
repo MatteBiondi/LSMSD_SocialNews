@@ -9,8 +9,6 @@ $(document).ready(() => {
     let search_text = $("#search-text");
     let search_clear = $("#search-clear");
 
-    //todo serve? document.documentElement.style.scrollBehavior = 'auto';
-
     search_text.attr("placeholder",`${DEFAULT_SEARCH}:`)
 
 
