@@ -16,21 +16,24 @@
         </a>
     </div>
     <c:if test="${ param.userType == \"reader\" }">
-        <div class="d-flex align-items-center" id="search">
-            <div class="input-group">
-                <button type="button" class="btn btn-primary">Search by</button>
-                <input id="search-text" type="text" class="form-control">
-                <div class="btn-group">
-                    <button id="search-chooser" type="button" data-bs-toggle="dropdown"
-                            class="btn btn-primary dropdown-toggle dropdown-toggle-split"></button>
-                    <i id="search-clear" class="bi bi-x-circle"></i>
-                    <div class="dropdown-menu">
-                        <span class="dropdown-item search-item">Reporter Name</span>
-                        <span class="dropdown-item search-item">Keyword</span>
+        <form action="<%= request.getContextPath()%>/reader/search" method="GET">
+            <div class="d-flex align-items-center" id="search">
+                <div class="input-group">
+                    <button id="search-button" type="submit" class="btn btn-primary">Search by</button>
+                    <input id="search-text" type="text" class="form-control" name="text">
+                    <div class="btn-group">
+                        <button id="search-chooser" type="button" data-bs-toggle="dropdown"
+                                class="btn btn-primary dropdown-toggle dropdown-toggle-split"></button>
+                        <i id="search-clear" class="bi bi-x-circle"></i>
+                        <div class="dropdown-menu">
+                            <span class="dropdown-item search-item">Reporter Name</span>
+                            <span class="dropdown-item search-item">Keyword</span>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
+
     </c:if>
     <div class="d-flex flex-row align-items-center" id="icons">
         <div class="d-flex flex-row align-items-center">
@@ -49,7 +52,7 @@
             <ul class="dropdown-menu dropdown-menu-end">
                 <c:if test="${ param.userType == \"reader\" }">
                     <li>
-                        <a id="profile" class="dropdown-item" href="${pageContext.request.contextPath}/${param.userType}/Profile">My Profile</a>
+                        <a id="profile" class="dropdown-item" href="${pageContext.request.contextPath}/${param.userType}/profile">My Profile</a>
                     </li>
                 </c:if>
                 <li>
