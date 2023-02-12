@@ -30,7 +30,7 @@ public class ReaderProfileServlet extends HttpServlet {
             request.setAttribute("email", email);
             request.setAttribute("gender", reader.getGender());
             request.setAttribute("country", reader.getCountry());
-            // todo: lo lascio?
+            // todo: is it needed?
             request.setAttribute("image", request.getContextPath() + "/images/user-avatar.svg");
 
             // todo: change password/delete profile?
