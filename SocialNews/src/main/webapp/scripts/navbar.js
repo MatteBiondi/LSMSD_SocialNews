@@ -1,5 +1,6 @@
 // *********** Constant section ***********
 const DEFAULT_SEARCH = "Reporter Name";
+const EMPTY_FIELD_MESSAGE = "The search value is mandatory";
 // ****************************************
 
 // Code on document ready
@@ -8,17 +9,19 @@ $(document).ready(() => {
     let search_items = $(".search-item");
     let search_text = $("#search-text");
     let search_clear = $("#search-clear");
+    let search_button = $("#search-button");
 
-    //todo serve? document.documentElement.style.scrollBehavior = 'auto';
-
-    search_text.attr("placeholder",`${DEFAULT_SEARCH}:`)
+    search_text.attr("placeholder",`${DEFAULT_SEARCH}:`);
+    sessionStorage.setItem("searchKey", DEFAULT_SEARCH);
 
 
     // Define event handlers
     search_items.on(
         "click",
         (elem) => {
-            search_text.attr("placeholder", `${elem.currentTarget.innerText}:`);
+            let searchByText = elem.currentTarget.innerText;
+            search_text.attr("placeholder", `${searchByText}:`);
+            sessionStorage.setItem("searchKey", searchByText);
         });
 
     search_clear.on(
@@ -34,4 +37,31 @@ $(document).ready(() => {
         () => {
             search_clear.css("display", search_text.val() !== "" ? "inherit":"none");
         });
+
+    search_text.on(
+        "keypress",
+        (e) => {
+            // If the user presses the "Enter" key on the keyboard
+            if (e.key === "Enter") {
+                // Cancel the default action
+                e.preventDefault();
+                // Trigger the button element with a click
+                search_button.click();
+            }
+        });
+
+    search_button.on(
+        "click",
+        () => {
+            let searchKey = sessionStorage.getItem("searchKey");
+            let searchValue = search_text.val();
+            let page = 1;
+            if(searchValue === ""){
+                alert(EMPTY_FIELD_MESSAGE);
+                return;
+            }
+            sessionStorage.removeItem("searchKey");
+            window.location.href=`search?by=${searchKey}&value=${searchValue}&page=${page}`
+        }
+    );
 })

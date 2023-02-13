@@ -18,27 +18,30 @@ public interface PostDAO {
     String createPost(String reporterId, Post newPost) throws SocialNewsDataAccessException;
 
     /**
-     * Retrieves information about all the posts saved on database associated to the reporterId specified, limiting
-     * the list size to the dimension specified
+     * Retrieves information about all the posts saved on database associated to the reporterId, limiting the
+     * list size to the dimension specified, starting from the post specified as argument in reverse order It allows the
+     * implementation of pagination of the posts
      *
      * @param reporterId reporter identifier used to filter the posts
+     * @param offset post from which the query starts to retrieve information
      * @param pageSize number of posts to retrieve
      * @return list of post objects containing all the information
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    List<Post> postsByReporterId(String reporterId, Integer pageSize) throws SocialNewsDataAccessException;
+    List<Post> postsByReporterIdPrev(String reporterId, Post offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
      * Retrieves information about all the posts saved on database associated to the reporterId, limiting the
      * list size to the dimension specified, starting from the post specified as argument. It allows the
      * implementation of pagination of the posts
+     *
      * @param reporterId reporter identifier
      * @param offset post from which the query starts to retrieve information
      * @param pageSize number of posts to retrieve
      * @return list of post objects containing all the information
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    List<Post> postsByReporterId(String reporterId, Post offset, Integer pageSize) throws SocialNewsDataAccessException;
+    List<Post> postsByReporterIdNext(String reporterId, Post offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
      * Retrieves the posts, along with basic information of the reporter associated, that contain the specified

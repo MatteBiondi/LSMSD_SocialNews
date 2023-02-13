@@ -83,26 +83,31 @@ public interface ReporterDAO {
     List<Reporter> reportersByFullName(String fullNamePattern, Reporter offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
-     * Retrieves information about all the reporters saved on database, excluding posts, limiting the list size to the
-     * dimension specified
+     * Retrieves information about all the reporter saved on database, excluding posts, limiting the list size to the
+     * dimension specified, starting from the reporter specified as argument in reverse order. It allows the
+     * implementation of
+     * pagination of the reporters
      *
-     * @param pageSize number of reporters to retrieve
+     * @param filter reporter object containing email pattern used to filter readers
+     * @param offset reporter from which the query starts to retrieve information
+     * @param pageSize ieve
      * @return list of reporter objects containing all the information, excluding posts
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    List<Reporter> allReporters(Integer pageSize) throws SocialNewsDataAccessException;
+    List<Reporter> allReportersPrev(Reporter filter, Reporter offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
      * Retrieves information about all the reporter saved on database, excluding posts, limiting the list size to the
      * dimension specified, starting from the reporter specified as argument. It allows the implementation of
      * pagination of the reporters
      *
+     * @param filter reporter object containing email pattern used to filter readers
      * @param offset reporter from which the query starts to retrieve information
      * @param pageSize ieve
      * @return list of reporter objects containing all the information, excluding posts
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    List<Reporter> allReporters(Reporter offset, Integer pageSize) throws SocialNewsDataAccessException;
+    List<Reporter> allReportersNext(Reporter filter, Reporter offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
      * Remove a reporter, all posts and associated comments from the database

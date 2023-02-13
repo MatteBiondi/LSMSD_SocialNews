@@ -30,9 +30,19 @@ public interface ReporterService {
 
     /**
      * Retrieves information about posts published by the reporter specified as argument ordered by publication
+     * timestamp starting from the offset passed as argument, up to a configured number of posts in reverse order
+     *
+     * @param postOffset post DTO containing postId and reporterId of the first post in the current page
+     * @return list of postDTO objects containing all the information
+     * @throws SocialNewsServiceException in case of failure of the operation or if the post is not in the system
+     */
+    List<PostDTO> prevReporterPagePosts(PostDTO postOffset) throws SocialNewsServiceException;
+
+    /**
+     * Retrieves information about posts published by the reporter specified as argument ordered by publication
      * timestamp starting from the offset passed as argument, up to a configured number of posts
      *
-     * @param postOffset post DTO containing postId and reporterId of the last post in the previous page
+     * @param postOffset post DTO containing postId and reporterId of the last post in the current page
      * @return list of postDTO objects containing all the information
      * @throws SocialNewsServiceException in case of failure of the operation or if the post is not in the system
      */
