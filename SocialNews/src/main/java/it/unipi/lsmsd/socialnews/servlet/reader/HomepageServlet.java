@@ -1,4 +1,4 @@
-package it.unipi.lsmsd.socialnews.servlet;
+package it.unipi.lsmsd.socialnews.servlet.reader;
 
 import it.unipi.lsmsd.socialnews.dto.ReporterDTO;
 import it.unipi.lsmsd.socialnews.service.ServiceLocator;
@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-@WebServlet(name = "ReaderHomepageServlet", value = "/reader/homepage", loadOnStartup = 0)
-public class ReaderHomepageServlet extends HttpServlet {
+@WebServlet(name = "HomepageServlet", value = "/reader/homepage", loadOnStartup = 0)
+public class HomepageServlet extends HttpServlet {
 
-    private static final Logger LOGGER = Logger.getLogger(ReaderHomepageServlet.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(HomepageServlet.class.getName());
 
     // Number of reporter for each page
     private int pageLength;
@@ -48,7 +48,7 @@ public class ReaderHomepageServlet extends HttpServlet {
         // Read interested values
         pageLength = Integer.parseInt(properties.getProperty("page_length", "25"));
 
-        LOGGER.info("Init ReaderHomepageServlet");
+        LOGGER.info("Init reader HomepageServlet");
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

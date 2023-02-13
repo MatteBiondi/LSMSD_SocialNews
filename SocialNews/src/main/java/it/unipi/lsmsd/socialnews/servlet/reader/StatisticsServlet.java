@@ -1,4 +1,4 @@
-package it.unipi.lsmsd.socialnews.servlet;
+package it.unipi.lsmsd.socialnews.servlet.reader;
 
 import it.unipi.lsmsd.socialnews.dto.ReporterDTO;
 import it.unipi.lsmsd.socialnews.service.ServiceLocator;
@@ -12,9 +12,9 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.logging.Logger;
 
-@WebServlet(name = "ReaderStatisticsServlet", value = "/reader/statistics")
-public class ReaderStatisticsServlet extends HttpServlet {
-    private static final Logger LOGGER = Logger.getLogger(ReaderProfileServlet.class.getName());
+@WebServlet(name = "StatisticsServlet", value = "/reader/statistics")
+public class StatisticsServlet extends HttpServlet {
+    private static final Logger LOGGER = Logger.getLogger(StatisticsServlet.class.getName());
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
