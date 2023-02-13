@@ -71,7 +71,7 @@ public final class JSONConverter {
      * @param DTOList list of DTOs to serialize into a JSON string
      * @return JSON string built from list of DTOs
      */
-    public static String toJSONArray(List<BaseDTO> DTOList){
+    public static String toJSONArray(List<?> DTOList){
         try {
             return new ObjectMapper()
                     .setSerializationInclusion(JsonInclude.Include.NON_NULL)

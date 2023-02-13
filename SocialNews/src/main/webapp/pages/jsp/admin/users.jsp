@@ -1,6 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
+<jsp:useBean id="pageSize" scope="request" type="java.lang.Integer"/>
+
+
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -19,7 +22,8 @@
     </jsp:include>
 </header>
 <section id="content">
-    <zing-grid id="users-table" caption="Registered ${param.type}" search page-size="15" align="center" zebra>
+    <zing-grid id="users-table" caption="Registered ${param.type}" search page-size="${pageSize}" align="center"
+               zebra>
         <zg-data>
             <zg-param name="src"
                       value="http://localhost:8080/SocialNews_war_exploded/admin/users?type=${param.type}&data=true">

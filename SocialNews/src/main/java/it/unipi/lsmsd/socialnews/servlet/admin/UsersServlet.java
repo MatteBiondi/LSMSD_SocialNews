@@ -19,9 +19,14 @@ import java.util.List;
 @WebServlet(name = "UsersServlet", value = "/admin/users/*")
 public class UsersServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(UsersServlet.class);
+    private static Integer pageSize;
     private final ObjectMapper mapper;
     private final ObjectNode success;
     private final ObjectNode error;
+
+    public static void setPageSize(Integer pageSize){
+        UsersServlet.pageSize = pageSize;
+    }
 
     public UsersServlet() {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -51,6 +56,7 @@ public class UsersServlet extends HttpServlet {
                 if(type == null || type .isEmpty())
                     throw new RuntimeException("Invalid query string");
 
+                request.setAttribute("pageSize", pageSize);
                 response.setContentType("text/html");
                 request.getRequestDispatcher(targetJSP).forward(request, response);
             }
@@ -81,7 +87,7 @@ public class UsersServlet extends HttpServlet {
                     }
 
                     // Pagination offsets
-                    if(readers.size() == 15){//TODO
+                    if(readers.size() == pageSize){
                         nextPage = String.format("%s&%s", readers.get(readers.size()-1).getId(),
                                 readers.get(readers.size()-1).getFullName());
                         readers.add(new ReaderDTO()); // Empty object, needed to inform about possible successive pages
@@ -118,7 +124,7 @@ public class UsersServlet extends HttpServlet {
                     }
 
                     // Pagination offsets
-                    if(reporters.size() == 15){//TODO
+                    if(reporters.size() == pageSize){
                         nextPage = String.format("%s&%s", reporters.get(reporters.size()-1).getId(),
                                 reporters.get(reporters.size()-1).getFullName());
                         reporters.add(new ReporterDTO()); // Empty object, needed to inform about possible successive pages
