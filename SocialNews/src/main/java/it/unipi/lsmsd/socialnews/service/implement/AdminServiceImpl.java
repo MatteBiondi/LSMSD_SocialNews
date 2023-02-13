@@ -8,6 +8,7 @@ import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import it.unipi.lsmsd.socialnews.dto.*;
 import it.unipi.lsmsd.socialnews.service.AdminService;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
+import it.unipi.lsmsd.socialnews.service.util.Page;
 import it.unipi.lsmsd.socialnews.service.util.ServiceWorkerPool;
 import it.unipi.lsmsd.socialnews.service.util.Statistic;
 import it.unipi.lsmsd.socialnews.service.util.Util;
@@ -23,13 +24,49 @@ import java.util.concurrent.Future;
 
 public class AdminServiceImpl implements AdminService {
 
-    /**
-     * Registers a new reporter in the application, storing the information on database
-     *
-     * @param newReporter reporter DTO object containing information of the new reporter
-     * @return identifier assigned to the new reporter
-     * @throws SocialNewsServiceException in case of failure of the operation
-     */
+    private List<ReaderDTO> pageReaders(ReaderDTO readerFilter, ReaderDTO readerOffset, Page page) throws SocialNewsServiceException{
+        try {
+            Reader offset = (readerOffset == null) ? null:Util.buildReader(readerOffset);
+            Reader filter = (readerFilter == null) ? null:Util.buildReader(readerFilter);
+            List<ReaderDTO> pageReaderDTO = new ArrayList<>();
+
+            switch (page){
+                case FIRST, NEXT -> DAOLocator.getReaderDAO()
+                        .allReadersNext(filter, offset, Util.getIntProperty("listUserPageSize",25))
+                        .forEach(reader -> pageReaderDTO.add(Util.buildReaderDTO(reader)));
+                case PREV -> DAOLocator.getReaderDAO()
+                        .allReadersPrev(filter, offset, Util.getIntProperty("listUserPageSize",25))
+                        .forEach(reader -> pageReaderDTO.add(Util.buildReaderDTO(reader)));
+           }
+            return pageReaderDTO;
+        } catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error: " + ex.getMessage());
+        }
+    }
+
+    private List<ReporterDTO> pageReporters(ReporterDTO reporterFilter, ReporterDTO reporterOffset, Page page) throws SocialNewsServiceException{
+        try {
+            Reporter offset = (reporterOffset == null) ? null:Util.buildReporter(reporterOffset);
+            Reporter filter = (reporterFilter == null) ? null:Util.buildReporter(reporterFilter);
+            List<ReporterDTO> pageReporterDTO = new ArrayList<>();
+
+            switch (page){
+                case FIRST, NEXT -> DAOLocator.getReporterDAO()
+                        .allReportersNext(filter, offset, Util.getIntProperty("listUserPageSize",25))
+                        .forEach(reporter -> pageReporterDTO.add(Util.buildReporterDTO(reporter)));
+                case PREV ->
+                        DAOLocator.getReporterDAO()
+                                .allReportersPrev(filter, offset, Util.getIntProperty("listUserPageSize",25))
+                                .forEach(reporter -> pageReporterDTO.add(Util.buildReporterDTO(reporter)));
+            }
+            return pageReporterDTO;
+        } catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error: " + ex.getMessage());
+        }
+    }
+
     @Override
     public String registerReporter(ReporterDTO newReporter) throws SocialNewsServiceException {
         try {
@@ -44,14 +81,6 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    /**
-     * Authenticates an admin identified by email via secret password
-     *
-     * @param email    email of the admin
-     * @param password cleartext secret password of the admin
-     * @return if authentication succeed adminDTO object containing all the information, <b>null</b> otherwise
-     * @throws SocialNewsServiceException in case of failure of the operation
-     */
     @Override
     public AdminDTO authenticate(String email, String password) throws SocialNewsServiceException {
         try {
@@ -68,98 +97,41 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    /**
-     * Retrieves information about readers ordered by name, up to a configured number of readers
-     *
-     * @return list of readerDTO objects containing basic information
-     * @throws SocialNewsServiceException in case of failure of the operation
-     */
     @Override
-    public List<ReaderDTO> firstPageReaders() throws SocialNewsServiceException {
-        return nextPageReaders(null);
+    public List<ReaderDTO> firstPageReaders(ReaderDTO readerFilter) throws SocialNewsServiceException {
+        return pageReaders( readerFilter, null, Page.FIRST);
     }
 
-    /**
-     * Retrieves information about readers ordered by name starting from the offset passed as argument, up to a
-     * configured number of readers
-     *
-     * @param readerOffset reader DTO containing id and fullName of the last reader in the previous page
-     * @return list of readerDTO objects containing basic information
-     * @throws SocialNewsServiceException in case of failure of the operation
-     */
     @Override
-    public List<ReaderDTO> nextPageReaders(ReaderDTO readerOffset) throws SocialNewsServiceException {
-        try {
-            Reader offset = readerOffset == null ? null:Util.buildReader(readerOffset);
-            List<ReaderDTO> firstPageReaderDTO = new ArrayList<>();
-            DAOLocator.getReaderDAO()
-                    .allReaders(offset, Util.getIntProperty("listUserPageSize",50))
-                    .forEach(reader -> firstPageReaderDTO.add(Util.buildReaderDTO(reader)));
-            return firstPageReaderDTO;
-        } catch (SocialNewsDataAccessException ex) {
-            ex.printStackTrace();
-            throw new SocialNewsServiceException("Database error");
-        }
+    public List<ReaderDTO> prevPageReaders(ReaderDTO readerFilter, ReaderDTO readerOffset) throws SocialNewsServiceException {
+        return pageReaders(readerFilter, readerOffset, Page.PREV);
     }
 
-    /**
-     * Retrieves information about reporters ordered by name, up to a configured number of reporters
-     *
-     * @return list of reportersDTO objects containing basic information
-     * @throws SocialNewsServiceException in case of failure of the operation
-     */
     @Override
-    public List<ReporterDTO> firstPageReporters() throws SocialNewsServiceException {
-        return nextPageReporters(null);
+    public List<ReaderDTO> nextPageReaders(ReaderDTO readerFilter, ReaderDTO readerOffset) throws SocialNewsServiceException {
+        return pageReaders( readerFilter, readerOffset, Page.NEXT);
     }
 
-    /**
-     * Retrieves information about reporters ordered by name starting from the offset passed as argument, up to a
-     * configured number of reporters
-     *
-     * @param reporterOffset reporter DTO containing reporterId and fullName of the last reporter in the previous page
-     * @return list of reporterDTO objects containing basic information
-     * @throws SocialNewsServiceException in case of failure of the operation
-     */
     @Override
-    public List<ReporterDTO> nextPageReporters(ReporterDTO reporterOffset) throws SocialNewsServiceException {
-        try {
-            Reporter offset = reporterOffset == null ? null:Util.buildReporter(reporterOffset);
-            List<ReporterDTO> firstPageReporterDTO = new ArrayList<>();
-            DAOLocator.getReporterDAO()
-                    .allReporters(offset, Util.getIntProperty("listUserPageSize",50))
-                    .forEach(reporter -> firstPageReporterDTO.add(Util.buildReporterDTO(reporter)));
-            return firstPageReporterDTO;
-        } catch (SocialNewsDataAccessException ex) {
-            ex.printStackTrace();
-            throw new SocialNewsServiceException("Database error");
-        }
+    public List<ReporterDTO> firstPageReporters(ReporterDTO reporterFilter) throws SocialNewsServiceException {
+        return pageReporters(reporterFilter, null, Page.FIRST);
     }
 
+    @Override
+    public List<ReporterDTO> prevPageReporters(ReporterDTO reporterFilter, ReporterDTO reporterOffset) throws SocialNewsServiceException {
+        return pageReporters(reporterFilter, reporterOffset, Page.PREV);
+    }
 
-    /**
-     * Retrieves information about report, ordered by id, associated to a reporter, up to a configured number of report
-     *
-     * @param reporterId id of the reporter for which retrieve associated reports
-     * @return list of reportDTO objects containing all the information
-     * @throws SocialNewsServiceException in case of failure of the operation
-     */
+    @Override
+    public List<ReporterDTO> nextPageReporters(ReporterDTO reporterFilter,ReporterDTO reporterOffset) throws SocialNewsServiceException {
+        return pageReporters(reporterFilter, reporterOffset, Page.NEXT);
+    }
+
     @Override
     public List<ReportDTO> firstPageReports(String reporterId) throws SocialNewsServiceException{
         return nextPageReports(reporterId, 0);
     }
 
-
-    /**
-     * Retrieves information about reports (ordered by id starting), from the offset passed as argument, of a reporter,
-     * up to a configured number of reports
-     *
-     * @param reporterId id of the reporter for which retrieve associated reports
-     * @param reportOffset integer containing the number of the last report in the previous page with respect the total
-     *                     number of results
-     * @return list of reportDTO objects containing all the information
-     * @throws SocialNewsServiceException in case of failure of the operation
-     */
     @Override
     public List<ReportDTO> nextPageReports(String reporterId, Integer reportOffset) throws SocialNewsServiceException{
         try {
@@ -177,12 +149,6 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    /**
-     * Remove a reader from the databases
-     *
-     * @param toRemoveReaderId id associated to the reader to remove
-     * @throws SocialNewsServiceException in case of failure of the remove operation
-     */
     @Override
     public void removeReader(String toRemoveReaderId) throws SocialNewsServiceException {
         try {
@@ -196,12 +162,6 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    /**
-     * Remove a reporter from the databases
-     *
-     * @param toRemoveReporterId id associated to the reporter to remove
-     * @throws SocialNewsServiceException in case of failure of the remove operation
-     */
     @Override
     public void removeReporter(String toRemoveReporterId) throws SocialNewsServiceException {
         try {
@@ -215,12 +175,6 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    /**
-     * Remove a report from the database
-     *
-     * @param reportId id associated to the report to remove
-     * @throws SocialNewsServiceException in case of failure of the remove operation
-     */
     @Override
     public void removeReport(String reportId) throws SocialNewsServiceException{
         try{
@@ -234,13 +188,6 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    /**
-     * Computes the statistics specified by arguments and pack them into a DTO containing the results
-     *
-     * @param statistics series of statistics that must be computed
-     * @return statistic results grouped into a DTO objects
-     * @throws SocialNewsServiceException in case of failure of the operation
-     */
     @Override
     public StatisticPageDTO computeStatistics(Statistic... statistics) throws SocialNewsServiceException {
         try {
@@ -287,12 +234,6 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    /**
-     * Retrieve the top 5 most popular reporters of the system
-     *
-     * @return list of ReporterDTO objects containing basic information of the most popular reporters
-     * @throws SocialNewsServiceException in case of failure of the operation
-     */
     @Override
     public List<ReporterDTO> rankReportersByPopularity() throws SocialNewsServiceException{
         try {

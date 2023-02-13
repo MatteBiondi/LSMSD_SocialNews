@@ -63,18 +63,51 @@ public class MongoReaderDAO extends MongoDAO<Reader> {
 
     }
 
-    public List<Reader> allReaders(Integer pageSize) throws SocialNewsDataAccessException {
-        return allReaders(null, pageSize);
-    }
-
-    public List<Reader> allReaders(Reader offset, Integer pageSize) throws SocialNewsDataAccessException {
+    public List<Reader> allReadersPrev(Reader filter, Reader offset, Integer pageSize) throws SocialNewsDataAccessException {
         try{
             ArrayList<Reader> readers = new ArrayList<>();
-            Bson filter = Filters.exists("isAdmin", false);
+            Bson filterDoc = Filters.exists("isAdmin", false);
 
             if(offset != null)
-                filter = Filters.and(
-                        filter,
+                filterDoc = Filters.and(
+                        filterDoc,
+                        Filters.or(
+                                Filters.and(
+                                        Filters.lte("fullName", offset.getFullName()),
+                                        Filters.lt("_id", offset.getId())
+                                ),
+                                Filters.lt("fullName", offset.getFullName())
+                        ));
+
+            if(filter != null && filter.getEmail() != null && !filter.getEmail().isEmpty()){
+                filterDoc = Filters.and(filterDoc, Filters.regex("email", filter.getEmail()));
+            }
+
+            List<Bson> stages = new ArrayList<>();
+            stages.add(Aggregates.match(filterDoc));
+            stages.add(Aggregates.project(Projections.exclude("password")));
+            stages.add(Aggregates.sort(Sorts.descending("fullName", "_id")));
+            stages.add(Aggregates.limit(pageSize));
+            stages.add(Aggregates.sort(Sorts.ascending("fullName", "_id")));
+
+            getCollection().aggregate(stages).into(readers);
+
+            return readers;
+        }
+        catch (MongoException me){
+            me.printStackTrace();
+            throw new SocialNewsDataAccessException("Query failed: " + me.getMessage());
+        }
+    }
+
+    public List<Reader> allReadersNext(Reader filter, Reader offset, Integer pageSize) throws SocialNewsDataAccessException {
+        try{
+            ArrayList<Reader> readers = new ArrayList<>();
+            Bson filterDoc = Filters.exists("isAdmin", false);
+
+            if(offset != null)
+                filterDoc = Filters.and(
+                        filterDoc,
                         Filters.or(
                                 Filters.and(
                                         Filters.gte("fullName", offset.getFullName()),
@@ -83,8 +116,13 @@ public class MongoReaderDAO extends MongoDAO<Reader> {
                                 Filters.gt("fullName", offset.getFullName())
                         ));
 
+            if(filter != null && filter.getEmail() != null && !filter.getEmail().isEmpty()){
+                filterDoc = Filters.and(filterDoc, Filters.regex("email", filter.getEmail()));
+            }
+
             getCollection()
-                    .find(filter)
+                    .find(filterDoc)
+                    .projection(Projections.exclude("password"))
                     .sort(Sorts.ascending("fullName", "_id"))
                     .limit(pageSize)
                     .into(readers);

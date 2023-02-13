@@ -41,22 +41,25 @@ public interface ReaderDAO {
     /**
      * Retrieves information about all the readers saved on database, limiting the list size to the dimension specified
      *
+     * @param filter reader object containing email pattern used to filter readers
+     * @param offset reader from which the query starts to retrieve information in revers order
      * @param pageSize number of readers to retrieve
      * @return list of reader objects containing all the information
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    List<Reader> allReaders(Integer pageSize) throws SocialNewsDataAccessException;
+    List<Reader> allReadersPrev(Reader filter, Reader offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
      * Retrieves information about all the readers saved on database, limiting the list size to the dimension specified,
      * starting from the reader specified as argument. It allows the implementation of pagination of the readers
      *
+     * @param filter reader object containing email pattern used to filter readers
      * @param offset reader from which the query starts to retrieve information
      * @param pageSize number of readers to retrieve
      * @return list of reader objects containing all the information
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    List<Reader> allReaders(Reader offset, Integer pageSize) throws SocialNewsDataAccessException;
+    List<Reader> allReadersNext(Reader filter, Reader offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
      *Remove a reader from the database and the associated comments

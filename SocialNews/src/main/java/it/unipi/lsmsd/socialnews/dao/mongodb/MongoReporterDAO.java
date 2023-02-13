@@ -140,17 +140,13 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
         }
     }
 
-    public List<Reporter> allReporters(Integer pageSize) throws SocialNewsDataAccessException {
-        return allReporters(null, pageSize);
-    }
-
-    public List<Reporter> allReporters(Reporter offset, Integer pageSize) throws SocialNewsDataAccessException {
+    public List<Reporter> allReportersPrev(Reporter filter, Reporter offset, Integer pageSize) throws SocialNewsDataAccessException {
         try{
             ArrayList<Reporter> reporters = new ArrayList<>();
-            Bson filter = Filters.exists("email", true);
+            Bson filterDoc = Filters.exists("email", true);
             if(offset != null)
-                filter = Filters.and(
-                        filter,
+                filterDoc = Filters.and(
+                        filterDoc,
                         Filters.or(
                                 Filters.and(
                                         Filters.gte("fullName", offset.getFullName()),
@@ -159,12 +155,53 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
                                 Filters.gt("fullName", offset.getFullName())
                         ));
 
+            if(filter != null && filter.getEmail() != null && !filter.getEmail().isEmpty()) {
+                filterDoc = Filters.and(filterDoc, Filters.regex("email", filter.getEmail()));
+            }
+
+            List<Bson> stages = new ArrayList<>();
+
+            stages.add(Aggregates.match(filterDoc));
+            stages.add(Aggregates.project(Projections.exclude("password")));
+            stages.add(Aggregates.sort(Sorts.descending("fullName", "_id")));
+            stages.add(Aggregates.limit(pageSize));
+            stages.add(Aggregates.sort(Sorts.ascending("fullName", "_id")));
+
+            getCollection().aggregate(stages).into(reporters);
+
+            return reporters;
+        }
+        catch (MongoException me){
+            me.printStackTrace();
+            throw new SocialNewsDataAccessException("Query failed: " + me.getMessage());
+        }
+    }
+
+    public List<Reporter> allReportersNext(Reporter filter, Reporter offset, Integer pageSize) throws SocialNewsDataAccessException {
+        try{
+            ArrayList<Reporter> reporters = new ArrayList<>();
+            Bson filterDoc = Filters.exists("email", true);
+            if(offset != null)
+                filterDoc = Filters.and(
+                        filterDoc,
+                        Filters.or(
+                                Filters.and(
+                                        Filters.gte("fullName", offset.getFullName()),
+                                        Filters.gt("reporterId", offset.getReporterId())
+                                ),
+                                Filters.gt("fullName", offset.getFullName())
+                        ));
+
+            if(filter != null && filter.getEmail() != null && !filter.getEmail().isEmpty()) {
+                filterDoc = Filters.and(filterDoc, Filters.regex("email", filter.getEmail()));
+            }
+
             getCollection()
-                    .find(filter)
-                    .projection(Projections.exclude("posts"))
-                    .sort(Sorts.ascending("fullName", "reporterId"))
-                    .limit(pageSize)
-                    .into(reporters);
+                .find(filterDoc)
+                .projection(Projections.exclude("posts"))
+                .sort(Sorts.ascending("fullName", "reporterId"))
+                .limit(pageSize)
+                .into(reporters);
 
             return reporters;
         }

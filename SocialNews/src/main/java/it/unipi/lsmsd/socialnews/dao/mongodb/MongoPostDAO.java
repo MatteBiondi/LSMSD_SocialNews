@@ -34,11 +34,41 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
         }
     }
 
-    public List<Post> postsByReporterId(String reporterId, Integer pageSize) throws SocialNewsDataAccessException {
-        return postsByReporterId(reporterId, null, pageSize);
+    public List<Post> postsByReporterIdPrev(String reporterId, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
+        try{
+            List<Bson> stages = new ArrayList<>();
+
+            stages.add(Aggregates.match(Filters.eq("reporterId", reporterId)));
+            stages.add(Aggregates.unwind("$posts"));
+            if(offset != null){
+                stages.add(Aggregates.match(
+                        Filters.or(
+                                Filters.and(
+                                        Filters.gte("posts.timestamp", offset.getTimestamp()),
+                                        Filters.gt("posts._id", offset.getId())
+                                ),
+                                Filters.gt("posts.timestamp", offset.getTimestamp()))
+                ));
+            }
+            stages.add(Aggregates.sort(Sorts.ascending("posts.timestamp", "posts._id")));
+            stages.add(Aggregates.limit(pageSize));
+            stages.add(Aggregates.sort(Sorts.descending("posts.timestamp", "posts._id")));
+            stages.add(Aggregates.group("$reporterId",Accumulators.push("posts", "$posts")));
+
+            Reporter reporter = getCollection().aggregate(stages).first();
+
+            if(reporter == null)
+                return new ArrayList<>();// Empty list
+            else
+                return reporter.getPosts();
+        }
+        catch (MongoException me){
+            me.printStackTrace();
+            throw new SocialNewsDataAccessException("Query failed: " + me.getMessage());
+        }
     }
 
-    public List<Post> postsByReporterId(String reporterId, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
+    public List<Post> postsByReporterIdNext(String reporterId, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
         try{
             List<Bson> stages = new ArrayList<>();
 

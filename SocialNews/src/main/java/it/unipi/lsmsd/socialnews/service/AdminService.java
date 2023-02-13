@@ -29,40 +29,64 @@ public interface AdminService {
     /**
      * Retrieves information about readers ordered by name, up to a configured number of readers
      *
+     * @param readerFilter readerDTO object containing email pattern used to filter readers
      * @return list of readerDTO objects containing basic information
      * @throws SocialNewsServiceException in case of failure of the operation
      */
-    List<ReaderDTO> firstPageReaders() throws SocialNewsServiceException;
+    List<ReaderDTO> firstPageReaders(ReaderDTO readerFilter) throws SocialNewsServiceException;
 
+    /**
+     * Retrieves information about readers ordered by name starting from the offset passed as argument, up to a
+     * configured number of readers in revers order
+     *
+     * @param readerFilter readerDTO object containing email pattern used to filter readers
+     * @param readerOffset reader DTO containing id and fullName of the first reader in the current page
+     * @return list of readerDTO objects containing basic information
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    List<ReaderDTO> prevPageReaders(ReaderDTO readerFilter, ReaderDTO readerOffset) throws SocialNewsServiceException;
 
     /**
      * Retrieves information about readers ordered by name starting from the offset passed as argument, up to a
      * configured number of readers
      *
-     * @param readerOffset reader DTO containing id and fullName of the last reader in the previous page
+     * @param readerFilter readerDTO object containing email pattern used to filter readers
+     * @param readerOffset reader DTO containing id and fullName of the last reader in the current page
      * @return list of readerDTO objects containing basic information
      * @throws SocialNewsServiceException in case of failure of the operation
      */
-    List<ReaderDTO> nextPageReaders(ReaderDTO readerOffset) throws SocialNewsServiceException;
+    List<ReaderDTO> nextPageReaders(ReaderDTO readerFilter, ReaderDTO readerOffset) throws SocialNewsServiceException;
 
     /**
      * Retrieves information about reporters ordered by name, up to a configured number of reporters
      *
+     * @param reporterFilter reporterDTO object containing email pattern used to filter readers
      * @return list of reportersDTO objects containing basic information
      * @throws SocialNewsServiceException in case of failure of the operation
      */
-    List<ReporterDTO> firstPageReporters() throws SocialNewsServiceException;
+    List<ReporterDTO> firstPageReporters(ReporterDTO reporterFilter) throws SocialNewsServiceException;
 
+    /**
+     * Retrieves information about reporters ordered by name starting from the offset passed as argument, up to a
+     * configured number of reporters in reverse order
+     *
+     * @param reporterFilter reporterDTO object containing email pattern used to filter readers
+     * @param reporterOffset reporter DTO containing reporterId and fullName of the first reporter in the current page
+     * @return list of reporterDTO objects containing basic information
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    List<ReporterDTO> prevPageReporters(ReporterDTO reporterFilter, ReporterDTO reporterOffset) throws SocialNewsServiceException;
 
     /**
      * Retrieves information about reporters ordered by name starting from the offset passed as argument, up to a
      * configured number of reporters
      *
-     * @param reporterOffset reporter DTO containing reporterId and fullName of the last reporter in the previous page
+     * @param reporterFilter reporterDTO object containing email pattern used to filter readers
+     * @param reporterOffset reporter DTO containing reporterId and fullName of the last reporter in the current page
      * @return list of reporterDTO objects containing basic information
      * @throws SocialNewsServiceException in case of failure of the operation
      */
-    List<ReporterDTO> nextPageReporters(ReporterDTO reporterOffset) throws SocialNewsServiceException;
+    List<ReporterDTO> nextPageReporters(ReporterDTO reporterFilter, ReporterDTO reporterOffset) throws SocialNewsServiceException;
 
     /**
      * Retrieves information about report, ordered by id, associated to a reporter, up to a configured number of report
