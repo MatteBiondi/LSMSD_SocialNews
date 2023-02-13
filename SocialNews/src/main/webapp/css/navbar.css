@@ -1,66 +1,50 @@
-body {
-    margin: 0;
+.navbar-top {
+    position: sticky !important;
+    top: 0;
+    z-index: 2;
+    border-bottom: 2px solid #0d6efd ;
 }
-
 .navbar-brand {
     margin: 15px;
-    font-family: Garamond;
-    font-weight: bold;
-    font-size: xx-large;
-    color: white;
+    padding: 0;
 }
 
-.navbar {
-    margin: 0;
-    padding: 15px;
-    background-color: #002266;
+#search {
+    margin: 15px;
+    padding: 0;
 }
 
-.form-control {
-    border: none;
-    background-color: transparent;
+#search-chooser{
+    border-radius: 0 5px 5px 0;
 }
 
-#category-select {
-    background-color: transparent;
+#icons {
+    margin: 15px;
+    padding: 0;
 }
 
-.nav-button {
-    color: #002266;
-    border-color: transparent;
-    transition: opacity 0.5s ease-in-out;
-    background-color: transparent;
+#search-clear{
+    display: none;
+    align-self: center;
+    margin: 5px;
+    color: red;
 }
 
-.btn-outline-primary:hover {
-    opacity: 0.5;
-}
-
-.form-inline {
-    float: right;
-}
-
-.btn-group {
-    float: right;
-}
-
-.fas {
+.bi{
     font-size: 25px;
-    color: white;
 }
 
-.form-control {
-    height: 25px;
-    width: 170px;
-    font-family: Garamond;
-    font-size: 20px;
-    color: lightgrey;
-}
-
-input[type="text"] {
-    outline: none;
-}
-
-.navbar-brand {
+#logo a,
+#logo a:focus {
+    color: inherit;
     text-decoration: none;
+}
+
+#user{
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#logo{
+    margin-left: 15px;
 }
