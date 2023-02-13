@@ -50,16 +50,15 @@
             <div class="mb-3">
                 <label class="form-label" for="gender">Gender: </label>
                 <select class="form-select" id="gender" name="gender" required>
-                    <option>Woman</option>
-                    <option>Man</option>
-                    <option>I don't want to specify</option>
+                    <option>Male</option>
+                    <option>Female</option>
                 </select>
             </div>
 
             <!-- Country field -->
             <div class="mb-3">
                 <label class="form-label" for="country">Country: </label>
-                <select class="form-select country-field" data-live-search="true" id="country" name="country" required></select>
+                <select class="form-select country-field bfh-countries" data-live-search="true" id="country" name="country" required></select>
             </div>
 
             <!-- Password field -->
