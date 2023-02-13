@@ -10,7 +10,6 @@ body {
 
 #main-info {
     margin-bottom: 2%;
-    dispay: flex;
 }
 
 #reporter-name {
@@ -105,12 +104,27 @@ h2{
 }
 
 .show-comm {
-    padding-bottom: 10px;
-    text-align: center;
+    border: none;
+    background-color: transparent;
+    font-size: 22px;
+    color: grey;
+    margin-bottom: 2%;
 }
 
 .show-comm:hover {
     opacity: 70%;
+}
+
+.search-result > header {
+    text-align: right;
+}
+
+.search-result > footer {
+    font-style: italic;
+}
+
+#show-comm-div {
+    text-align: center;
 }
 
 .option {
@@ -119,6 +133,10 @@ h2{
     transform: translateX(20%);
     margin-left: auto;
     margin-right: 0;
+
+    border: none;
+    background-color: transparent;
+    color: grey;
 }
 
 .option:hover {
