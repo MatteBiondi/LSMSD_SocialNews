@@ -1,0 +1,31 @@
+#logo{
+    margin: 25px;
+}
+
+#logo-img{
+    max-height: 10vh;
+    display: none;
+}
+
+.icon-button{
+    color: black;
+    margin: 15px;
+    cursor: pointer;
+}
+
+.icon-button:hover{
+    color: inherit;
+}
+
+#user{
+    margin: 25px;
+}
+
+.focus{
+    color: #0d6efd;
+}
+
+
+.focus:hover{
+    color: #0d6efd !important;
+}

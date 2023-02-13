@@ -1,8 +1,5 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin/admin.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
 
 <nav class="navbar bg-light">
     <div id="logo">
@@ -20,7 +17,7 @@
                 <a class="icon-button" href="${pageContext.request.contextPath}/admin/homepage">
                     <i class="fs-3 bi bi-house-fill"></i>
                 </a>
-                <div class="icon-button dropdown">
+                <div class="icon-button dropdown ${param.page.equals("users") ? "focus":""}">
                     <span class="text-reset hidden-arrow dropdown-toggle" data-bs-toggle="dropdown">
                         <i class="fs-3 bi bi-people-fill"></i>
                     </span>
@@ -37,11 +34,13 @@
                         </li>
                     </ul>
                 </div>
-                <a class="icon-button" href="${pageContext.request.contextPath}/admin/dashboard">
-                    <i class="fs-3 bi bi-pie-chart-fill"></i>
-                </a>
-                <a class="icon-button" href="${pageContext.request.contextPath}/admin/addReporter">
+                <a class="icon-button ${param.page.equals("addReporter") ? "focus":""}"
+                   href="${pageContext.request.contextPath}/admin/addReporter">
                     <i class="fs-3 bi bi-person-plus-fill"></i>
+                </a>
+                <a class="icon-button ${param.page.equals("dashboard") ? "focus":""}"
+                                       href="${pageContext.request.contextPath}/admin/dashboard">
+                    <i class="fs-3 bi bi-pie-chart-fill"></i>
                 </a>
             </div>
         </c:if>

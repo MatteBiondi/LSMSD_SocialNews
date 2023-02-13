@@ -1,0 +1,18 @@
+.row{
+    justify-content: space-evenly;
+    margin: 0 !important;
+}
+
+.col-sm-6{
+    width: 35% !important;
+}
+
+.wrapper{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+    column-gap: 15px;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}

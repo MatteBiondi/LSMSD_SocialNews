@@ -5,6 +5,7 @@ import it.unipi.lsmsd.socialnews.dao.neo4j.Neo4jConnection;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
 import it.unipi.lsmsd.socialnews.service.util.ServiceWorkerPool;
 import it.unipi.lsmsd.socialnews.service.util.Util;
+import it.unipi.lsmsd.socialnews.servlet.admin.UsersServlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.servlet.*;
@@ -32,6 +33,7 @@ public class ConfigListener implements ServletContextListener {
             throw new RuntimeException("Failed to load properties");
         }
         Util.configure(properties);
+        UsersServlet.setPageSize(Integer.valueOf(properties.getProperty("listUserPageSize")));
         ServiceWorkerPool.getPool();
         logger.info("Configuration complete");
     }
