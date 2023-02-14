@@ -1,8 +1,16 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <jsp:useBean id="pageSize" scope="request" type="java.lang.Integer"/>
-
+<c:set
+        var="baseURL"
+        value="${fn:replace(
+            pageContext.request.requestURL,
+            fn:substring(pageContext.request.requestURI, 0, fn:length(pageContext.request.requestURI)),
+            pageContext.request.contextPath
+        )}"
+/>
 
 <html lang="en">
 <head>
@@ -16,17 +24,19 @@
 </head>
 
 <body>
+
 <header id="header">
     <jsp:include page="../../common/admin/topNavbar.jsp" >
         <jsp:param name="page" value="users" />
     </jsp:include>
 </header>
+
 <section id="content">
     <zing-grid id="users-table" caption="Registered ${param.type}" search page-size="${pageSize}" align="center"
                zebra>
         <zg-data>
             <zg-param name="src"
-                      value="http://localhost:8080/SocialNews_war_exploded/admin/users?type=${param.type}&data=true">
+                      value="${baseURL}/admin/users?type=${param.type}&data=true">
             </zg-param>
             <zg-param name="recordPath" value="users"></zg-param>
             <!-- PAGING -->
@@ -38,11 +48,8 @@
             <!-- SEARCH -->
             <zg-param name="searchKey" value="search"></zg-param>
             <!-- DELETE -->
-            <zg-param name="deleteOptions" value="{
-                      method: 'DELETE',
-                      src:'http://localhost:8080/SocialNews_war_exploded/admin/users',
-                      queryString:'?type=${param.type}'
-            }">
+            <zg-param name="deleteOptions"
+                      value='{"method":"DELETE", "src":"${baseURL}/admin/users", "queryString":"?type=${param.type}"}'>
             </zg-param>
         </zg-data>
         <c:choose>
