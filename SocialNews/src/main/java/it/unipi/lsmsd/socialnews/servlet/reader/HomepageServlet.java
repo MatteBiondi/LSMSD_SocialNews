@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-@WebServlet(name = "HomepageServlet", value = "/reader/homepage", loadOnStartup = 0)
+@WebServlet(name = "ReaderHomepageServlet", value = "/reader/homepage", loadOnStartup = 0)
 public class HomepageServlet extends HttpServlet {
 
     private static final Logger LOGGER = Logger.getLogger(HomepageServlet.class.getName());

@@ -24,7 +24,7 @@
 }
 
 #search-clear{
-    display: none;
+    visibility:hidden;
     align-self: center;
     margin: 5px;
     color: red;
@@ -47,4 +47,8 @@
 
 #logo{
     margin-left: 15px;
+}
+
+.search-item{
+    cursor: pointer;
 }

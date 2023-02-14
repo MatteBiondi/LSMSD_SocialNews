@@ -11,7 +11,7 @@
 
 <nav class="navbar-top navbar navbar-light bg-light">
     <div id="logo">
-        <a class="navbar-brand" href="${pageContext.request.contextPath}/${param.userType}/homepage">
+        <a class="navbar-brand" href="${pageContext.request.contextPath}/${sessionScope.userType}/homepage">
             <h1 class="fs-3">
                 <!--img id="logo-img" src="${pageContext.request.contextPath}/images/icon.svg" alt="Logo"
                          class="d-inline-block align-text-middle img-fluid"-->
@@ -19,7 +19,7 @@
             </h1>
         </a>
     </div>
-    <c:if test="${ param.userType == \"reader\" }">
+    <c:if test="${ sessionScope.userType == \"reader\" }">
         <form method="GET">
             <div class="d-flex align-items-center" id="search">
                 <div class="input-group">
@@ -41,10 +41,10 @@
     </c:if>
     <div class="d-flex flex-row align-items-center" id="icons">
         <div class="d-flex flex-row align-items-center">
-            <a class="icon-button" href="${pageContext.request.contextPath}/${param.userType}/homepage">
+            <a class="icon-button" href="${pageContext.request.contextPath}/${sessionScope.userType}/homepage">
                 <i class="fs-3 bi bi-house"></i>
             </a>
-            <a class="icon-button" href="${pageContext.request.contextPath}/${param.userType}/statistics">
+            <a class="icon-button" href="${pageContext.request.contextPath}/${sessionScope.userType}/statistics">
                 <i class="fs-3 bi bi-bar-chart"></i>
             </a>
         </div>
@@ -54,9 +54,9 @@
                 <i class="bi bi-gear fs-3"></i>
             </span>
             <ul class="dropdown-menu dropdown-menu-end">
-                <c:if test="${ param.userType == \"reader\" }">
+                <c:if test="${ sessionScope.userType == \"reader\" }">
                     <li>
-                        <a id="profile" class="dropdown-item" href="${pageContext.request.contextPath}/${param.userType}/profile">My Profile</a>
+                        <a id="profile" class="dropdown-item" href="${pageContext.request.contextPath}/${sessionScope.userType}/profile">My Profile</a>
                     </li>
                 </c:if>
                 <li>

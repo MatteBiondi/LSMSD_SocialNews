@@ -20,9 +20,7 @@
 </head>
 <body>
     <!-- Navbar section -->
-    <jsp:include page="../../common/navbar.jsp">
-        <jsp:param name="userType" value="reader" />
-    </jsp:include>
+    <jsp:include page="../../common/navbar.jsp"/>
 
     <!-- User information content -->
     <div class="container py-5">
