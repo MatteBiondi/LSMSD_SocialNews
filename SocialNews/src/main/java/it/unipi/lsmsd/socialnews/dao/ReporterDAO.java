@@ -59,15 +59,18 @@ public interface ReporterDAO {
     Reporter reporterByReporterId(String reporterId, Post offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
-     * Retrieves information about all the reporters saved on database that matches the fullName specified, excluding
-     * posts, limiting the list size to the dimension specified
+     * Retrieves information about all the reporter saved on database that matches the fullName specified, excluding
+     * posts, limiting the list size to the dimension specified, starting from the reporter specified as argument in
+     * reverse order.
+     * It allows the implementation of pagination of the reporters
      *
      * @param fullNamePattern full name regex pattern, matches all full names that contains a prefix in any of its word
+     * @param offset reporter from which the query starts to retrieve information
      * @param pageSize number of reporters to retrieve
      * @return list of reporter objects containing all the information, excluding posts
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    List<Reporter> reportersByFullName(String fullNamePattern, Integer pageSize) throws SocialNewsDataAccessException;
+    List<Reporter> reportersByFullNamePrev(String fullNamePattern, Reporter offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
      * Retrieves information about all the reporter saved on database that matches the fullName specified, excluding
@@ -80,7 +83,7 @@ public interface ReporterDAO {
      * @return list of reporter objects containing all the information, excluding posts
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    List<Reporter> reportersByFullName(String fullNamePattern, Reporter offset, Integer pageSize) throws SocialNewsDataAccessException;
+    List<Reporter> reportersByFullNameNext(String fullNamePattern, Reporter offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
      * Retrieves information about all the reporter saved on database, excluding posts, limiting the list size to the

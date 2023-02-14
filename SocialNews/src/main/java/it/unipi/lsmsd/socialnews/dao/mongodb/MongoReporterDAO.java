@@ -97,11 +97,47 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
         }
     }
 
-    public List<Reporter> reportersByFullName(String fullNamePattern, Integer pageSize) throws SocialNewsDataAccessException {
-        return reportersByFullName(fullNamePattern, null, pageSize);
+    public List<Reporter> reportersByFullNamePrev(String fullNamePattern, Reporter offset, Integer pageSize) throws SocialNewsDataAccessException {
+        List<Reporter> reporters = new ArrayList<>();
+        List<Bson> stages = new ArrayList<>();
+        StringBuilder regex = new StringBuilder();
+
+        String[] subPatterns = fullNamePattern.trim().split(" ");
+        Arrays.stream(subPatterns).forEach(subPattern -> regex.append(String.format("(?=.*\\b%s.*\\b)", subPattern)));
+        regex.append(".*");
+        Bson filter = Filters.and(
+                Filters.exists("email", true),
+                Filters.regex("fullName", regex.toString(),"i")
+        );
+
+        if(offset != null){
+            filter = Filters.and(
+                    filter,
+                    Filters.or(
+                            Filters.and(
+                                    Filters.lte("fullName", offset.getFullName()),
+                                    Filters.lt("reporterId", offset.getReporterId())
+                            ),
+                            Filters.lt("fullName", offset.getFullName())
+                    ));
+        }
+        stages.add(Aggregates.match(filter));
+        stages.add(Aggregates.project(Projections.include("fullName","reporterId", "picture")));
+        stages.add(Aggregates.sort(Sorts.descending("fullName", "reporterId")));
+        stages.add(Aggregates.limit(pageSize));
+        stages.add(Aggregates.sort(Sorts.ascending("fullName", "reporterId")));
+
+        try{
+            getCollection().aggregate(stages).into(reporters);
+            return reporters;
+        }
+        catch (MongoException me){
+            me.printStackTrace();
+            throw new SocialNewsDataAccessException("Query failed: " + me.getMessage());
+        }
     }
 
-    public List<Reporter> reportersByFullName(String fullNamePattern, Reporter offset, Integer pageSize) throws SocialNewsDataAccessException {
+    public List<Reporter> reportersByFullNameNext(String fullNamePattern, Reporter offset, Integer pageSize) throws SocialNewsDataAccessException {
         ArrayList<Reporter> reporters = new ArrayList<>();
 
         StringBuilder regex = new StringBuilder();
@@ -128,7 +164,7 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
             getCollection()
                     .find(filter)
                     .limit(pageSize)
-                    .projection(Projections.exclude("posts"))
+                    .projection(Projections.include("fullName","reporterId", "picture"))
                     .sort(Sorts.ascending("fullName", "reporterId"))
                     .into(reporters);
 
