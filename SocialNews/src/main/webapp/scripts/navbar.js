@@ -11,8 +11,10 @@ $(document).ready(() => {
     let search_clear = $("#search-clear");
     let search_button = $("#search-button");
 
-    search_text.attr("placeholder",`${DEFAULT_SEARCH}:`);
-    sessionStorage.setItem("searchKey", DEFAULT_SEARCH);
+    let searchKey = sessionStorage.getItem("searchKey");
+    searchKey = searchKey === null? DEFAULT_SEARCH : searchKey;
+    search_text.attr("placeholder",`${searchKey}:`);
+    sessionStorage.setItem("searchKey", searchKey);
 
 
     // Define event handlers
@@ -28,14 +30,14 @@ $(document).ready(() => {
         "click",
         () => {
             search_text.val("");
-            search_clear.hide();
+            search_clear.css("visibility", "hidden");
         }
     );
 
     search_text.on(
         "input",
         () => {
-            search_clear.css("display", search_text.val() !== "" ? "inherit":"none");
+            search_clear.css("visibility", search_text.val() !== "" ? "inherit":"hidden");
         });
 
     search_text.on(
@@ -55,13 +57,14 @@ $(document).ready(() => {
         () => {
             let searchKey = sessionStorage.getItem("searchKey");
             let searchValue = search_text.val();
-            let page = 1;
+
             if(searchValue === ""){
                 alert(EMPTY_FIELD_MESSAGE);
                 return;
             }
-            sessionStorage.removeItem("searchKey");
-            window.location.href=`search?by=${searchKey}&value=${searchValue}&page=${page}`
+            sessionStorage.setItem("searchValue", searchValue);
+
+            window.location.href=`search?by=${searchKey}&value=${searchValue}`
         }
     );
 })
