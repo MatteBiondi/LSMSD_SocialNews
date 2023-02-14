@@ -2,7 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 
 <div class="col-sm-6">
-    <div class="card card-container" style="width: 18rem;" id = "${param.id}">
+    <div class="card card-container search-result" style="width: 18rem;" id="${param.id}">
         <img src="${param.image}" class="card-img-top" alt="Profile image">
         <div class="card-body">
             <h5 class="card-title">${param.fullName}</h5>
