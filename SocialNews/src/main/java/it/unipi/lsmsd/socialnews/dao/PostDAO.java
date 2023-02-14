@@ -53,7 +53,7 @@ public interface PostDAO {
      * contain the hashtag
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    List<Reporter> postsByHashtag(String hashtag, Integer pageSize) throws SocialNewsDataAccessException;
+    List<Reporter> postsByHashtagPrev(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
      * Retrieves the posts, along with basic information of the reporter associated, that contain the specified
@@ -66,7 +66,7 @@ public interface PostDAO {
      * contain the hashtag
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    List<Reporter> postsByHashtag(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException;
+    List<Reporter> postsByHashtagNext(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
      * Remove a post and associated comments from the system

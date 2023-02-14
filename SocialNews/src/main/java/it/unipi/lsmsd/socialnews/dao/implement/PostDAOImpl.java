@@ -44,13 +44,13 @@ public class PostDAOImpl implements PostDAO {
     }
 
     @Override
-    public List<Reporter> postsByHashtag(String hashtag, Integer pageSize) throws SocialNewsDataAccessException {
-        return postsByHashtag(hashtag, null, pageSize);
+    public List<Reporter> postsByHashtagPrev(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
+        return  mongoPostDAO.postsByHashtagPrev(hashtag, offset, pageSize);
     }
 
     @Override
-    public List<Reporter> postsByHashtag(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
-        return mongoPostDAO.postsByHashtag(hashtag, offset, pageSize);
+    public List<Reporter> postsByHashtagNext(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
+        return mongoPostDAO.postsByHashtagNext(hashtag, offset, pageSize);
     }
 
     @Override

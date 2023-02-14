@@ -37,6 +37,17 @@ public interface PostService {
 
     /**
      * Retrieves all the posts that contains a hashtag passed as parameter starting from the offset passed as argument,
+     * up to a configured number of posts in reverse order
+     *
+     * @param hashtag hashtag to search in the posts
+     * @param postOffset post DTO containing the id of the last post in the previous page
+     * @return list of posts that contain the hashtag
+     * @throws SocialNewsServiceException in case of failure of the query operation
+     */
+    List<PostDTO> prevPagePostsByHashtag(String hashtag, PostDTO postOffset) throws SocialNewsServiceException;
+
+    /**
+     * Retrieves all the posts that contains a hashtag passed as parameter starting from the offset passed as argument,
      * up to a configured number of posts
      *
      * @param hashtag hashtag to search in the posts

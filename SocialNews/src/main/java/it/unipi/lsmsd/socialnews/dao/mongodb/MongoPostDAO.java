@@ -101,7 +101,47 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
         }
     }
 
-    public List<Reporter> postsByHashtag(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
+    public List<Reporter> postsByHashtagPrev(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
+        try{
+            List<Reporter> reporters = new ArrayList<>();
+            List<Bson> stages = new ArrayList<>();
+            stages.add(Aggregates.match(Filters.eq("posts.hashtags", hashtag)));
+            stages.add(Aggregates.project(Projections.fields(
+                    Projections.include("reporterId"),
+                    Projections.computed(
+                            "posts",
+                            Document.parse(String.format(
+                                    "{$filter:{input:'$posts',as:'p',cond:{$in:['%s','$$p.hashtags']}}}", hashtag))))
+            ));
+            stages.add(Aggregates.unwind("$posts"));
+            if(offset != null){
+                stages.add(Aggregates.match(
+                        Filters.or(
+                                Filters.and(
+                                        Filters.gte("posts.timestamp", offset.getTimestamp()),
+                                        Filters.gt("posts._id", offset.getId())
+                                ),
+                                Filters.gt("posts.timestamp", offset.getTimestamp()))
+                ));
+            }
+            stages.add(Aggregates.sort(Sorts.ascending("posts.timestamp", "posts._id")));
+            stages.add(Aggregates.limit(pageSize));
+            stages.add(Aggregates.sort(Sorts.descending("posts.timestamp", "posts._id")));
+            stages.add(Aggregates.group("$reporterId",
+                    List.of(
+                            Accumulators.push("posts", "$posts"),
+                            Accumulators.first("reporterId","$reporterId")))
+            );
+            getCollection().aggregate(stages).into(reporters);
+            return reporters;
+        }
+        catch (MongoException me){
+            me.printStackTrace();
+            throw new SocialNewsDataAccessException("Query failed: " + me.getMessage());
+        }
+    }
+
+    public List<Reporter> postsByHashtagNext(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
         try{
             List<Reporter> reporters = new ArrayList<>();
             List<Bson> stages = new ArrayList<>();
