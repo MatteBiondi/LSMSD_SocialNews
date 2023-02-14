@@ -68,13 +68,13 @@ public class ReporterDAOImpl implements ReporterDAO {
     }
 
     @Override
-    public List<Reporter> reportersByFullName(String fullNamePattern, Integer pageSize) throws SocialNewsDataAccessException {
-        return mongoReporterDAO.reportersByFullName(fullNamePattern, pageSize);
+    public List<Reporter> reportersByFullNamePrev(String fullNamePattern, Reporter offset, Integer pageSize) throws SocialNewsDataAccessException {
+        return mongoReporterDAO.reportersByFullNamePrev(fullNamePattern, offset, pageSize);
     }
 
     @Override
-    public List<Reporter> reportersByFullName(String fullNamePattern, Reporter offset, Integer pageSize) throws SocialNewsDataAccessException {
-        return mongoReporterDAO.reportersByFullName(fullNamePattern, offset, pageSize);
+    public List<Reporter> reportersByFullNameNext(String fullNamePattern, Reporter offset, Integer pageSize) throws SocialNewsDataAccessException {
+        return mongoReporterDAO.reportersByFullNameNext(fullNamePattern, offset, pageSize);
     }
 
     @Override

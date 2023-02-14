@@ -11,7 +11,7 @@ public class Reporter extends User {
     String location;
     Date dateOfBirth;
     String cell;
-    Byte[] picture;
+    String picture;
     Integer numOfReport;
     List<Post> posts;
 
@@ -59,11 +59,11 @@ public class Reporter extends User {
         this.cell = cell;
     }
 
-    public Byte[] getPicture() {
+    public String getPicture() {
         return picture;
     }
 
-    public void setPicture(Byte[] picture) {
+    public void setPicture(String picture) {
         this.picture = picture;
     }
 
@@ -95,7 +95,7 @@ public class Reporter extends User {
                 ", location='" + location + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
                 ", cell='" + cell + '\'' +
-                ", picture=" + Arrays.toString(picture) +
+                ", picture=" + picture +
                 ", numOfReport=" + numOfReport +
                 ", posts=" + posts +
                 '}';

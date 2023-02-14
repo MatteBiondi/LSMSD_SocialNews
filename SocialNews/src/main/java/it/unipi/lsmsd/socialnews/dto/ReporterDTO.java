@@ -8,12 +8,12 @@ public class ReporterDTO extends UserDTO{
     String location;
     Date dateOfBirth;
     String cell;
-    Byte[] picture;
+    String picture;
 
     public ReporterDTO(){ }
 
     public ReporterDTO(String email, String password, String firstName, String lastName, String gender, String location,
-                       Date dateOfBirth, String cell, Byte[] picture) {
+                       Date dateOfBirth, String cell, String picture) {
         super(email, password,firstName, lastName);
         this.gender = gender;
         this.location = location;
@@ -54,11 +54,11 @@ public class ReporterDTO extends UserDTO{
         this.cell = cell;
     }
 
-    public Byte[] getPicture() {
+    public String getPicture() {
         return picture;
     }
 
-    public void setPicture(Byte[] picture) {
+    public void setPicture(String picture) {
         this.picture = picture;
     }
 
@@ -73,7 +73,7 @@ public class ReporterDTO extends UserDTO{
                 ", location='" + location + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
                 ", cell='" + cell + '\'' +
-                ", picture=" + Arrays.toString(picture) +
+                ", picture=" + picture +
                 '}';
     }
 }
