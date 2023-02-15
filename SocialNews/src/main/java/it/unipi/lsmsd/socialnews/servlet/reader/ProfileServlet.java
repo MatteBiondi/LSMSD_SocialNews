@@ -50,9 +50,4 @@ public class ProfileServlet extends HttpServlet {
         String targetJSP = "/pages/jsp/reader/profile.jsp";
         request.getRequestDispatcher(targetJSP).forward(request, response);
     }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    }
 }

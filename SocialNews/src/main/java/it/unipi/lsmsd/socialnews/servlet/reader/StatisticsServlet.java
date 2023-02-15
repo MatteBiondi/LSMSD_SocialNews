@@ -46,9 +46,4 @@ public class StatisticsServlet extends HttpServlet {
 
         request.getRequestDispatcher(targetJSP).forward(request, response);
     }
-
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-    }
 }
