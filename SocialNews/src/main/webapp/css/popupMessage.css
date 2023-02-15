@@ -1,0 +1,9 @@
+#message{
+    position: fixed;
+    left: 30%;
+    top: 10%;
+    width: 40%;
+    max-height: 25%;
+    text-align: center;
+    z-index: 3;
+}
