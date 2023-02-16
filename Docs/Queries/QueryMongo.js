@@ -70,7 +70,7 @@ db.users.aggregate([
         default:-1,
         output: {
                 'count': { $sum: 1 },
-                'gender':{$first: {$cond: {if:{$in:['$gender', ['male','female']]}, then:'$gender', else:'other'}}}}}},
+                'gender':{$first: {$cond: {if:{$in:[{$toLower:'$gender'}, ['male','female']]}, then:'$gender', else:'Other'}}}}}},
     {$project:{_id:0}}
 ])
 

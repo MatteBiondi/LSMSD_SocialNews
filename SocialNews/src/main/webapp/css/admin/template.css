@@ -4,12 +4,11 @@
 @import "../popupMessage.css";
 
 #header{
-    min-height: 15%;
-    max-height: 20%;
+    height: 10%;
 }
 
 #content{
-    height: 80%;
+    height: 90%;
     width: 100%;
     overflow-x: hidden;
     overflow-y: scroll;

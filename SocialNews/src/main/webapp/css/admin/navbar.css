@@ -29,3 +29,8 @@
 .focus:hover{
     color: #0d6efd !important;
 }
+
+.navbar{
+    margin: 0;
+    padding: 0;
+}

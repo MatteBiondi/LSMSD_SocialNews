@@ -5,7 +5,7 @@ Object.defineProperty(String.prototype, 'capitalize', {
     enumerable: false
 });
 
-function showMessage(type, text){
+export function showMessage(type, text){
     $("#message").html(`
         <div class="alert alert-${type} alert-dismissible fade show" role="alert">
             <div>${text}</div>
@@ -16,3 +16,14 @@ function showMessage(type, text){
     let alert_elem = $('.alert');
     setTimeout(() => {alert_elem.alert("close"); alert_elem.parent().remove(alert_elem)}, 2000);
 }
+
+export function loadScript(url, callback){
+    $.ajax({
+        type: "GET",
+        url: url,
+        dataType: "script",
+        cache: true,
+        success: callback
+    });
+}
+

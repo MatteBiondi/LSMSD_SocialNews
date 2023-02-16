@@ -1,3 +1,6 @@
+import "../util.js"
+import {showMessage} from "../util.js";
+
 $(document).ready(() => {
     $('#country').countrypicker();
     $('#dob')[0].max = new Date().toISOString().split("T")[0];

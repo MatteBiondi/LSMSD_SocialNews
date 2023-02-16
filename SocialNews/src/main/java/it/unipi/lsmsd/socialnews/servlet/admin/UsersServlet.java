@@ -163,7 +163,7 @@ public class UsersServlet extends HttpServlet {
 
         try {
             if (type.equals("readers")){
-                // ServiceLocator.getAdminService().removeReader(userId); //TODO
+                ServiceLocator.getAdminService().removeReader(userId);
                 logger.info(userId);
             }
             else if (type.equals("reporters")){

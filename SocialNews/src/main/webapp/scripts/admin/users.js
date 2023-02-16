@@ -1,3 +1,5 @@
+import {loadScript} from "../util.js";
+
 function initGrid(){
     const zgRef = document.querySelector('zing-grid');
     zgRef.executeOnLoad(() => {
@@ -5,14 +7,7 @@ function initGrid(){
     })
 }
 
-$.ajax({
-    type: "GET",
-    url: "https://cdn.zinggrid.com/zinggrid.min.js",
-    dataType: "script",
-    cache: true,
-    success: initGrid
-});
-
+loadScript("https://cdn.zinggrid.com/zinggrid.min.js", initGrid)
 
 $(document).ready(() => {
     // const zgRef = $('#users-table')[0];

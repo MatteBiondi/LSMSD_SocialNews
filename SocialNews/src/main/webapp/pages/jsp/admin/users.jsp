@@ -17,7 +17,7 @@
     <meta charset="UTF-8">
     <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="${pageContext.request.contextPath}/scripts/admin/users.js"></script>
+    <script type="module" src="${pageContext.request.contextPath}/scripts/admin/users.js"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin/template.css">
     <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/images/icon.svg">
     <title>SocialNews</title>

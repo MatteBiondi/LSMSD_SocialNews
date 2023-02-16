@@ -7,18 +7,15 @@
     <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select-country@4.2.0/dist/js/bootstrap-select-country.min.js"></script>
-    <script src="${pageContext.request.contextPath}/scripts/admin/addReporter.js"></script>
-    <script src="${pageContext.request.contextPath}/scripts/util.js"></script>
-
+    <script type="module" src="${pageContext.request.contextPath}/scripts/admin/addReporter.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select-country@4.2.0/dist/css/bootstrap-select-country.min.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin/template.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin/addReporter.css">
-
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select-country@4.2.0/dist/css/bootstrap-select-country.min.css">
     <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/images/icon.svg">
     <title>SocialNews</title>
 </head>
 <body>
-<header>
+<header id="header">
     <jsp:include page="../../common/admin/topNavbar.jsp" >
         <jsp:param name="page" value="addReporter" />
     </jsp:include>
@@ -26,7 +23,7 @@
 <section id="content">
     <div id="message"></div>
     <div class="wrapper">
-        <div class="h3">Reporter information</div>
+        <div class="h4">Reporter information</div>
         <form id="reporter-form" class="row g-3 needs-validation" novalidate>
             <div class="col-md-6">
                 <label for="email" class="form-label">Email</label>
@@ -35,7 +32,7 @@
             <div class="col-md-6">
                 <label for="password" class="form-label">Password</label>
                 <input minlength="3" maxlength="16" type="password" name="password" class="form-control" id="password"
-                       required>
+                       required autocomplete="on">
             </div>
             <div class="col-md-6">
                 <label for="first-name" class="form-label">First Name</label>
