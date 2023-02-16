@@ -185,10 +185,10 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
                         filterDoc,
                         Filters.or(
                                 Filters.and(
-                                        Filters.gte("fullName", offset.getFullName()),
-                                        Filters.gt("reporterId", offset.getReporterId())
+                                        Filters.lte("fullName", offset.getFullName()),
+                                        Filters.lt("reporterId", offset.getReporterId())
                                 ),
-                                Filters.gt("fullName", offset.getFullName())
+                                Filters.lt("fullName", offset.getFullName())
                         ));
 
             if(filter != null && filter.getEmail() != null && !filter.getEmail().isEmpty()) {

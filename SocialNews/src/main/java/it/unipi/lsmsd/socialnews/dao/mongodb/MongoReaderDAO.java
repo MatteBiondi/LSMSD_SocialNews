@@ -165,13 +165,16 @@ public class MongoReaderDAO extends MongoDAO<Reader> {
                             .defaultBucket("-1")
                             .output(List.of(
                                     new BsonField("count", Document.parse("{ $sum: 1 }")),
-                                    new BsonField("gender", Document.parse("{$first: {$cond: {if:{$in:['$gender',['male','female']]}, then:'$gender', else:'other'}}}"))))));
+                                    new BsonField("gender", Document.parse("{$first: {$cond: " +
+                                            "{if:{$in:[{$toLower:'$gender'},['male','female']]}, then:'$gender', " +
+                                            "else:'Other'}}}"))))));
             stages.add(Aggregates.project(Projections.exclude("_id")));
 
             List<Document> docs = new ArrayList<>();
             getRawCollection("users").aggregate(stages).into(docs);
             ObjectMapper mapper = new ObjectMapper();
             ObjectNode obj = mapper.createObjectNode();
+
             for(Document doc : docs){
                 obj.put(doc.getString("gender"), doc.getInteger("count"));
             }

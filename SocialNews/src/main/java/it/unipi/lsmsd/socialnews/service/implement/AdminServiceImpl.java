@@ -230,7 +230,7 @@ public class AdminServiceImpl implements AdminService {
         }
         catch (ExecutionException | InterruptedException ex) {
             ex.printStackTrace();
-            throw new SocialNewsServiceException("Database error");
+            throw new SocialNewsServiceException("Database error: " + ex.getMessage());
         }
     }
 
