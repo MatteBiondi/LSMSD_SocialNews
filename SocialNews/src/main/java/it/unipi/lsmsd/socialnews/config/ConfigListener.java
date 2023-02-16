@@ -4,6 +4,7 @@ import it.unipi.lsmsd.socialnews.dao.mongodb.MongoConnection;
 import it.unipi.lsmsd.socialnews.dao.neo4j.Neo4jConnection;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
 import it.unipi.lsmsd.socialnews.service.util.ServiceWorkerPool;
+import it.unipi.lsmsd.socialnews.service.util.Statistic;
 import it.unipi.lsmsd.socialnews.service.util.Util;
 import it.unipi.lsmsd.socialnews.servlet.admin.UsersServlet;
 import org.slf4j.Logger;
@@ -12,7 +13,10 @@ import javax.servlet.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 
 @WebListener
@@ -34,6 +38,11 @@ public class ConfigListener implements ServletContextListener {
         }
         Util.configure(properties);
         UsersServlet.setPageSize(Integer.valueOf(properties.getProperty("listUserPageSize")));
+        Statistic.configure(
+                Integer.valueOf(properties.getProperty("defaultWindowSize")),
+                Integer.valueOf(properties.getProperty("defaultLastN")),
+                ChronoUnit.valueOf(properties.getProperty("defaultUnitOfTime"))
+        );
         ServiceWorkerPool.getPool();
         logger.info("Configuration complete");
     }

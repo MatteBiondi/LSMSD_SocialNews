@@ -8,17 +8,27 @@ public enum Statistic {
     NATIONALITY_STATISTIC("nationalityStatistic"),
     HOTTEST_MOMENTS_OF_DAY("hottestMomentsOfDay");
 
+    private static Integer defaultWindowSize;
+    private static Integer defaultLastN;
+    private static TemporalUnit defaultUnitOfTime;
+
     private final String key;
     private Integer windowSize;
     private Integer lastN;
     private TemporalUnit unitOfTime;
+
+    public static void configure(Integer defaultWindowSize, Integer defaultLastN, TemporalUnit defaultUnitOfTime){
+        Statistic.defaultWindowSize = defaultWindowSize;
+        Statistic.defaultLastN = defaultLastN;
+        Statistic.defaultUnitOfTime = defaultUnitOfTime;
+    }
 
     Statistic(String key){
         this.key = key;
     }
 
     public Integer getWindowSize() {
-        return windowSize;
+        return windowSize != null ? windowSize:defaultWindowSize;
     }
 
     private void setWindowSize(Integer windowSize) {
@@ -26,7 +36,7 @@ public enum Statistic {
     }
 
     public Integer getLastN() {
-        return lastN;
+        return lastN != null? lastN:defaultLastN;
     }
 
     private void setLastN(Integer lastN) {
@@ -34,7 +44,7 @@ public enum Statistic {
     }
 
     public TemporalUnit getUnitOfTime() {
-        return unitOfTime;
+        return unitOfTime != null ? unitOfTime:defaultUnitOfTime;
     }
 
     private void setUnitOfTime(TemporalUnit unitOfTime) {
