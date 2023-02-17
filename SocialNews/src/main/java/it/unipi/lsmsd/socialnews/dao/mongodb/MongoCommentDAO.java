@@ -106,7 +106,7 @@ public class MongoCommentDAO extends MongoDAO<Comment> {
                     Accumulators.sum("numOfComment",1)));
             stages.add(Aggregates.sort(Sorts.descending("numOfComment")));
             stages.add(Aggregates.limit(topN));
-
+            stages.add(Aggregates.project(Projections.exclude("_id")));
             List<Document> docs = new ArrayList<>();
             getRawCollection("comments").aggregate(stages).into(docs);
 

@@ -18,7 +18,7 @@ export function showMessage(type, text){
 }
 
 export function loadScript(url, callback){
-    $.ajax({
+    return $.ajax({
         type: "GET",
         url: url,
         dataType: "script",
