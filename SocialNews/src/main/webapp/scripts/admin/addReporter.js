@@ -61,22 +61,24 @@ async function submitForm(form, event) {
         });
     }
 
-    // Send request
-    let response = await $.ajax(
-        document.URL,
-        {
+    try{
+        // Send request
+        await $.ajax(document.URL, {
             method: 'post',
-            contentType: 'application/json',
+            contentType: 'json',
+            dataType:'json',
             data: JSON.stringify(reporter)
         });
 
-    // Show result
-    if(response['result'] === 'success'){
+        // Show result
         showMessage('success', 'Reporter registered successfully')
         form.removeClass('was-validated');
-        form[0].reset()
+        form[0].reset();
     }
-    else {
-        showMessage('danger', `Something went wrong: ${response['message'].toLowerCase()}`)
+    catch (error){
+        showMessage('danger', `Something went wrong: ${error['responseJSON']['message']}`);
     }
 }
+
+
+

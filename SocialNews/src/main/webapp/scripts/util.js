@@ -6,8 +6,8 @@ Object.defineProperty(String.prototype, 'capitalize', {
 });
 
 export function showMessage(type, text){
-    $("#message").html(`
-        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+    $("body").append(`
+        <div id="message" class="alert alert-${type} alert-dismissible fade show" role="alert">
             <div>${text}</div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`
