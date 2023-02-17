@@ -83,6 +83,7 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
                     Accumulators.first("reporterId","$reporterId"),
                     Accumulators.first("fullName","$fullName"),
                     Accumulators.first("gender","$gender"),
+                    Accumulators.first("dateOfBirth","$dateOfBirth"),
                     Accumulators.first("location","$location"),
                     Accumulators.first("date","$dateOfBirth"),
                     Accumulators.first("cell","$cell"),
