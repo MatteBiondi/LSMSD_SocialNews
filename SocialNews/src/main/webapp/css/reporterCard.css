@@ -1,3 +1,8 @@
 .card-container{
     margin-left: 15px;
 }
+
+.profile-photo{
+    max-width: 285px;
+    max-height: 285px;
+}
