@@ -1,10 +1,59 @@
-
 .widget{
-    width: 40%;
-    margin: 1%;
+    position: relative;
+    width: 45%;
+    color: white;
+    background: black;
     text-align: center;
+    margin: 5px;
+    padding: 5px;
 }
 
-#carousel-statistics{
+.controls{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.controls i{
+    margin: 10px;
+    font-size: 1.5rem;
+}
+
+.scrollbar-black::-webkit-scrollbar-track {
+    background-color: var(--bs-dark, black);
+}
+
+.scrollbar-black::-webkit-scrollbar {
+    width: 10px;
+    background-color: var(--bs-dark, black);
+}
+
+.scrollbar-black::-webkit-scrollbar-thumb {
+    border-right: solid 1px var(--bs-dark, black);
+    background-color: #F5F5F5;
+}
+
+.params{
+    width: 20vw;
+    padding: 5px;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.flex-column{
     height: 100%;
+}
+
+.widget-row{
+    min-height: 45%;
+}
+
+.spinner{
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
 }

@@ -4,13 +4,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin/template.css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin/dashboard.css">
     <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
     <script type="module" src="${pageContext.request.contextPath}/scripts/admin/dashboard.js"></script>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin/template.css">
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin/dashboard.css">
-
     <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/images/icon.svg">
     <title>SocialNews</title>
 </head>
@@ -21,88 +20,108 @@
     </jsp:include>
 </header>
 <section id="content">
-<div class="d-flex flex-column">
-    <div class="d-flex justify-content-around">
-        <div id="gender-statistic" class="widget">
-            <h1 class="h4">Gender statistic</h1>
-            <div>
+    <div class="d-flex flex-column">
+        <div class="widget-row d-flex justify-content-around">
+            <div id="gender-statistic" class="widget">
+                <h1 class="h4">Gender statistic</h1>
+                <div class="spinner d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
                 <div id='gender-statistic-pie'></div>
-                <div class="control">
-                    <!--button class="btn btn-primary">Reload</button-->
+                <div class="controls">
+                    <i class="reload bi bi-arrow-clockwise" data-statistic="genderStatistic"></i>
+                </div>
+            </div>
+            <div id="most-active-readers" class="widget">
+                <h1 class="h4">Most active readers</h1>
+                <div class="spinner d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div id="most-active-readers-grid"></div>
+                <div class="controls">
+                    <div class="dropdown settings">
+                        <i class="bi bi-gear gear" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                        <div class="dropdown-menu">
+                            <div class="input-group params">
+                                <label for="most-active-readers-counter" class="input-group-text">From last: </label>
+                                <input id="most-active-readers-counter" name="most-active-readers-counter"
+                                       class="form-control param" type="number" step="1" min="1" value="1"
+                                       data-param="lastN">
+                                <select id="most-active-readers-unit" aria-label="Period"
+                                        class="form-control form-select param" data-param="unitOfTime">
+                                    <option value="Hour">Hour</option>
+                                    <option value="Day">Day</option>
+                                    <option value="Week">Week</option>
+                                    <option value="Month" selected>Month</option>
+                                    <option value="Year">Year</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <i class="reload bi bi-arrow-clockwise" data-statistic="mostActiveReaders"></i>
                 </div>
             </div>
         </div>
-        <div id="most-active-readers"  class="widget">
-            <h1 class="h4">Most active readers</h1>
-            <div id="most-active-readers-grid"></div>
+        <div class="widget-row d-flex justify-content-around">
+            <div id="nationality-statistic" class="widget">
+                <h1 class="h4">Nationality statistic</h1>
+                <div class="spinner d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div id='nationality-statistic-pie'></div>
+                <div class="controls">
+                    <i class="reload bi bi-arrow-clockwise" data-statistic="nationalityStatistic"></i>
+                </div>
+            </div>
+            <div id="hottest-moment" class="widget">
+                <h1 class="h4">Most active moments of the day</h1>
+                <div class="spinner d-flex justify-content-center">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div id="hottest-moment-bar"></div>
+                <div class="controls">
+                    <div class="dropdown settings">
+                        <i class="bi bi-gear gear" data-bs-toggle="dropdown" aria-expanded="false"></i>
+                        <div class="dropdown-menu">
+                            <div class="input-group params">
+                                <label for="hottest-moment-count" class="input-group-text">From last: </label>
+                                <input class="form-control param" name="hottest-moment-count" type="number"
+                                       id="hottest-moment-count" step="1" min="1" value="1" data-param="lastN">
+                                <select id="hottest-moment-unit" name="hottest-moment-unit" aria-label="Period"
+                                        class="form-control form-select param" data-param="unitOfTime">
+                                    <option value="Hour">Hour</option>
+                                    <option value="Day">Day</option>
+                                    <option value="Week">Week</option>
+                                    <option value="Month" selected>Month</option>
+                                    <option value="Year">Year</option>
+                                </select>
+                            </div>
+                            <div class="input-group params">
+                                <label for="hottest-moment-window" class="input-group-text">Window size: </label>
+                                <select id="hottest-moment-window" aria-label="Period" data-param="windowSize"
+                                        class="form-control form-select param">
+                                    <option value="3" selected>3 hours</option>
+                                    <option value="4">4 hours</option>
+                                    <option value="6">6 hours</option>
+                                    <option value="12">12 hours</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <i class="reload bi bi-arrow-clockwise" data-statistic="hottestMomentsOfDay"></i>
+                </div>
+            </div>
         </div>
     </div>
-
-    <div class="d-flex justify-content-around">
-        <div id="nationality-statistic" class=" widget">
-            <h1 class="h4">Nationality statistic</h1>
-            <div id='nationality-statistic-pie'></div>
-        </div>
-        <div id="hottest-moment"  class=" widget">
-            <h1 class="h4">Most active moments of the day</h1>
-            <div id="hottest-moment-bar"></div>
-        </div>
-    </div>
-
-</div>
-
-    <!--div id="carousel-statistics" class="carousel slide carousel-dark" data-bs-ride="false">
-        <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carousel-statistics" data-bs-slide-to="0" class="active"
-                    aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carousel-statistics" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carousel-statistics" data-bs-slide-to="2" aria-label="Slide 3"></button>
-            <button type="button" data-bs-target="#carousel-statistics" data-bs-slide-to="3"
-                    aria-label="Slide 4"></button>
-        </div>
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <div class="d-flex justify-content-center">
-                    <div id="gender-statistic" class="widget">
-                        <h1 class="h4">Gender statistic</h1>
-                        <div id='gender-statistic-pie'></div>
-                    </div>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <div class="d-flex justify-content-center">
-                    <div id="nationality-statistic" class="widget">
-                        <h1 class="h4">Nationality statistic</h1>
-                        <div id='nationality-statistic-pie'></div>
-                    </div>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <div class="d-flex justify-content-center">
-                    <div id="most-active-readers" class="widget">
-                        <h1 class="h4">Most active readers</h1>
-                        <div id="most-active-readers-grid"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="carousel-item">
-                <div class="d-flex justify-content-center">
-                    <div id="hottest-moment" class="widget">
-                        <h1 class="h4">Most active moments of the day</h1>
-                        <div id="hottest-moment-bar"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carousel-statistics" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carousel-statistics" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-        </button>
-    </div-->
 </section>
+
 </body>
 </html>
