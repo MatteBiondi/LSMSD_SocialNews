@@ -210,12 +210,10 @@ public class AdminServiceImpl implements AdminService {
                                     () -> DAOLocator.getReaderDAO().genderStatistic());
                             case NATIONALITY_STATISTIC-> ServiceWorkerPool.getPool().submitTask(
                                     () -> DAOLocator.getReaderDAO().nationalityStatistic());
-                            case HOTTEST_MOMENTS_OF_DAY-> ServiceWorkerPool.getPool().submitTask(
-                                    () -> DAOLocator.getCommentDAO().latestHottestMomentsOfDay(
-                                    statistic.getWindowSize(),
-                                    Date.from(LocalDateTime.now().minus(statistic.getLastN(), statistic.getUnitOfTime())
-                                            .atZone(ZoneOffset.systemDefault()).toInstant()
-                                    )));
+                            case MOST_POPULAR_REPORTERS-> ServiceWorkerPool.getPool().submitTask(
+                                    () -> DAOLocator.getReporterDAO().getMostPopularReporters(
+                                            Util.getIntProperty("topNReporters", 10))
+                            );
                         }
                 );
             }

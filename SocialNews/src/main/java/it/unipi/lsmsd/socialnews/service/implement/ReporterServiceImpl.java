@@ -1,5 +1,6 @@
 package it.unipi.lsmsd.socialnews.service.implement;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import it.unipi.lsmsd.socialnews.dao.DAOLocator;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Post;
@@ -113,7 +114,20 @@ public class ReporterServiceImpl implements ReporterService {
             return postDTOList;
         } catch (SocialNewsDataAccessException ex) {
             ex.printStackTrace();
-            throw new SocialNewsServiceException("Database error");
+            throw new SocialNewsServiceException("Database error: " + ex.getMessage());
+        }
+    }
+
+    @Override
+    public ArrayNode hottestMomentsOfDay(Integer windowSize, Integer lastN, TemporalUnit unitOfTime) throws SocialNewsServiceException{
+        try {
+            return DAOLocator.getCommentDAO().latestHottestMomentsOfDay(windowSize,
+                    Date.from(LocalDateTime.now().minus(lastN, unitOfTime)
+                            .atZone(ZoneOffset.systemDefault()).toInstant())
+            );
+        } catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error: " + ex.getMessage());
         }
     }
 }

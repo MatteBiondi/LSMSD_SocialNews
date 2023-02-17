@@ -1,5 +1,6 @@
 package it.unipi.lsmsd.socialnews.service;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import it.unipi.lsmsd.socialnews.dto.PostDTO;
 import it.unipi.lsmsd.socialnews.dto.ReporterDTO;
 import it.unipi.lsmsd.socialnews.dto.ReporterPageDTO;
@@ -59,4 +60,14 @@ public interface ReporterService {
      */
     List<PostDTO> latestHottestPost(String reporterId, Integer lastN, TemporalUnit unitOfTime) throws SocialNewsServiceException;
 
+    /**
+     Computes the number of comments in each time window of the day, starting from a given instant
+     *
+     * @param windowSize size of temporal window, must be a divisor of 24
+     * @param lastN compute statistic on last N unit of times
+     * @param unitOfTime unit of time
+     * @return JSON array containing the information computed by aggregation pipeline
+     * @throws SocialNewsServiceException in case of failure of the operation
+     */
+    ArrayNode hottestMomentsOfDay(Integer windowSize, Integer lastN, TemporalUnit unitOfTime) throws SocialNewsServiceException;
 }

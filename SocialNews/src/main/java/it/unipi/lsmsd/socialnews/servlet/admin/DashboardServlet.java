@@ -2,7 +2,6 @@ package it.unipi.lsmsd.socialnews.servlet.admin;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unipi.lsmsd.socialnews.dto.StatisticPageDTO;
 import it.unipi.lsmsd.socialnews.dto.util.JSONConverter;
 import it.unipi.lsmsd.socialnews.service.ServiceLocator;
@@ -22,60 +21,51 @@ public class DashboardServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String data = request.getParameter("data");
-        String statistic = request.getParameter("statistic");
-        String params = request.getParameter("params");
+        response.setContentType("text/html");
+        String targetJSP = "/pages/jsp/admin/dashboard.jsp";
+        request.getRequestDispatcher(targetJSP).forward(request, response);
+    }
 
-        if(data != null){
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        try {
             response.setContentType("application/json");
-            try {
-                StatisticPageDTO statistics =
+            String jsonRequestBody = request.getReader().readLine();
+            JsonNode params = mapper.readTree(jsonRequestBody);
+
+            StatisticPageDTO statistics;
+
+            if(params.get("statistic") == null){
+                statistics =
                         ServiceLocator.getAdminService().computeStatistics(
                                 Statistic.getStatistic(GENDER_STATISTIC),
                                 Statistic.getStatistic(NATIONALITY_STATISTIC),
                                 Statistic.getStatistic(MOST_ACTIVE_READERS),
-                                Statistic.getStatistic(HOTTEST_MOMENTS_OF_DAY)
+                                Statistic.getStatistic(MOST_POPULAR_REPORTERS)
                         );
-                response.getWriter().write(JSONConverter.toJSON(statistics));
-            } catch (SocialNewsServiceException e) {
-                throw new RuntimeException(e);
             }
-        }
-        else {
-            response.setContentType("text/html");
-            String targetJSP = "/pages/jsp/admin/dashboard.jsp";
-            request.getRequestDispatcher(targetJSP).forward(request, response);
-        }
-    }
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        try {
-            response.setContentType("application/json");
-
-            String jsonRequestBody = request.getReader().readLine();
-            JsonNode params = mapper.readTree(jsonRequestBody);
-
-            String statisticName = params.get("statistic").asText();
-
-            StatisticPageDTO statistic = switch (Statistic.fromString(statisticName)){
-                case GENDER_STATISTIC -> ServiceLocator
-                        .getAdminService().computeStatistics(Statistic.getStatistic(GENDER_STATISTIC));
-                case NATIONALITY_STATISTIC -> ServiceLocator
-                        .getAdminService().computeStatistics(Statistic.getStatistic(NATIONALITY_STATISTIC));
-                case MOST_ACTIVE_READERS -> ServiceLocator
-                        .getAdminService().computeStatistics(Statistic.getStatistic(
-                                MOST_ACTIVE_READERS,
-                                params.get("lastN").asInt(),
-                                params.get("unitOfTime").asText()
-                        ));
-                case HOTTEST_MOMENTS_OF_DAY -> ServiceLocator
-                        .getAdminService().computeStatistics(Statistic.getStatistic(
-                                HOTTEST_MOMENTS_OF_DAY,
-                                params.get("windowSize").asInt(),
-                                params.get("lastN").asInt(),
-                                params.get("unitOfTime").asText()
-                        ));
-            };
-            response.getWriter().write(JSONConverter.toJSON(statistic));
+            else{
+                String statisticName = params.get("statistic").asText();
+                statistics = switch (Statistic.fromString(statisticName)){
+                    case GENDER_STATISTIC -> ServiceLocator
+                            .getAdminService().computeStatistics(Statistic.getStatistic(GENDER_STATISTIC));
+                    case NATIONALITY_STATISTIC -> ServiceLocator
+                            .getAdminService().computeStatistics(Statistic.getStatistic(NATIONALITY_STATISTIC));
+                    case MOST_ACTIVE_READERS -> ServiceLocator
+                            .getAdminService().computeStatistics(Statistic.getStatistic(
+                                    MOST_ACTIVE_READERS,
+                                    params.get("lastN").asInt(),
+                                    params.get("unitOfTime").asText()
+                            ));
+                    case MOST_POPULAR_REPORTERS -> ServiceLocator
+                            .getAdminService().computeStatistics(Statistic.getStatistic(
+                                    MOST_POPULAR_REPORTERS,
+                                    params.get("windowSize").asInt(),
+                                    params.get("lastN").asInt(),
+                                    params.get("unitOfTime").asText()
+                            ));
+                };
+            }
+            response.getWriter().write(JSONConverter.toJSON(statistics));
         } catch (SocialNewsServiceException ex) {
             ex.printStackTrace();
             response.setStatus(500);
@@ -90,6 +80,5 @@ public class DashboardServlet extends HttpServlet {
                     .put("result","error")
                     .put("message","Server error").toString());
         }
-
     }
 }

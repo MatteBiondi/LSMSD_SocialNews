@@ -8,7 +8,8 @@ public class StatisticPageDTO extends BaseDTO{
     ArrayNode mostActiveReaders;
     ObjectNode genderStatistic;
     ArrayNode nationalityStatistic;
-    ArrayNode hottestMomentsOfDay;
+    ArrayNode mostPopularReporter;
+    
 
     public StatisticPageDTO(){ }
 
@@ -16,7 +17,7 @@ public class StatisticPageDTO extends BaseDTO{
         this.mostActiveReaders = (ArrayNode) computedStatistics.getOrDefault("mostActiveReaders",null);
         this.genderStatistic = (ObjectNode) computedStatistics.getOrDefault("genderStatistic",null);
         this.nationalityStatistic = (ArrayNode) computedStatistics.getOrDefault("nationalityStatistic",null);
-        this.hottestMomentsOfDay = (ArrayNode) computedStatistics.getOrDefault("hottestMomentsOfDay",null);
+        this.mostPopularReporter = (ArrayNode) computedStatistics.getOrDefault("mostPopularReporter",null);
     }
 
     public ArrayNode getMostActiveReaders() {
@@ -43,12 +44,12 @@ public class StatisticPageDTO extends BaseDTO{
         this.nationalityStatistic = nationalityStatistic;
     }
 
-    public ArrayNode getHottestMomentsOfDay() {
-        return hottestMomentsOfDay;
+    public ArrayNode getMostPopularReporter() {
+        return mostPopularReporter;
     }
 
-    public void setHottestMomentsOfDay(ArrayNode hottestMomentsOfDay) {
-        this.hottestMomentsOfDay = hottestMomentsOfDay;
+    public void setMostPopularReporter(ArrayNode mostPopularReporter) {
+        this.mostPopularReporter = mostPopularReporter;
     }
 
     @Override
@@ -57,7 +58,7 @@ public class StatisticPageDTO extends BaseDTO{
                 "mostActiveReaders=" + mostActiveReaders +
                 ", genderStatistic=" + genderStatistic +
                 ", nationalityStatistic=" + nationalityStatistic +
-                ", hottestMomentsOfDay=" + hottestMomentsOfDay +
+                ", mostPopularReporter=" + mostPopularReporter +
                 '}';
     }
 }
