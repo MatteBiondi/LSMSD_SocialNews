@@ -1,6 +1,9 @@
 package it.unipi.lsmsd.socialnews.service.util;
 
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalUnit;
+import java.util.List;
+import java.util.Locale;
 
 public enum Statistic {
     MOST_ACTIVE_READERS("mostActiveReaders"),
@@ -17,10 +20,50 @@ public enum Statistic {
     private Integer lastN;
     private TemporalUnit unitOfTime;
 
-    public static void configure(Integer defaultWindowSize, Integer defaultLastN, TemporalUnit defaultUnitOfTime){
+    public static void configure(Integer defaultWindowSize, Integer defaultLastN, String defaultUnitOfTime){
         Statistic.defaultWindowSize = defaultWindowSize;
         Statistic.defaultLastN = defaultLastN;
-        Statistic.defaultUnitOfTime = defaultUnitOfTime;
+        Statistic.defaultUnitOfTime = parseUnitOfTime(defaultUnitOfTime);
+    }
+
+    private static TemporalUnit parseUnitOfTime(String value){
+        List<String> supportedUnitOfTime = List.of("HOURS","DAYS","WEEKS","MONTHS","YEARS");
+        for(String unit: supportedUnitOfTime){
+            if(value.toLowerCase(Locale.ROOT).equals(unit.toLowerCase(Locale.ROOT)) ||
+                    value.toLowerCase(Locale.ROOT).equals(unit.toLowerCase(Locale.ROOT).substring(0, unit.length()-1)))
+                return ChronoUnit.valueOf(unit);
+        }
+        throw new IllegalArgumentException("Not a supported unit of time");
+    }
+
+    public static Statistic fromString(String value){
+        if(value.toLowerCase(Locale.ROOT).equals(MOST_ACTIVE_READERS.toString().toLowerCase(Locale.ROOT)))
+            return MOST_ACTIVE_READERS;
+        else if(value.toLowerCase(Locale.ROOT).equals(GENDER_STATISTIC.toString().toLowerCase(Locale.ROOT)))
+            return GENDER_STATISTIC;
+        else if(value.toLowerCase(Locale.ROOT).equals(NATIONALITY_STATISTIC.toString().toLowerCase(Locale.ROOT)))
+            return NATIONALITY_STATISTIC;
+        else if(value.toLowerCase(Locale.ROOT).equals(HOTTEST_MOMENTS_OF_DAY.toString().toLowerCase(Locale.ROOT)))
+            return HOTTEST_MOMENTS_OF_DAY;
+        else throw new IllegalArgumentException("Not a statistic");
+
+    }
+
+    public static Statistic getStatistic(Statistic s, Integer windowSize, Integer lastN, String unitOfTime){
+        s.setWindowSize(windowSize);
+        s.setLastN(lastN);
+        s.setUnitOfTime(parseUnitOfTime(unitOfTime));
+        return s;
+    }
+
+    public static Statistic getStatistic(Statistic s, Integer lastN, String unitOfTime){
+        s.setLastN(lastN);
+        s.setUnitOfTime(parseUnitOfTime(unitOfTime));
+        return s;
+    }
+
+    public static Statistic getStatistic(Statistic s){
+        return s;
     }
 
     Statistic(String key){
@@ -49,23 +92,6 @@ public enum Statistic {
 
     private void setUnitOfTime(TemporalUnit unitOfTime) {
         this.unitOfTime = unitOfTime;
-    }
-
-    public static Statistic getStatistic(Statistic s, Integer windowSize, Integer lastN, TemporalUnit unitOfTime){
-        s.setWindowSize(windowSize);
-        s.setLastN(lastN);
-        s.setUnitOfTime(unitOfTime);
-        return s;
-    }
-
-    public static Statistic getStatistic(Statistic s, Integer lastN, TemporalUnit unitOfTime){
-        s.setLastN(lastN);
-        s.setUnitOfTime(unitOfTime);
-        return s;
-    }
-
-    public static Statistic getStatistic(Statistic s){
-        return s;
     }
 
     @Override

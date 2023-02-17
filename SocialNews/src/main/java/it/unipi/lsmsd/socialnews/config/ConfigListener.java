@@ -41,7 +41,7 @@ public class ConfigListener implements ServletContextListener {
         Statistic.configure(
                 Integer.valueOf(properties.getProperty("defaultWindowSize")),
                 Integer.valueOf(properties.getProperty("defaultLastN")),
-                ChronoUnit.valueOf(properties.getProperty("defaultUnitOfTime"))
+                properties.getProperty("defaultUnitOfTime")
         );
         ServiceWorkerPool.getPool();
         logger.info("Configuration complete");
