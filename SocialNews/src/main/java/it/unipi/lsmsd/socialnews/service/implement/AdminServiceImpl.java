@@ -212,7 +212,7 @@ public class AdminServiceImpl implements AdminService {
                                     () -> DAOLocator.getReaderDAO().nationalityStatistic());
                             case MOST_POPULAR_REPORTERS-> ServiceWorkerPool.getPool().submitTask(
                                     () -> DAOLocator.getReporterDAO().getMostPopularReporters(
-                                            Util.getIntProperty("topNReporters", 10))
+                                            Util.getIntProperty("listReportersPopularityRank", 5))
                             );
                         }
                 );
@@ -229,20 +229,6 @@ public class AdminServiceImpl implements AdminService {
         catch (ExecutionException | InterruptedException ex) {
             ex.printStackTrace();
             throw new SocialNewsServiceException("Database error: " + ex.getMessage());
-        }
-    }
-
-    @Override
-    public List<ReporterDTO> rankReportersByPopularity() throws SocialNewsServiceException{
-        try {
-            List<ReporterDTO> listReporterDTO = new ArrayList<>();
-            DAOLocator.getReporterDAO()
-                    .getMostPopularReporters(Util.getIntProperty("listReportersPopularityRank",5))
-                    .forEach(reporter -> listReporterDTO.add(Util.buildReporterDTO(reporter)));
-            return listReporterDTO;
-        } catch (SocialNewsDataAccessException ex) {
-            ex.printStackTrace();
-            throw new SocialNewsServiceException("Database error");
         }
     }
 

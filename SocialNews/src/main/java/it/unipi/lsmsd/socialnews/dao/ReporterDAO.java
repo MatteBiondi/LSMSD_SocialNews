@@ -1,5 +1,6 @@
 package it.unipi.lsmsd.socialnews.dao;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Post;
 import it.unipi.lsmsd.socialnews.dao.model.Reporter;
@@ -134,10 +135,10 @@ public interface ReporterDAO {
      * Retrieve the most popular reporters. Popularity is given by the number of followers
      *
      * @param limitTopRanking number of retrieved reporters
-     * @return list of reporter objects containing basic information (id, name and picture)
+     * @return ArrayNode of reporter with basic information (id, name and picture) and number of followers
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    List<Reporter> getMostPopularReporters(int limitTopRanking) throws SocialNewsDataAccessException;
+    ArrayNode getMostPopularReporters(int limitTopRanking) throws SocialNewsDataAccessException;
 
     /**
      * Checks the current size of the reporter into the database and performs some maintenance operations if needed

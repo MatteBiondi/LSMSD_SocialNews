@@ -1,5 +1,6 @@
 package it.unipi.lsmsd.socialnews.dao.implement;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.mongodb.client.ClientSession;
 import it.unipi.lsmsd.socialnews.dao.ReporterDAO;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
@@ -117,7 +118,7 @@ public class ReporterDAOImpl implements ReporterDAO {
     }
 
     @Override
-    public List<Reporter> getMostPopularReporters(int limitTopRanking) throws SocialNewsDataAccessException{
+    public ArrayNode getMostPopularReporters(int limitTopRanking) throws SocialNewsDataAccessException{
         return neo4jReporterDAO.getMostPopularReporters(limitTopRanking);
     }
 
