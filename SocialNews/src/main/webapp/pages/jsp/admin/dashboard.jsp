@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin/dashboard.css">
     <script src="https://code.jquery.com/jquery-3.6.3.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
     <script type="module" src="${pageContext.request.contextPath}/scripts/admin/dashboard.js"></script>
     <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/images/icon.svg">
     <title>SocialNews</title>
@@ -79,44 +78,16 @@
                     <i class="reload bi bi-arrow-clockwise" data-statistic="nationalityStatistic"></i>
                 </div>
             </div>
-            <div id="hottest-moment" class="widget">
-                <h1 class="h4">Most active moments of the day</h1>
+            <div id="most-popular-reporters" class="widget">
+                <h1 class="h4">Most popular reporters</h1>
                 <div class="spinner d-flex justify-content-center">
                     <div class="spinner-border" role="status">
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
-                <div id="hottest-moment-bar"></div>
+                <div id="most-popular-reporters-grid"></div>
                 <div class="controls">
-                    <div class="dropdown settings">
-                        <i class="bi bi-gear gear" data-bs-toggle="dropdown" aria-expanded="false"></i>
-                        <div class="dropdown-menu">
-                            <div class="input-group params">
-                                <label for="hottest-moment-count" class="input-group-text">From last: </label>
-                                <input class="form-control param" name="hottest-moment-count" type="number"
-                                       id="hottest-moment-count" step="1" min="1" value="1" data-param="lastN">
-                                <select id="hottest-moment-unit" name="hottest-moment-unit" aria-label="Period"
-                                        class="form-control form-select param" data-param="unitOfTime">
-                                    <option value="Hour">Hour</option>
-                                    <option value="Day">Day</option>
-                                    <option value="Week">Week</option>
-                                    <option value="Month" selected>Month</option>
-                                    <option value="Year">Year</option>
-                                </select>
-                            </div>
-                            <div class="input-group params">
-                                <label for="hottest-moment-window" class="input-group-text">Window size: </label>
-                                <select id="hottest-moment-window" aria-label="Period" data-param="windowSize"
-                                        class="form-control form-select param">
-                                    <option value="3" selected>3 hours</option>
-                                    <option value="4">4 hours</option>
-                                    <option value="6">6 hours</option>
-                                    <option value="12">12 hours</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <i class="reload bi bi-arrow-clockwise" data-statistic="hottestMomentsOfDay"></i>
+                    <i class="reload bi bi-arrow-clockwise" data-statistic="mostPopularReporters"></i>
                 </div>
             </div>
         </div>

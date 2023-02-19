@@ -147,12 +147,4 @@ public interface AdminService {
      * @throws SocialNewsServiceException in case of failure of the operation
      */
     StatisticPageDTO computeStatistics(Statistic... statistics) throws SocialNewsServiceException;
-
-    /**
-     * Retrieve the top 5 most popular reporters of the system
-     *
-     * @return list of ReporterDTO objects containing basic information of the most popular reporters
-     * @throws SocialNewsServiceException in case of failure of the operation
-     */
-    List<ReporterDTO> rankReportersByPopularity() throws SocialNewsServiceException;
 }

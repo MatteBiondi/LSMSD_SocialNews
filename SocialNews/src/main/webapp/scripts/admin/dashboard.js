@@ -1,12 +1,15 @@
 import '../util.js'
-import { Dashboard } from "./charts.js";
+import { AdminDashboard } from "../charts.js";
+import { computeWindowHeight } from "../util.js";
+
+const widgetHeight = `${
+    computeWindowHeight() * (parseInt($('body').css('--content-height'))/100) * 0.40}px`
 
 $(document).ready( () => {
-
-    Dashboard.init();
-
-    $('.reload').on('click', reload);
-    $('.settings').on('hide.bs.dropdown', configure)
+    AdminDashboard.init(widgetHeight).then(() => {
+        $('.reload').on('click', reload);
+        $('.settings').on('hide.bs.dropdown', configure)
+    });
 });
 
 function reload(ev){
@@ -20,7 +23,7 @@ function reload(ev){
         }
     }, 75);
 
-    Dashboard.reload(ev.target.dataset['statistic']).then(() => { stop = true });
+    AdminDashboard.reload(ev.target.dataset['statistic']).then(() => { stop = true });
 }
 
 function configure(){
@@ -30,7 +33,7 @@ function configure(){
     for(let param of params){
         let key = param['dataset']['param'];
         let value = param.value;
-        reconfigured |= Dashboard.configure($(this).siblings('.reload')[0].dataset['statistic'], key, value)
+        reconfigured |= AdminDashboard.configure($(this).siblings('.reload')[0].dataset['statistic'], key, value)
     }
 
     if(reconfigured)

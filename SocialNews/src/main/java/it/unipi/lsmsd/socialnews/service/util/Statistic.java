@@ -9,7 +9,7 @@ public enum Statistic {
     MOST_ACTIVE_READERS("mostActiveReaders"),
     GENDER_STATISTIC("genderStatistic"),
     NATIONALITY_STATISTIC("nationalityStatistic"),
-    HOTTEST_MOMENTS_OF_DAY("hottestMomentsOfDay");
+    MOST_POPULAR_REPORTERS("mostPopularReporters");
 
     private static Integer defaultWindowSize;
     private static Integer defaultLastN;
@@ -43,8 +43,8 @@ public enum Statistic {
             return GENDER_STATISTIC;
         else if(value.toLowerCase(Locale.ROOT).equals(NATIONALITY_STATISTIC.toString().toLowerCase(Locale.ROOT)))
             return NATIONALITY_STATISTIC;
-        else if(value.toLowerCase(Locale.ROOT).equals(HOTTEST_MOMENTS_OF_DAY.toString().toLowerCase(Locale.ROOT)))
-            return HOTTEST_MOMENTS_OF_DAY;
+        else if(value.toLowerCase(Locale.ROOT).equals(MOST_POPULAR_REPORTERS.toString().toLowerCase(Locale.ROOT)))
+            return MOST_POPULAR_REPORTERS;
         else throw new IllegalArgumentException("Not a statistic");
 
     }

@@ -1,3 +1,7 @@
-zing-grid {
-    --zg-button-background: #EF5350;
+#content{
+    overflow: hidden;
+}
+
+zg-icon{
+    margin: 0;
 }

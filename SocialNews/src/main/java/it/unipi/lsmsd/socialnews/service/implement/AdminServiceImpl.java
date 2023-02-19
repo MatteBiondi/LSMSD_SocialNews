@@ -210,12 +210,10 @@ public class AdminServiceImpl implements AdminService {
                                     () -> DAOLocator.getReaderDAO().genderStatistic());
                             case NATIONALITY_STATISTIC-> ServiceWorkerPool.getPool().submitTask(
                                     () -> DAOLocator.getReaderDAO().nationalityStatistic());
-                            case HOTTEST_MOMENTS_OF_DAY-> ServiceWorkerPool.getPool().submitTask(
-                                    () -> DAOLocator.getCommentDAO().latestHottestMomentsOfDay(
-                                    statistic.getWindowSize(),
-                                    Date.from(LocalDateTime.now().minus(statistic.getLastN(), statistic.getUnitOfTime())
-                                            .atZone(ZoneOffset.systemDefault()).toInstant()
-                                    )));
+                            case MOST_POPULAR_REPORTERS-> ServiceWorkerPool.getPool().submitTask(
+                                    () -> DAOLocator.getReporterDAO().getMostPopularReporters(
+                                            Util.getIntProperty("listReportersPopularityRank", 5))
+                            );
                         }
                 );
             }
@@ -231,20 +229,6 @@ public class AdminServiceImpl implements AdminService {
         catch (ExecutionException | InterruptedException ex) {
             ex.printStackTrace();
             throw new SocialNewsServiceException("Database error: " + ex.getMessage());
-        }
-    }
-
-    @Override
-    public List<ReporterDTO> rankReportersByPopularity() throws SocialNewsServiceException{
-        try {
-            List<ReporterDTO> listReporterDTO = new ArrayList<>();
-            DAOLocator.getReporterDAO()
-                    .getMostPopularReporters(Util.getIntProperty("listReportersPopularityRank",5))
-                    .forEach(reporter -> listReporterDTO.add(Util.buildReporterDTO(reporter)));
-            return listReporterDTO;
-        } catch (SocialNewsDataAccessException ex) {
-            ex.printStackTrace();
-            throw new SocialNewsServiceException("Database error");
         }
     }
 

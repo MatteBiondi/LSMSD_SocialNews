@@ -10,6 +10,7 @@ session = r.session()
 login = session.post(f"http://{HOSTNAME}:8080/SocialNews/login?email={'f.cristofani@socialnews.it'}&password={'admin'}&accessType={'admin'}")
 
 for reporter in reporters:
+    reporter['password'] = reporter['email'].split('@')[0]
     res = session.post(f'http://{HOSTNAME}:8080/SocialNews/admin/addReporter', json.dumps(reporter))
 
 session.close()

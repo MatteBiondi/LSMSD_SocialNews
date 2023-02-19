@@ -1,11 +1,17 @@
 package it.unipi.lsmsd.socialnews.dao.neo4j;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import org.neo4j.driver.Query;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.neo4j.driver.Values.parameters;
@@ -95,21 +101,33 @@ public class Neo4jReporterDAO {
 
     //STATISTICS OPERATIONS
 
-    public List<Reporter> getMostPopularReporters(int limitTopRanking) throws SocialNewsDataAccessException{
+    public ArrayNode getMostPopularReporters(int limitTopRanking) throws SocialNewsDataAccessException{
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (r:Reporter) " +
                             "OPTIONAL MATCH (r) <-[f:FOLLOW]- () "+
                             "WITH r as reporter, count(f) as numFollowers " +
-                            "RETURN reporter "+
+                            "RETURN reporter, numFollowers "+
                             "ORDER BY numFollowers DESC " +
                             "LIMIT $limit",
                     parameters("limit", limitTopRanking));
 
-            return session.readTransaction(tx ->
-                    tx.run(query).list( record ->
-                            new ObjectMapper().convertValue(record.get("reporter").asMap(), Reporter.class))
-            );
+            List<JsonNode> result = session.readTransaction(tx -> {
+                Result queryResult = tx.run(query);
+                List<JsonNode> nodes = new ArrayList<>();
+                while (queryResult.hasNext()) {
+                    Record record = queryResult.next();
+                    ObjectNode jsonNode = new ObjectMapper().createObjectNode();
+                    jsonNode.put("fullName", record.get("reporter").get("fullName").asString());
+                    jsonNode.put("numFollowers", record.get("numFollowers").asInt());
+                    nodes.add(jsonNode);
+                }
+                return nodes;
+            });
+            ArrayNode toReturn = new ObjectMapper().createArrayNode();
+            toReturn.addAll(result);
+
+            return toReturn;
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Most popular reporter statistic failed: "+ e.getMessage());

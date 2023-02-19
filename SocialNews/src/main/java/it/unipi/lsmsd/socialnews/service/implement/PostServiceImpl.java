@@ -37,6 +37,28 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    private List<CommentDTO> pageComments(String postId, CommentDTO commentOffset, Page page) throws SocialNewsServiceException{
+        try {
+            Comment offset  = commentOffset == null ? null:Util.buildComment(commentOffset);
+            List<CommentDTO> pageCommentDTO = new ArrayList<>();
+
+            switch (page){
+                case FIRST, NEXT -> DAOLocator.getCommentDAO()
+                        .commentsByPostIdNext(postId, offset,
+                                Util.getIntProperty("listCommentPageSize",20))
+                        .forEach(comment -> pageCommentDTO.add(Util.buildCommentDTO(comment)));
+                case PREV -> DAOLocator.getCommentDAO()
+                        .commentsByPostIdPrev(postId, offset,
+                                Util.getIntProperty("listCommentPageSize",20))
+                        .forEach(comment -> pageCommentDTO.add(Util.buildCommentDTO(comment)));
+            }
+            return pageCommentDTO;
+        } catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error: " + ex.getMessage());
+        }
+    }
+
     @Override
     public String publishPost(PostDTO newPost) throws SocialNewsServiceException {
         try {
@@ -82,24 +104,18 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<CommentDTO> firstPageComments(String targetPostId) throws SocialNewsServiceException {
-        return nextPageComments(targetPostId, null);
+    public List<CommentDTO> firstPageComments(String postId) throws SocialNewsServiceException {
+        return pageComments(postId, null, Page.FIRST);
     }
 
     @Override
-    public List<CommentDTO> nextPageComments(String targetPostId, CommentDTO commentOffset) throws SocialNewsServiceException {
-        try {
-            Comment offset  = commentOffset == null ? null:Util.buildComment(commentOffset);
-            List<CommentDTO> pageCommentDTO = new ArrayList<>();
-            DAOLocator.getCommentDAO()
-                    .commentsByPostId(targetPostId, offset,
-                            Util.getIntProperty("listCommentPageSize",20))
-                    .forEach(comment -> pageCommentDTO.add(Util.buildCommentDTO(comment)));
-            return pageCommentDTO;
-        } catch (SocialNewsDataAccessException ex) {
-            ex.printStackTrace();
-            throw new SocialNewsServiceException("Database error");
-        }
+    public List<CommentDTO> prevPageComments(String postId, CommentDTO commentOffset) throws SocialNewsServiceException {
+        return pageComments(postId, commentOffset, Page.PREV);
+    }
+
+    @Override
+    public List<CommentDTO> nextPageComments(String postId, CommentDTO commentOffset) throws SocialNewsServiceException {
+        return pageComments(postId, commentOffset, Page.NEXT);
     }
 
     @Override

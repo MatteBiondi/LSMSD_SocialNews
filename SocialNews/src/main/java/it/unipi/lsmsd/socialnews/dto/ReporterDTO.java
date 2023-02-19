@@ -1,6 +1,5 @@
 package it.unipi.lsmsd.socialnews.dto;
 
-import java.util.Arrays;
 import java.util.Date;
 
 public class ReporterDTO extends UserDTO{
@@ -9,6 +8,7 @@ public class ReporterDTO extends UserDTO{
     Date dateOfBirth;
     String cell;
     String picture;
+    Integer numOfReport;
 
     public ReporterDTO(){ }
 
@@ -62,6 +62,14 @@ public class ReporterDTO extends UserDTO{
         this.picture = picture;
     }
 
+    public Integer getNumOfReport() {
+        return numOfReport;
+    }
+
+    public void setNumOfReport(Integer numOfReport) {
+        this.numOfReport = numOfReport;
+    }
+
     @Override
     public String toString() {
         return "ReporterDTO{" +
@@ -73,7 +81,8 @@ public class ReporterDTO extends UserDTO{
                 ", location='" + location + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
                 ", cell='" + cell + '\'' +
-                ", picture=" + picture +
+                ", picture='" + picture + '\'' +
+                ", numOfReport=" + numOfReport +
                 '}';
     }
 }

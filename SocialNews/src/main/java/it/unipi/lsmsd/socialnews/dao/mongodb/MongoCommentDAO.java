@@ -31,11 +31,37 @@ public class MongoCommentDAO extends MongoDAO<Comment> {
         }
     }
 
-    public List<Comment> commentsByPostId(String postId, Integer pageSize) throws SocialNewsDataAccessException {
-        return commentsByPostId(postId, null, pageSize);
+    public List<Comment> commentsByPostIdPrev(String postId, Comment offset, Integer pageSize) throws SocialNewsDataAccessException {
+        try{
+            List<Comment> comments = new ArrayList<>();
+            Bson filter = Filters.eq("post._id", postId);
+            if(offset != null)
+                filter = Filters.and(
+                        filter,
+                        Filters.or(
+                                Filters.and(
+                                        Filters.lte("timestamp", offset.getTimestamp()),
+                                        Filters.lt("reader._id", offset.getReader().getId())
+                                ),
+                                Filters.lt("timestamp", offset.getTimestamp())
+                        ));
+
+            List<Bson> stages = new ArrayList<>();
+            stages.add(Aggregates.match(filter));
+            stages.add(Aggregates.sort(Sorts.descending("timestamp", "reader._id")));
+            stages.add(Aggregates.limit(pageSize));
+            stages.add(Aggregates.sort(Sorts.ascending("timestamp", "reader._id")));
+
+            getCollection().aggregate(stages).into(comments);
+            return comments;
+        }
+        catch (MongoException me){
+            me.printStackTrace();
+            throw new SocialNewsDataAccessException("Query failed: " + me.getMessage());
+        }
     }
 
-    public List<Comment> commentsByPostId(String postId, Comment offset, Integer pageSize) throws SocialNewsDataAccessException {
+    public List<Comment> commentsByPostIdNext(String postId, Comment offset, Integer pageSize) throws SocialNewsDataAccessException {
         try{
             List<Comment> comments = new ArrayList<>();
             Bson filter = Filters.eq("post._id", postId);
@@ -106,7 +132,7 @@ public class MongoCommentDAO extends MongoDAO<Comment> {
                     Accumulators.sum("numOfComment",1)));
             stages.add(Aggregates.sort(Sorts.descending("numOfComment")));
             stages.add(Aggregates.limit(topN));
-
+            stages.add(Aggregates.project(Projections.exclude("_id")));
             List<Document> docs = new ArrayList<>();
             getRawCollection("comments").aggregate(stages).into(docs);
 
