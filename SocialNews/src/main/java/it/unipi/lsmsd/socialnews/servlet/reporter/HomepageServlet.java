@@ -1,7 +1,6 @@
-package it.unipi.lsmsd.socialnews.servlet;
+package it.unipi.lsmsd.socialnews.servlet.reporter;
 
 import it.unipi.lsmsd.socialnews.dto.PostDTO;
-import it.unipi.lsmsd.socialnews.dto.ReaderDTO;
 import it.unipi.lsmsd.socialnews.dto.ReporterDTO;
 import it.unipi.lsmsd.socialnews.dto.ReporterPageDTO;
 import it.unipi.lsmsd.socialnews.service.ServiceLocator;
@@ -16,15 +15,13 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.util.logging.Logger;
 
 @WebServlet(name = "ReporterHomepageServlet", value = "/reporter/homepage", loadOnStartup = 0)
-public class ReporterHomepageServlet extends HttpServlet {
+public class HomepageServlet extends HttpServlet {
 
-    private static final Logger LOGGER = Logger.getLogger(ReporterHomepageServlet.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(HomepageServlet.class.getName());
 
     // Number of post for each page
     private int pageLength;
@@ -72,7 +69,7 @@ public class ReporterHomepageServlet extends HttpServlet {
         String location = null;
         String cell = null;
         String email = null;
-        Byte[] picture = null;
+        String picture = null;
         List<PostDTO> postsList = null;
 
         try {
@@ -105,7 +102,7 @@ public class ReporterHomepageServlet extends HttpServlet {
         response.setContentType("text/html");
         request.setAttribute("reporterID",reporterID);
         request.setAttribute("followers",followerReaders);
-        request.setAttribute("name", fullName);
+        request.setAttribute("fullName", fullName);
         request.setAttribute("dateOfBirth", dateOfBirth);
         request.setAttribute("location",location);
         request.setAttribute("cell", cell);
