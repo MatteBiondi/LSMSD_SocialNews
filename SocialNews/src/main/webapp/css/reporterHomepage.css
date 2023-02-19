@@ -96,3 +96,8 @@ h2{
     border: none;
     margin: 1%;
 }
+
+.profile-image {
+    width: 210px;
+    height: 210px;
+}
