@@ -58,11 +58,7 @@ public class DashboardServlet extends HttpServlet {
                             ));
                     case MOST_POPULAR_REPORTERS -> ServiceLocator
                             .getAdminService().computeStatistics(Statistic.getStatistic(
-                                    MOST_POPULAR_REPORTERS,
-                                    params.get("windowSize").asInt(),
-                                    params.get("lastN").asInt(),
-                                    params.get("unitOfTime").asText()
-                            ));
+                                    MOST_POPULAR_REPORTERS));
                 };
             }
             response.getWriter().write(JSONConverter.toJSON(statistics));

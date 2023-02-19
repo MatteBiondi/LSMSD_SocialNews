@@ -87,7 +87,7 @@ class Table{
             for(let key in record){
                 row.push(`<td>${record[key]}</td>`)
             }
-            rows.push(`<tr><td>${rank++}</td>${row.join('')}</tr>`)
+            rows.push(`<tr style="display: none" class="fade-in-row"><td>${rank++}</td>${row.join('')}</tr>`)
         }
 
         let headers = [];
@@ -108,7 +108,9 @@ class Table{
                 </tbody>
             </table></div>`
         )
-    }}
+        $(`#${this.id} .fade-in-row`).each((index, row) => {$(row).delay(index*250).fadeIn(500)})
+    }
+}
 
 class Dashboard{
     #widgets;

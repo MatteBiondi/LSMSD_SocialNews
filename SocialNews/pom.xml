@@ -13,29 +13,7 @@
   <artifactId>SocialNews</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <name>SocialNews</name>
-
   <packaging>war</packaging>
-
-  <!-- BUILD -->
-  <build>
-    <finalName>SocialNews</finalName>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.10.1</version>
-        <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.source}</target>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.1</version>
-      </plugin>
-    </plugins>
-  </build>
 
   <!-- DEPENDENCIES -->
   <dependencies>
@@ -76,7 +54,7 @@
       <version>2.0.6</version>
       <scope>compile</scope>
     </dependency>
-    <dependency><!--TODO: define custom format-->
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
       <version>2.0.6</version>
@@ -84,11 +62,11 @@
     </dependency>
 
     <!-- Neo4J Java driver -->
-      <dependency>
-        <groupId>org.neo4j.driver</groupId>
-        <artifactId>neo4j-java-driver</artifactId>
-        <version>4.4.0</version>
-      </dependency>
+    <dependency>
+      <groupId>org.neo4j.driver</groupId>
+      <artifactId>neo4j-java-driver</artifactId>
+      <version>4.4.0</version>
+    </dependency>
 
     <!-- Utilities to perform object conversion and JSON (de)serialization -->
     <dependency>
@@ -104,5 +82,73 @@
       <scope>compile</scope>
     </dependency>
   </dependencies>
+
+  <!-- BUILD -->
+  <build>
+    <finalName>SocialNews</finalName>
+    <plugins>
+      <!-- COMPILE -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.10.1</version>
+        <configuration>
+          <source>${maven.compiler.source}</source>
+          <target>${maven.compiler.source}</target>
+        </configuration>
+      </plugin>
+      <!-- TESTS -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.12.4</version>
+        <configuration>
+          <skipTests>true</skipTests>
+        </configuration>
+      </plugin>
+      <!-- WAR PACKAGING -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.3.1</version>
+      </plugin>
+      <!-- DEPLOY -->
+      <plugin>
+        <groupId>org.codehaus.cargo</groupId>
+        <artifactId>cargo-maven3-plugin</artifactId>
+        <version>1.10.5</version>
+        <executions>
+          <execution>
+            <phase>deploy</phase>
+            <goals>
+              <goal>redeploy</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <container>
+            <containerId>tomcat9x</containerId>
+            <type>remote</type>
+          </container>
+          <configuration>
+            <type>runtime</type>
+            <properties>
+              <cargo.remote.uri>${env.TOMCAT_REMOTE_URI}</cargo.remote.uri>
+              <cargo.remote.username>${env.TOMCAT_USER}</cargo.remote.username>
+              <cargo.remote.password>${env.TOMCAT_PASSWORD}</cargo.remote.password>
+            </properties>
+          </configuration>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>3.0.0</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

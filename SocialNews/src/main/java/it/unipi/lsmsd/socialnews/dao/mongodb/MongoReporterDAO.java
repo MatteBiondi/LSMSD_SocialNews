@@ -199,7 +199,7 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
             List<Bson> stages = new ArrayList<>();
 
             stages.add(Aggregates.match(filterDoc));
-            stages.add(Aggregates.project(Projections.exclude("posts", "password")));
+            stages.add(Aggregates.project(Projections.exclude("posts", "password", "picture")));
             stages.add(Aggregates.sort(Sorts.descending("fullName", "_id")));
             stages.add(Aggregates.limit(pageSize));
             stages.add(Aggregates.sort(Sorts.ascending("fullName", "_id")));
@@ -235,7 +235,7 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
 
             getCollection()
                 .find(filterDoc)
-                .projection(Projections.exclude("posts", "password"))
+                .projection(Projections.exclude("posts", "password", "picture"))
                 .sort(Sorts.ascending("fullName", "reporterId"))
                 .limit(pageSize)
                 .into(reporters);

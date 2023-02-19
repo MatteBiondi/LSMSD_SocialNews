@@ -4,20 +4,22 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.util.Map;
 
+import static it.unipi.lsmsd.socialnews.service.util.Statistic.*;
+
 public class StatisticPageDTO extends BaseDTO{
     ArrayNode mostActiveReaders;
     ObjectNode genderStatistic;
     ArrayNode nationalityStatistic;
-    ArrayNode mostPopularReporter;
+    ArrayNode mostPopularReporters;
     
 
     public StatisticPageDTO(){ }
 
     public StatisticPageDTO(Map<String, Object> computedStatistics){
-        this.mostActiveReaders = (ArrayNode) computedStatistics.getOrDefault("mostActiveReaders",null);
-        this.genderStatistic = (ObjectNode) computedStatistics.getOrDefault("genderStatistic",null);
-        this.nationalityStatistic = (ArrayNode) computedStatistics.getOrDefault("nationalityStatistic",null);
-        this.mostPopularReporter = (ArrayNode) computedStatistics.getOrDefault("mostPopularReporter",null);
+        this.mostActiveReaders = (ArrayNode) computedStatistics.getOrDefault(MOST_ACTIVE_READERS.toString(),null);
+        this.genderStatistic = (ObjectNode) computedStatistics.getOrDefault(GENDER_STATISTIC.toString(),null);
+        this.nationalityStatistic = (ArrayNode) computedStatistics.getOrDefault(NATIONALITY_STATISTIC.toString(),null);
+        this.mostPopularReporters = (ArrayNode) computedStatistics.getOrDefault(MOST_POPULAR_REPORTERS.toString(),null);
     }
 
     public ArrayNode getMostActiveReaders() {
@@ -44,12 +46,12 @@ public class StatisticPageDTO extends BaseDTO{
         this.nationalityStatistic = nationalityStatistic;
     }
 
-    public ArrayNode getMostPopularReporter() {
-        return mostPopularReporter;
+    public ArrayNode getMostPopularReporters() {
+        return mostPopularReporters;
     }
 
-    public void setMostPopularReporter(ArrayNode mostPopularReporter) {
-        this.mostPopularReporter = mostPopularReporter;
+    public void setMostPopularReporters(ArrayNode mostPopularReporters) {
+        this.mostPopularReporters = mostPopularReporters;
     }
 
     @Override
@@ -58,7 +60,7 @@ public class StatisticPageDTO extends BaseDTO{
                 "mostActiveReaders=" + mostActiveReaders +
                 ", genderStatistic=" + genderStatistic +
                 ", nationalityStatistic=" + nationalityStatistic +
-                ", mostPopularReporter=" + mostPopularReporter +
+                ", mostPopularReporter=" + mostPopularReporters +
                 '}';
     }
 }
