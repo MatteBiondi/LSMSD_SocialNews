@@ -62,22 +62,33 @@ public interface PostService {
      * number of
      * comments
      *
-     * @param targetPostId post whose comments to load
+     * @param postId post whose comments to load
      * @return list of comments associated to the post
      * @throws SocialNewsServiceException in case of failure of the query operation
      */
-    List<CommentDTO> firstPageComments(String targetPostId) throws SocialNewsServiceException;
+    List<CommentDTO> firstPageComments(String postId) throws SocialNewsServiceException;
+
+    /**
+     * Retrieves the comments associated to the post specified as argument ordered by timestamp starting from the offset
+     * passed as argument, up to a configured number of comments, in reverse order
+     *
+     * @param postId post whose comments to load
+     * @param commentOffset comment DTO containing id the last comment in the previous page
+     * @return list of comments associated to the post
+     * @throws SocialNewsServiceException in case of failure of the query operation
+     */
+    List<CommentDTO> prevPageComments(String postId, CommentDTO commentOffset) throws SocialNewsServiceException;
 
     /**
      * Retrieves the comments associated to the post specified as argument ordered by timestamp starting from the offset
      * passed as argument, up to a configured number of comments
      *
-     * @param targetPostId post whose comments to load
+     * @param postId post whose comments to load
      * @param commentOffset comment DTO containing id the last comment in the previous page
      * @return list of comments associated to the post
      * @throws SocialNewsServiceException in case of failure of the query operation
      */
-    List<CommentDTO> nextPageComments(String targetPostId, CommentDTO commentOffset) throws SocialNewsServiceException;
+    List<CommentDTO> nextPageComments(String postId, CommentDTO commentOffset) throws SocialNewsServiceException;
 
     /**
      * Remove a post from the system, removing the information stored in the database and all the associated comments
