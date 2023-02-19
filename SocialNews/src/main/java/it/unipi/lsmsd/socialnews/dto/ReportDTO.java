@@ -1,27 +1,29 @@
 package it.unipi.lsmsd.socialnews.dto;
 
+import java.util.Date;
+
 public class ReportDTO extends BaseDTO{
-    private Long reportId;
+    private String reportId;
     private String readerId;
     private String postId;
-    private String timestamp;
+    private Date timestamp;
     private String text;
 
     public ReportDTO() {
     }
 
-    public ReportDTO(String readerId, String postId, String timestamp, String text) {
+    public ReportDTO(String readerId, String postId, String text) {
         this.readerId = readerId;
         this.postId = postId;
-        this.timestamp = timestamp;
+        this.timestamp = new Date();
         this.text = text;
     }
 
-    public Long getReportId() {
+    public String getReportId() {
         return reportId;
     }
 
-    public String getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 
@@ -37,11 +39,11 @@ public class ReportDTO extends BaseDTO{
         return postId;
     }
 
-    public void setReportId(Long reportId) {
+    public void setReportId(String reportId) {
         this.reportId = reportId;
     }
 
-    public void setTimestamp(String timestamp) {
+    public void setTimestamp(Date timestamp) {
         this.timestamp = timestamp;
     }
 
