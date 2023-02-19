@@ -1,17 +1,15 @@
 import '../util.js'
 import { AdminDashboard } from "../charts.js";
+import { computeWindowHeight } from "../util.js";
 
-const body = document.body,  html = document.documentElement;
 const widgetHeight = `${
-    Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight ) *
-    (parseInt($('body').css('--content-height'))/100) * 0.40}px`
+    computeWindowHeight() * (parseInt($('body').css('--content-height'))/100) * 0.40}px`
 
 $(document).ready( () => {
-
-    AdminDashboard.init(widgetHeight);
-
-    $('.reload').on('click', reload);
-    $('.settings').on('hide.bs.dropdown', configure)
+    AdminDashboard.init(widgetHeight).then(() => {
+        $('.reload').on('click', reload);
+        $('.settings').on('hide.bs.dropdown', configure)
+    });
 });
 
 function reload(ev){

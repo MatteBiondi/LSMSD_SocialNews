@@ -85,7 +85,7 @@
                         <span class="visually-hidden">Loading...</span>
                     </div>
                 </div>
-                <div id="most-popular-reporters-bar"></div>
+                <div id="most-popular-reporters-grid"></div>
                 <div class="controls">
                     <i class="reload bi bi-arrow-clockwise" data-statistic="mostPopularReporters"></i>
                 </div>

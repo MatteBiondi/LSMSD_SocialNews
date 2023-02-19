@@ -5,6 +5,11 @@ Object.defineProperty(String.prototype, 'capitalize', {
     enumerable: false
 });
 
+
+export function computeWindowHeight(){
+    const body = document.body,  html = document.documentElement;
+    return Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight )
+}
 export function showMessage(type, text){
     $("body").append(`
         <div id="message" class="alert alert-${type} alert-dismissible fade show" role="alert">
