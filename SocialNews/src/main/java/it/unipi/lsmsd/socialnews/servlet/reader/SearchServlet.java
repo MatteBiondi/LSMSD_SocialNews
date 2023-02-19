@@ -66,7 +66,7 @@ public class SearchServlet extends HttpServlet {
                         else
                             posts = ServiceLocator.getPostService().prevPagePostsByHashtag(searchValue, lastPost);
                     }
-                    request.setAttribute("postList", posts);
+                    request.setAttribute("postsList", posts);
 
                 } else{
                     throw new ServletException("Unexpected search key");

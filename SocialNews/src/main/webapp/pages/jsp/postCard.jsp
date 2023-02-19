@@ -16,18 +16,22 @@
                 </span>
             </c:when>
             <c:otherwise>
-                <span  data-ref="${param.postId}" class="option">
+                <a  data-ref="${param.postId}" class="option">
                     <!--Remove post-->
-                    <i class="bi bi-trash3"></i>
-                </span>
+                    <i class="bi bi-trash3" onclick="removePost('${param.reporterId}','${param.postId}')"></i>
+                </a>
             </c:otherwise>
         </c:choose>
     </header>
     <hr>
     <p class="post-text">${param.postText}</p>
     <footer>
-        <p class="hashtags">${param.postHashtags}</p>
-        <p class="related-links">${param.postLinks}</p>
+        <c:if test="${not empty param.postHashtags}">
+            <p class="hashtags">${param.postHashtags.replace("[", "").replace("]", "").replace(",","")}</p>
+        </c:if>
+        <c:if test="${not empty param.postLinks}">
+            <p class="related-links">${param.postLinks.replace("[", "").replace("]", "").replace(",","")}</p>
+        </c:if>
         <p class="timestamp">${param.postFormattedTimestamp}</p>
         <hr>
         <div class="show-comm-div">
