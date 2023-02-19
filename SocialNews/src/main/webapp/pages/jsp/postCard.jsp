@@ -10,10 +10,10 @@
                     <!--View profile-->
                     <i class="bi bi-person"></i>
                 </a>
-                <span  data-ref="${param.postId}" class="option">
+                <a href="${pageContext.request.contextPath}/reader/reportPost?reporterId=${param.reporterId}&postId=${param.postId}" class="option report-post">
                     <!--Add report-->
                     <i class="bi bi-flag"></i>
-                </span>
+                </a>
             </c:when>
             <c:otherwise>
                 <span  data-ref="${param.postId}" class="option">
@@ -36,4 +36,4 @@
     </footer>
 </div>
 
-<!--TODO: js post (es report and show comment)-->
+<!--TODO: js post (es show comment)-->
