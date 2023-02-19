@@ -20,7 +20,7 @@
 </head>
 <body>
     <!-- Navbar section -->
-    <jsp:include page="../../common/navbar.jsp"/>
+    <jsp:include page="/pages/common/navbar.jsp"/>
 
     <!-- User information content -->
     <div class="container py-5">

@@ -1,7 +1,6 @@
 package it.unipi.lsmsd.socialnews.servlet.reporter;
 
 import it.unipi.lsmsd.socialnews.dto.PostDTO;
-import it.unipi.lsmsd.socialnews.dto.ReporterDTO;
 import it.unipi.lsmsd.socialnews.dto.ReporterPageDTO;
 import it.unipi.lsmsd.socialnews.service.ServiceLocator;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
@@ -61,31 +60,18 @@ public class HomepageServlet extends HttpServlet {
 
         String id = (String) session.getAttribute("id");
 
-        // Get ID, follower readers, full name, date of birth, location, cell number, email and posts.
-        String reporterID = null;
-        Integer followerReaders = null;
-        String fullName = null;
-        Date dateOfBirth = null;
-        String location = null;
-        String cell = null;
-        String email = null;
-        String picture = null;
-        List<PostDTO> postsList = null;
-
         try {
 
             ReporterPageDTO reporterPageDTO = ServiceLocator.getReporterService().loadReporterPage(id);
-            followerReaders = reporterPageDTO.getNumOfFollower();
-            ReporterDTO reporterDTO = reporterPageDTO.getReporter();
+            List<PostDTO> postsList = reporterPageDTO.getPosts();
+            reporterPageDTO.setPosts(null); //avoid passing duplicate values
 
-            reporterID = reporterDTO.getId();
-            fullName = reporterDTO.getFullName();
-            dateOfBirth = reporterDTO.getDateOfBirth();
-            location = reporterDTO.getLocation();
-            cell = reporterDTO.getCell();
-            email = reporterDTO.getEmail();
-            picture = reporterDTO.getPicture();
-            postsList = reporterPageDTO.getPosts();
+            response.setContentType("text/html");
+            request.setAttribute("reporterPage",reporterPageDTO);
+            request.setAttribute("postsList",postsList);
+
+            String targetJSP = "/pages/jsp/reporter/homepage.jsp";
+            request.getRequestDispatcher(targetJSP).forward(request, response);
 
         } catch (SocialNewsServiceException ex) {
             String message = ex.getMessage();
@@ -98,19 +84,5 @@ public class HomepageServlet extends HttpServlet {
             PrintWriter writer = response.getWriter();
             writer.write(String.format("%s", message));
         }
-
-        response.setContentType("text/html");
-        request.setAttribute("reporterID",reporterID);
-        request.setAttribute("followers",followerReaders);
-        request.setAttribute("fullName", fullName);
-        request.setAttribute("dateOfBirth", dateOfBirth);
-        request.setAttribute("location",location);
-        request.setAttribute("cell", cell);
-        request.setAttribute("email", email);
-        request.setAttribute("picture", picture);
-        request.setAttribute("postsList",postsList);
-
-        String targetJSP = "/pages/jsp/reporter/homepage.jsp";
-        request.getRequestDispatcher(targetJSP).forward(request, response);
     }
 }

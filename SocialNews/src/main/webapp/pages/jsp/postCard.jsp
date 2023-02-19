@@ -6,7 +6,7 @@
     <header class="post-header">
         <c:choose>
             <c:when  test="${ sessionScope.userType == \"reader\" }">
-                <a href="${pageContext.request.contextPath}/reader/reporterPage?id=${param.reporterId}" class="option">
+                <a href="${pageContext.request.contextPath}/reporterPage?id=${param.reporterId}" class="option">
                     <!--View profile-->
                     <i class="bi bi-person"></i>
                 </a>

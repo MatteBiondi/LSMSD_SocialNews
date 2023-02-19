@@ -17,12 +17,12 @@
 </head>
 <body>
     <!-- Navbar section -->
-    <jsp:include page="../../common/navbar.jsp"/>
+    <jsp:include page="/pages/common/navbar.jsp"/>
 
     <h1 class="content-title">Followed Reporters</h1>
 
     <!-- Pagination section -->
-    <jsp:include page="../../common/pagination.jsp"/>
+    <jsp:include page="/pages/common/pagination.jsp"/>
 
     <div id="reporter_list">
         <!-- Filled by AJAX -->

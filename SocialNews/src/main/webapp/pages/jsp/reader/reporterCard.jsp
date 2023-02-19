@@ -6,7 +6,7 @@
         <img src="${param.image}" class="card-img-top profile-photo" alt="Profile image">
         <div class="card-body">
             <h5 class="card-title">${param.fullName}</h5>
-            <a href="${pageContext.request.contextPath}/reader/reporterPage?id=${param.id}" class="btn btn-primary">View profile page</a>
+            <a href="${pageContext.request.contextPath}/reporterPage?id=${param.id}" class="btn btn-primary">View profile page</a>
         </div>
     </div>
 </div>

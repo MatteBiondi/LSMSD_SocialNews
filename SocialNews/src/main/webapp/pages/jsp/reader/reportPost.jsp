@@ -18,7 +18,7 @@
 </head>
 <body>
     <!-- Navbar section -->
-    <jsp:include page="../../common/navbar.jsp"/>
+    <jsp:include page="/pages/common/navbar.jsp"/>
 
     <h1 class="content-title">Report Post</h1>
     <div class="form-container">
