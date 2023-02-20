@@ -36,7 +36,7 @@ public class Neo4jReportDAO {
                             "reporterId", reporterId,
                             "postId", postId,
                             "reportId", report.getReportId(),
-                            "timestamp", report.getTimestamp(),
+                            "timestamp", report.getTimestamp().getTime(),
                             "text", report.getText())
             );
 

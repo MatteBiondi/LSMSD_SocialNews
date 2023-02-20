@@ -1,0 +1,17 @@
+.form-container{
+    margin: auto;
+    width: 85%;
+    padding: 15px;
+    border-radius: 10px;
+    border: solid 3px black;
+}
+
+#report-form{
+    margin: auto;
+    width: 85%;
+}
+
+input:read-only{
+    background-color: lightgray;
+    cursor: not-allowed;
+}

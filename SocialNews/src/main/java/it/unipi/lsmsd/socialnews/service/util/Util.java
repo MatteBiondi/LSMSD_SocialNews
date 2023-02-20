@@ -41,6 +41,11 @@ public final class Util {
         // From Comment DTO to entity
         modelMapper.createTypeMap(CommentDTO.class, Comment.class)
                 .setPropertyCondition(Conditions.isNotNull());
+
+        // From Reporter DTO to entity
+        modelMapper.createTypeMap(ReportDTO.class, Report.class)
+                .addMappings(mapper -> mapper.skip(Report::setReportId))
+                .setPropertyCondition(Conditions.isNotNull());
     }
 
     /**

@@ -20,7 +20,7 @@
 </head>
 <body>
     <!-- Navbar section -->
-    <jsp:include page="../../common/navbar.jsp"/>
+    <jsp:include page="/pages/common/navbar.jsp"/>
 
     <h1 class="content-title">Suggested Reporters</h1>
     <div id="reporter_list">

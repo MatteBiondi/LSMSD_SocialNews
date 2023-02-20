@@ -64,7 +64,11 @@ $(document).ready(() => {
             }
             sessionStorage.setItem("searchValue", searchValue);
 
-            window.location.href=`search?by=${searchKey}&value=${searchValue}`
+            // Get root of current pathname
+            let rootPathname = window.location.pathname.match(/^\/[^/]+/)[0];
+
+            // Reader is the only user that can search for results with this navbar
+            window.location.href=`${rootPathname}/reader/search?by=${searchKey}&value=${searchValue}`
         }
     );
 })
