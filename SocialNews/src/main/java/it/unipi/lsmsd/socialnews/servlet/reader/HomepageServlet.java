@@ -46,7 +46,7 @@ public class HomepageServlet extends HttpServlet {
         }
 
         // Read interested values
-        pageLength = Integer.parseInt(properties.getProperty("page_length", "25"));
+        pageLength = Integer.parseInt(properties.getProperty("page_length", "10"));
 
         LOGGER.info("Init reader HomepageServlet");
     }

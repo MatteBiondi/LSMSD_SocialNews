@@ -122,7 +122,7 @@ public class ReaderServiceImpl implements ReaderService {
             List<ReporterDTO> firstPageReporterDTO = new ArrayList<>();
             DAOLocator.getReaderDAO()
                     .getFollowingByReaderId(readerId,
-                            Util.getIntProperty("listFollowingPageSize",25),
+                            Util.getIntProperty("listFollowingPageSize",10),
                             followingOffset )
                     .forEach(reporter -> firstPageReporterDTO.add(Util.buildReporterDTO(reporter)));
             return firstPageReporterDTO;
