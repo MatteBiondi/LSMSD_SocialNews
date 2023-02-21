@@ -88,7 +88,7 @@ public class ReporterServiceImpl implements ReporterService {
 
             ArrayNode followersArray = (ArrayNode) futures.get(1).get();
             Integer numFollowers = followersArray.get(0).asInt();
-            Boolean isFollower = followersArray.get(0).asInt() == 1;
+            Boolean isFollower = followersArray.get(1).asInt() == 1;
 
             return Util.buildReporterPageDTO(reporter, numFollowers, isFollower);
         } catch (IllegalArgumentException ex){
