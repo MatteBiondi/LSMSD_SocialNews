@@ -160,6 +160,8 @@ function followReporter (reporterId){
             showMessage('success', 'Follow operation successfully executed');
             $("#follow-button").hide();
             $("#unfollow-button").show();
+            let numFollower = parseInt($("#followers-number").text()) + 1;
+            $("#followers-number").text(numFollower);
         }).fail(function() {
             showMessage('danger', `Something went wrong. Please retry later`);
         });
@@ -176,6 +178,8 @@ function unfollowReporter (reporterId){
             showMessage('success', 'Unfollow operation successfully executed');
             $("#unfollow-button").hide();
             $("#follow-button").show();
+            let numFollower = parseInt($("#followers-number").text()) - 1;
+            $("#followers-number").text(numFollower);
         }).fail(function() {
             showMessage('danger', `Something went wrong. Please retry later`);
         });
