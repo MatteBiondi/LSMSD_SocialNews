@@ -23,6 +23,13 @@
     <jsp:include page="/pages/common/navbar.jsp"/>
 
     <h1 class="content-title">Suggested Reporters</h1>
+
+    <div class="d-flex justify-content-center" id="loading-spinner">
+        <div class="spinner-grow" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
     <div id="reporter_list">
         <!-- Filled by AJAX -->
     </div>

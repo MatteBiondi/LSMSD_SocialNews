@@ -1,4 +1,4 @@
-const CARDS_PER_PAGE = 25
+const CARDS_PER_PAGE = 10
 
 $(document).ready(async () => {
     sessionStorage.setItem("page","1");
@@ -43,6 +43,7 @@ async function loadFollowing(){
     let reporterList = await $.get(
         `homepage?search=followedCard&page=${page}`
     );
+    $("#loading-spinner").remove();
 
     let numCards;
 
