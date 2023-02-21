@@ -30,6 +30,20 @@ public interface ReporterService {
     ReporterPageDTO loadReporterPage(String reporterId) throws SocialNewsServiceException;
 
     /**
+     * Retrieves all the information about a reporter, identified by the identifier passed as argument, and the list
+     * of his/her most recent post up to a configured number of posts. The method also returns if the reader is or is not
+     * a follower of the reporter of interest
+     *
+     * @param reporterId reporter identifier
+     * @param readerId reader identifier
+     * @return ArrayNode containing:
+     * -reporter page DTO containing information about reporter and the list of his\her most recent posts
+     * -value '1' if the reader if a follower of the reporter, '0' otherwise
+     * @throws SocialNewsServiceException in case of failure of the operation or if the reporter is not in the system
+     */
+    ReporterPageDTO loadReporterPage(String reporterId,  String readerId) throws SocialNewsServiceException;
+
+    /**
      * Retrieves information about posts published by the reporter specified as argument ordered by publication
      * timestamp starting from the offset passed as argument, up to a configured number of posts in reverse order
      *

@@ -132,6 +132,18 @@ public interface ReporterDAO {
     Integer getNumOfFollowers(String reporterId) throws SocialNewsDataAccessException;
 
     /**
+     * Retrieve the number of followers for a given reporter and if the reader is one of the follower
+     *
+     * @param reporterId id of the reporter
+     * @param readerId id of the reader
+     * @return ArrayNode containing:
+     * 1) The number of follower for the reporter identified by 'reporterId'
+     * 2) A field 'follower' containing '1' if the reader is one of the followers, '0' otherwise
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
+     */
+    ArrayNode getNumOfFollowers(String reporterId, String readerId) throws SocialNewsDataAccessException;
+
+    /**
      * Retrieve the most popular reporters. Popularity is given by the number of followers
      *
      * @param limitTopRanking number of retrieved reporters

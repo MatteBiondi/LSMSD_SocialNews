@@ -27,12 +27,14 @@ body {
     margin-left: 3%;
 }
 
-#follow-button, #write-post {
+#follow-button,
+#unfollow-button,
+#write-post {
     background-color: transparent;
     border-radius: 15px;
     border: none;
     color: grey;
-    width: 70px;
+    width: fit-content;
     height: 30px;
     font-size: 17px;
     font-weight: bold;
@@ -44,9 +46,16 @@ body {
     align-items: center;
 }
 
-#follow-button:hover, #write-post:hover {
+#follow-button:hover,
+#unfollow-button:hover,
+#write-post:hover {
     background-color: grey;
     color: white;
+}
+
+#follow-button,
+#unfollow-button{
+    display: none;
 }
 
 #write-post {

@@ -105,6 +105,10 @@ public final class JSONConverter {
         return fromJSON(jsonObject, ReportDTO.class);
     }
 
+    public static ReporterPageDTO ReporterPageDTOFromJSON(String jsonObject){
+        return fromJSON(jsonObject, ReporterPageDTO.class);
+    }
+
     public static List<AdminDTO> AdminDTOListFromJSON(String jsonArray){
         return fromJSONArray(jsonArray, AdminDTO.class);
     }

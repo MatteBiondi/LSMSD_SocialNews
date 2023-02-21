@@ -1,3 +1,33 @@
+import {showMessage} from "../util.js";
+
+$(document).ready(async () => {
+    let body=$('body');
+    let isFollower = body.attr("data-is-follower");
+    let reporterId = body.attr("data-reporter-id");
+
+    let unfollowBtn = $("#unfollow-button");
+    let followBtn = $("#follow-button");
+    let writePostBtn = $("#write-post");
+
+    unfollowBtn.click( function(){
+        unfollowReporter(reporterId);
+    });
+
+    followBtn.click( function(){
+        followReporter(reporterId);
+    });
+
+    writePostBtn.click( function(){
+        publishNewPost(reporterId);
+    });
+
+    if(isFollower === "true"){
+        unfollowBtn.show();
+    }else{
+        followBtn.show();
+    }
+});
+
 function publishNewPost(reporterID) {
     let textarea = $("textarea").val();
     let hashtags = $("#hashtags-input").val();
@@ -117,4 +147,36 @@ function removePost(reporterID, postID) {
 
 function hideRemovedPost(postID) {
     $("#" + postID).remove();
+}
+
+function followReporter (reporterId){
+    $.post(
+        "reporterPage",
+        {
+            operation: "follow",
+            reporterId: reporterId
+        },
+        function() {
+            showMessage('success', 'Follow operation successfully executed');
+            $("#follow-button").hide();
+            $("#unfollow-button").show();
+        }).fail(function() {
+            showMessage('danger', `Something went wrong. Please retry later`);
+        });
+}
+
+function unfollowReporter (reporterId){
+    $.post(
+        "reporterPage",
+        {
+            operation: "unfollow",
+            reporterId: reporterId
+        },
+        function() {
+            showMessage('success', 'Unfollow operation successfully executed');
+            $("#unfollow-button").hide();
+            $("#follow-button").show();
+        }).fail(function() {
+            showMessage('danger', `Something went wrong. Please retry later`);
+        });
 }

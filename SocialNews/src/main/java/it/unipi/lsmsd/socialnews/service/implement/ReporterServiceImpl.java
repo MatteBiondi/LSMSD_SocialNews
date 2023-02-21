@@ -72,16 +72,25 @@ public class ReporterServiceImpl implements ReporterService {
     }
 
     @Override
-    public ReporterPageDTO loadReporterPage(String reporterId) throws SocialNewsServiceException {
+    public ReporterPageDTO loadReporterPage(String reporterId) throws SocialNewsServiceException{
+        return loadReporterPage(reporterId, null);
+    }
+
+    @Override
+    public ReporterPageDTO loadReporterPage(String reporterId, String readerId) throws SocialNewsServiceException {
         try {
             List<Future<?>> futures = ServiceWorkerPool.getPool().submitTask(List.of(
                     () -> DAOLocator.getReporterDAO()
                             .reporterByReporterId(reporterId, Util.getIntProperty("listPostPageSize",10)),
-                    () -> DAOLocator.getReporterDAO().getNumOfFollowers(reporterId)
+                    () -> DAOLocator.getReporterDAO().getNumOfFollowers(reporterId, readerId)
             ));
             Reporter reporter = (Reporter) futures.get(0).get();
-            Integer numFollowers = (Integer) futures.get(1).get();
-            return Util.buildReporterPageDTO(reporter, numFollowers);
+
+            ArrayNode followersArray = (ArrayNode) futures.get(1).get();
+            Integer numFollowers = followersArray.get(0).asInt();
+            Boolean isFollower = followersArray.get(0).asInt() == 1;
+
+            return Util.buildReporterPageDTO(reporter, numFollowers, isFollower);
         } catch (IllegalArgumentException ex){
             ex.printStackTrace();
             throw new SocialNewsServiceException("Reporter not in the system");
