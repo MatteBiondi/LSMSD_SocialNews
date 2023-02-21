@@ -47,7 +47,7 @@ function previousPaging() {
     if( page < 2 )
         $("#previous-button").addClass("disabled");
     else
-        $("#previous-button").removeClass("disabled",false);
+        $("#previous-button").removeClass("disabled");
 }
 
 function takeLastPost(direction){
@@ -78,7 +78,7 @@ async function loadResults(direction){
     let resultList = await $.get(
         `search?by=${searchKey}&value=${searchValue}&page=${page}&lastId=${lastId}&lastValue=${lastValue}&direction=${direction}`
     );
-
+    $("#loading-spinner").remove();
     let numCards;
 
     if($(resultList).find(".search-result").length > 0) {

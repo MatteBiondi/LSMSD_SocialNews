@@ -23,6 +23,10 @@ public class ReporterPageServlet extends HttpServlet {
         response.setContentType("text/html");
         String targetJSP = "/pages/jsp/reporter/homepage.jsp";
 
+        HttpSession session = request.getSession(false);
+
+        String readerId = (String) session.getAttribute("id");
+
         // Retrieve reporter Id
         String reporterId = request.getParameter("id");
 
@@ -31,7 +35,7 @@ public class ReporterPageServlet extends HttpServlet {
             if(reporterId == null)
                 throw new ServletException("Missing reporter id error");
 
-            ReporterPageDTO reporterPage = ServiceLocator.getReporterService().loadReporterPage(reporterId);
+            ReporterPageDTO reporterPage = ServiceLocator.getReporterService().loadReporterPage(reporterId, readerId);
             List<PostDTO> postsList = reporterPage.getPosts();
             reporterPage.setPosts(null); //avoid passing duplicate values
 
@@ -50,5 +54,45 @@ public class ReporterPageServlet extends HttpServlet {
         }
 
         request.getRequestDispatcher(targetJSP).forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/plain");
+
+        // Take requested operation
+        String operation = request.getParameter("operation");
+        String reporterId = request.getParameter("reporterId");
+
+        HttpSession session = request.getSession(false);
+        String readerId = (String) session.getAttribute("id");
+
+        try{
+            Integer result;
+            String msg;
+            if(operation.equals("follow")) {
+                result = ServiceLocator.getReaderService().followReporter(readerId, reporterId);
+                msg = result == 1 ?
+                        "New following relationship registered in the system: %s -> %s" :
+                        "Already existing relationship in the system: %s -> %s";
+            }else{
+                result = ServiceLocator.getReaderService().unfollowReporter(readerId, reporterId);
+                msg = result == 1 ?
+                        "Removed following relationship in the system: %s -> %s" :
+                        "Not existing relationship in the system to be removed: %s -> %s";
+            }
+            LOGGER.info(String.format(msg, readerId, reporterId));
+            response.getWriter().write("Operation success");
+        } catch (SocialNewsServiceException ex) {
+            String message = ex.getMessage();
+            LOGGER.warning(String.format("Service error occurred: %s", message));
+            PrintWriter writer = response.getWriter();
+            writer.write(String.format("Operation failed: %s", message));
+        } catch (Exception e) {
+            String message = e.getMessage();
+            LOGGER.warning(String.format("Unexpected error occurred: %s", message));
+            PrintWriter writer = response.getWriter();
+            writer.write(String.format("Operation failed: %s", message));
+        }
     }
 }

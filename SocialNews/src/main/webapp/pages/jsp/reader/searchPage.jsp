@@ -27,6 +27,12 @@
     <!-- Pagination section -->
     <jsp:include page="/pages/common/pagination.jsp"/>
 
+    <div class="d-flex justify-content-center" id="loading-spinner">
+        <div class="spinner-grow" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
     <div id="result_list">
         <!-- Filled by AJAX -->
     </div>

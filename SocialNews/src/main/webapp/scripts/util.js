@@ -11,7 +11,7 @@ export function computeWindowHeight(){
     return Math.max(body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight )
 }
 export function showMessage(type, text){
-    $("body").append(`
+    $("body").prepend(`
         <div id="message" class="alert alert-${type} alert-dismissible fade show" role="alert">
             <div>${text}</div>
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>

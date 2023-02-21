@@ -19,9 +19,9 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/reporterHomepage.css" type="text/css" media="screen">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
-    <script src="${pageContext.request.contextPath}/scripts/reporter/homepage.js"></script>
+    <script src="${pageContext.request.contextPath}/scripts/reporter/homepage.js" type="module"></script>
 </head>
-<body>
+<body data-reporter-id="${reporterPage.reporter.id}" data-is-follower="${reporterPage.isFollower}">
     <!-- Navbar section -->
     <c:choose>
         <c:when test="${userType==\"admin\"}">
@@ -43,8 +43,8 @@
                         <h4 id="reporter-name">${reporterPage.reporter.fullName}</h4>
                         <h2 id="role">Reporter</h2>
                         <c:if test="${userType==\"reader\"}">
-                            <!-- todo: gestire il caso di follow-unfollow-->
                             <button id="follow-button" type="button" class="btn btn-outline-primary">Follow</button>
+                            <button id="unfollow-button" type="button" class="btn btn-outline-primary">Unfollow</button>
                         </c:if>
                     </div>
                 </div>
@@ -75,7 +75,7 @@
                 <input id="hashtags-input" type="text" class="form-control" placeholder="Enter content hashtags (without the # symbol and separated by space)">
                 <input id="related-links-input" type="text" class="form-control" placeholder="Enter related links (separated by space)">
             </div>
-            <button id="write-post" onclick="publishNewPost('${userID}')">Publish</button>
+            <button id="write-post">Publish</button>
         </div>
     </c:if>
 

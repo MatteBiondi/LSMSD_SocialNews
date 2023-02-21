@@ -118,6 +118,11 @@ public class ReporterDAOImpl implements ReporterDAO {
     }
 
     @Override
+    public ArrayNode getNumOfFollowers(String reporterId, String readerId) throws SocialNewsDataAccessException{
+        return neo4jReporterDAO.getNumOfFollowers(reporterId,readerId);
+    }
+
+    @Override
     public ArrayNode getMostPopularReporters(int limitTopRanking) throws SocialNewsDataAccessException{
         return neo4jReporterDAO.getMostPopularReporters(limitTopRanking);
     }
