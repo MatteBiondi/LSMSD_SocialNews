@@ -5,7 +5,7 @@ public final class MongoEnvironment {
     private static final String DEFAULT_PROTOCOL = "mongodb";
     private static final String DEFAULT_USERNAME = "socialnews";
     private static final String DEFAULT_PASSWORD = "root";
-    private static final String DEFAULT_HOSTNAME = "172.16.5.20:27017,172.16.5.21:27017,172.16.5.20:27017";
+    private static final String DEFAULT_HOSTNAME = "172.16.5.20:27017,172.16.5.21:27017,172.16.5.22:27017";
     private static final String DEFAULT_DATABASE = "socialNewsDB";
     private static final String DEFAULT_OPTS = "authSource=admin&replicaSet=socialNews&appname=SocialNewsWebapp&ssl=false";
     // <protocol>://<username>:<password>@<hostname>/defaultDB/?<options>
