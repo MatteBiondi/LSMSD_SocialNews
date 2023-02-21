@@ -67,7 +67,7 @@ public class Neo4jReporterDAO {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (reporter:Reporter {reporterId: $reporterId}) <-[:FOLLOW]- (reader:Reader) " +
-                            "OPTIONAL MATCH (:Reader {readerId: $readerId}) -[follow:FOLLOW]-> (reporter) " +
+                            "OPTIONAL MATCH (reader:Reader {readerId: $readerId}) -[follow:FOLLOW]-> (reporter) " +
                             "RETURN count(reader) as numFollowers, count(follow) as follow",
                     parameters("reporterId", reporterId,
                             "readerId", readerId));
