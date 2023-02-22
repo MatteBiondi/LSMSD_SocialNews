@@ -25,7 +25,7 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
                             Filters.and(
                                     Filters.eq("reporterId", reporterId),
                                     Filters.exists("email",true)),
-                                    Updates.push("posts", newPost))
+                            Updates.push("posts", newPost))
                     .getModifiedCount();
         }
         catch (MongoException me){
@@ -111,7 +111,7 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
                     Projections.computed(
                             "posts",
                             Document.parse(String.format(
-                                    "{$filter:{input:'$posts',as:'p',cond:{$in:['%s','$$p.hashtags']}}}", hashtag))))
+                                    "{$filter:{input:'$posts', as:'posts', cond:{$in:['%s',{$ifNull:['$$posts.hashtags',[]]}]}}}", hashtag))))
             ));
             stages.add(Aggregates.unwind("$posts"));
             if(offset != null){
@@ -124,14 +124,15 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
                                 Filters.gt("posts.timestamp", offset.getTimestamp()))
                 ));
             }
-            stages.add(Aggregates.sort(Sorts.ascending("posts.timestamp", "posts._id")));
-            stages.add(Aggregates.limit(pageSize));
-            stages.add(Aggregates.sort(Sorts.descending("posts.timestamp", "posts._id")));
-            stages.add(Aggregates.group("$reporterId",
+            stages.add(Aggregates.group("$posts._id",
                     List.of(
                             Accumulators.push("posts", "$posts"),
                             Accumulators.first("reporterId","$reporterId")))
             );
+            stages.add(Aggregates.sort(Sorts.ascending("posts.timestamp", "posts._id")));
+            stages.add(Aggregates.limit(pageSize));
+            stages.add(Aggregates.sort(Sorts.descending("posts.timestamp", "posts._id")));
+
             getCollection().aggregate(stages).into(reporters);
             return reporters;
         }
@@ -151,7 +152,7 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
                     Projections.computed(
                     "posts",
                     Document.parse(String.format(
-                            "{$filter:{input:'$posts',as:'p',cond:{$in:['%s','$$p.hashtags']}}}", hashtag))))
+                            "{$filter:{input:'$posts', as:'posts', cond:{$in:['%s',{$ifNull:['$$posts.hashtags',[]]}]}}}", hashtag))))
             ));
             stages.add(Aggregates.unwind("$posts"));
             if(offset != null){
@@ -164,13 +165,15 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
                                 Filters.lt("posts.timestamp", offset.getTimestamp()))
                         ));
             }
-            stages.add(Aggregates.sort(Sorts.descending("posts.timestamp", "posts._id")));
-            stages.add(Aggregates.limit(pageSize));
-            stages.add(Aggregates.group("$reporterId",
+            stages.add(Aggregates.group("$posts._id",
                     List.of(
                             Accumulators.push("posts", "$posts"),
                             Accumulators.first("reporterId","$reporterId")))
             );
+            stages.add(Aggregates.sort(Sorts.descending("posts.timestamp", "posts._id")));
+            stages.add(Aggregates.limit(pageSize));
+
+
             getCollection().aggregate(stages).into(reporters);
             return reporters;
         }
