@@ -1,6 +1,7 @@
 package it.unipi.lsmsd.socialnews.dao;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Post;
 import it.unipi.lsmsd.socialnews.dao.model.Reporter;
@@ -136,12 +137,12 @@ public interface ReporterDAO {
      *
      * @param reporterId id of the reporter
      * @param readerId id of the reader
-     * @return ArrayNode containing:
+     * @return ObjectNode containing:
      * 1) The number of follower for the reporter identified by 'reporterId'
      * 2) A field 'follower' containing '1' if the reader is one of the followers, '0' otherwise
      * @throws SocialNewsDataAccessException in case of failure of the query operation on database
      */
-    ArrayNode getNumOfFollowers(String reporterId, String readerId) throws SocialNewsDataAccessException;
+    ObjectNode getNumOfFollowers(String reporterId, String readerId) throws SocialNewsDataAccessException;
 
     /**
      * Retrieve the most popular reporters. Popularity is given by the number of followers

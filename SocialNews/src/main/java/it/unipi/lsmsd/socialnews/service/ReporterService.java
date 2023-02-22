@@ -36,9 +36,8 @@ public interface ReporterService {
      *
      * @param reporterId reporter identifier
      * @param readerId reader identifier
-     * @return ArrayNode containing:
-     * -reporter page DTO containing information about reporter and the list of his\her most recent posts
-     * -value '1' if the reader if a follower of the reporter, '0' otherwise
+     * @return ReporterPageDTO containing information about reporter, the list of his\her most recent posts and
+     * a boolean value 'true' if the reader is a follower of the reporter, 'false' otherwise
      * @throws SocialNewsServiceException in case of failure of the operation or if the reporter is not in the system
      */
     ReporterPageDTO loadReporterPage(String reporterId,  String readerId) throws SocialNewsServiceException;

@@ -1,6 +1,7 @@
 package it.unipi.lsmsd.socialnews.dao.implement;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.client.ClientSession;
 import it.unipi.lsmsd.socialnews.dao.ReporterDAO;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
@@ -118,7 +119,7 @@ public class ReporterDAOImpl implements ReporterDAO {
     }
 
     @Override
-    public ArrayNode getNumOfFollowers(String reporterId, String readerId) throws SocialNewsDataAccessException{
+    public ObjectNode getNumOfFollowers(String reporterId, String readerId) throws SocialNewsDataAccessException{
         return neo4jReporterDAO.getNumOfFollowers(reporterId,readerId);
     }
 

@@ -63,7 +63,7 @@ public class Neo4jReporterDAO {
         return getNumOfFollowers(reporterId, null).get("numFollowers").asInt();
     }
 
-    public ArrayNode getNumOfFollowers(String reporterId, String readerId) throws SocialNewsDataAccessException{
+    public ObjectNode getNumOfFollowers(String reporterId, String readerId) throws SocialNewsDataAccessException{
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (reporter:Reporter {reporterId: $reporterId}) <-[:FOLLOW]- (reader:Reader) " +
@@ -73,10 +73,10 @@ public class Neo4jReporterDAO {
                             "readerId", readerId));
             Record result = session.readTransaction(tx -> tx.run(query).single());
             ObjectMapper objectMapper = new ObjectMapper();
-            ArrayNode arrayNode = objectMapper.createArrayNode();
-            arrayNode.add(result.get("numFollowers").asInt());
-            arrayNode.add(result.get("follow").asInt());
-            return arrayNode;
+            ObjectNode objectNode = objectMapper.createObjectNode();
+            objectNode.put("numFollowers", result.get("numFollowers").asInt());
+            objectNode.put("follow", result.get("follow").asInt());
+            return objectNode;
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Number of follower reading failed: "+ e.getMessage());

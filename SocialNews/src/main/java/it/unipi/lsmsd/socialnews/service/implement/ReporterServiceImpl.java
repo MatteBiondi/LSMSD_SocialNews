@@ -1,6 +1,7 @@
 package it.unipi.lsmsd.socialnews.service.implement;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unipi.lsmsd.socialnews.dao.DAOLocator;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Post;
@@ -86,9 +87,9 @@ public class ReporterServiceImpl implements ReporterService {
             ));
             Reporter reporter = (Reporter) futures.get(0).get();
 
-            ArrayNode followersArray = (ArrayNode) futures.get(1).get();
-            Integer numFollowers = followersArray.get(0).asInt();
-            Boolean isFollower = followersArray.get(1).asInt() == 1;
+            ObjectNode followersObj = (ObjectNode) futures.get(1).get();
+            Integer numFollowers = followersObj.get("numFollowers").asInt();
+            Boolean isFollower = followersObj.get("follow").asInt() == 1;
 
             return Util.buildReporterPageDTO(reporter, numFollowers, isFollower);
         } catch (IllegalArgumentException ex){
