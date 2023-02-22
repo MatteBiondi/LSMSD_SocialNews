@@ -1,3 +1,10 @@
 .content-title{
     margin-left: 15px;
 }
+
+#loading-spinner{
+    position: fixed;
+    left: 50%;
+    top: 20%;
+    z-index: 3;
+}

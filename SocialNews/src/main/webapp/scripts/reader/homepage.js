@@ -1,4 +1,4 @@
-import {noElemMessage} from "../util.js";
+import {noElemMessage, showMessage} from "../util.js";
 
 const CARDS_PER_PAGE = 10
 
@@ -9,6 +9,7 @@ $(document).ready(async () => {
     $("#previous").on(
         "click",
         () => {
+            $("#loading-spinner").removeAttr("style");
             let page = parseInt(sessionStorage.getItem("page"));
             sessionStorage.setItem("page", (page-1).toString());
             loadFollowing();
@@ -18,6 +19,7 @@ $(document).ready(async () => {
     $("#next").on(
         "click",
         () => {
+            $("#loading-spinner").removeAttr("style");
             let page = parseInt(sessionStorage.getItem("page"));
             sessionStorage.setItem("page", (page+1).toString());
             loadFollowing();
@@ -45,7 +47,7 @@ async function loadFollowing(){
     let reporterList = await $.get(
         `homepage?search=followedCard&page=${page}`
     );
-    $("#loading-spinner").remove();
+    $("#loading-spinner").attr("style","display:none!important");
 
     let numCards;
     let reporterListDiv = $("#reporter_list");
@@ -64,8 +66,10 @@ async function loadFollowing(){
                 reporterListDiv,
                 "You don't follow any reporter. Use the search bar to find and follow new reporters"
             );
-        else
+        else{
+            showMessage('danger', 'There are no other results to show.');
             sessionStorage.setItem("page", (page-1).toString());
+        }
     }
 
     nextPaging(numCards);

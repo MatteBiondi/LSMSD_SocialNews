@@ -3,7 +3,7 @@ $(document).ready(async () => {
         `statistics?search=suggestedCard`
     );
 
-    $("#loading-spinner").remove();
+    $("#loading-spinner").attr("style","display:none!important");
 
     $("#reporter_list").html(reporterList);
 });

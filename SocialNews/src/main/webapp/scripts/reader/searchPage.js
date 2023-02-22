@@ -1,4 +1,4 @@
-import {noElemMessage} from "../util.js";
+import {noElemMessage, showMessage} from "../util.js";
 
 const CARDS_PER_PAGE = 25
 
@@ -13,6 +13,7 @@ $(document).ready(async () => {
     $("#previous").on(
         "click",
         () => {
+            $("#loading-spinner").removeAttr("style");
             let page = parseInt(sessionStorage.getItem("page"));
             sessionStorage.setItem("page", (page-1).toString());
 
@@ -26,6 +27,7 @@ $(document).ready(async () => {
     $("#next").on(
         "click",
         () => {
+            $("#loading-spinner").removeAttr("style");
             let page = parseInt(sessionStorage.getItem("page"));
             sessionStorage.setItem("page", (page+1).toString());
 
@@ -80,7 +82,8 @@ async function loadResults(direction){
     let resultList = await $.get(
         `search?by=${searchKey}&value=${searchValue}&page=${page}&lastId=${lastId}&lastValue=${lastValue}&direction=${direction}`
     );
-    $("#loading-spinner").remove();
+    $("#loading-spinner").attr("style","display:none!important");
+
     let numCards;
     let resultListDiv = $("#result_list");
 
@@ -98,8 +101,10 @@ async function loadResults(direction){
                 resultListDiv,
                 "Your search produced no results. Try again."
             );
-        else
+        else{
+            showMessage('danger', 'There are no other results to show.');
             sessionStorage.setItem("page", (page-1).toString());
+        }
     }
 
     nextPaging(numCards);
