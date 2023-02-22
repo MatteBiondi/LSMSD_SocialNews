@@ -10,6 +10,7 @@ $(document).ready(() => {
     let search_text = $("#search-text");
     let search_clear = $("#search-clear");
     let search_button = $("#search-button");
+    let logout_button = $("#logout");
 
     let searchKey = sessionStorage.getItem("searchKey");
     searchKey = searchKey === null? DEFAULT_SEARCH : searchKey;
@@ -69,6 +70,16 @@ $(document).ready(() => {
 
             // Reader is the only user that can search for results with this navbar
             window.location.href=`${rootPathname}/reader/search?by=${searchKey}&value=${searchValue}`
+        }
+    );
+
+    logout_button.on(
+        "click",
+        () => {
+            sessionStorage.clear();
+            // Get root of current pathname
+            let rootPathname = window.location.pathname.match(/^\/[^/]+/)[0];
+            window.location.href=`${rootPathname}/logout`;
         }
     );
 })

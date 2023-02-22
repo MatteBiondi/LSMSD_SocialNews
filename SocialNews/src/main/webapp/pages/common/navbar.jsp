@@ -60,7 +60,7 @@
                     </li>
                 </c:if>
                 <li>
-                    <a id="logout" class="dropdown-item" href="${pageContext.request.contextPath}/logout">Logout</a>
+                    <span id="logout" class="dropdown-item">Logout</span>
                 </li>
             </ul>
         </div>
