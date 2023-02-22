@@ -61,7 +61,7 @@ function takeLastPost(direction){
 
     sessionStorage.setItem("lastId", lastResult.attr('id'));
 
-    let lastValue = searchKey === "Keyword"?
+    let lastValue = searchKey === "Hashtag"?
         lastResult.attr("data-millis-time"):lastResult.attr("data-full-name");
 
     sessionStorage.setItem("lastValue", lastValue);

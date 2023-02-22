@@ -31,7 +31,7 @@
                         <i id="search-clear" class="bi bi-x-circle"></i>
                         <div class="dropdown-menu">
                             <span class="dropdown-item search-item">Reporter Name</span>
-                            <span class="dropdown-item search-item">Keyword</span>
+                            <span class="dropdown-item search-item">Hashtag</span>
                         </div>
                     </div>
                 </div>

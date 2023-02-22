@@ -51,7 +51,7 @@ public class SearchServlet extends HttpServlet {
                     }
                     request.setAttribute("reporterList", reporters);
 
-                } else if (searchKey.equals("Keyword")) {
+                } else if (searchKey.equals("Hashtag")) {
                     targetJSP = "/pages/jsp/postList.jsp";
                     List<PostDTO> posts;
                     // Retrieve posts from database
