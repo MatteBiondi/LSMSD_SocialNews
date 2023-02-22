@@ -1,3 +1,5 @@
+import {noElemMessage} from "../util.js";
+
 const CARDS_PER_PAGE = 25
 
 $(document).ready(async () => {
@@ -80,10 +82,10 @@ async function loadResults(direction){
     );
     $("#loading-spinner").remove();
     let numCards;
+    let resultListDiv = $("#result_list");
 
     if($(resultList).find(".search-result").length > 0) {
         // There are cards inside
-        let resultListDiv = $("#result_list");
         resultListDiv.empty();
         resultListDiv.html(resultList);
         numCards = $(".search-result").length;
@@ -91,7 +93,13 @@ async function loadResults(direction){
     else{
         numCards = 0;
         let page = parseInt(sessionStorage.getItem("page"));
-        sessionStorage.setItem("page", (page-1).toString());
+        if(page === 1)
+            noElemMessage(
+                resultListDiv,
+                "Your search produced no results. Try again."
+            );
+        else
+            sessionStorage.setItem("page", (page-1).toString());
     }
 
     nextPaging(numCards);

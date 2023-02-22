@@ -1,3 +1,5 @@
+import {noElemMessage} from "../util.js";
+
 const CARDS_PER_PAGE = 10
 
 $(document).ready(async () => {
@@ -46,10 +48,10 @@ async function loadFollowing(){
     $("#loading-spinner").remove();
 
     let numCards;
+    let reporterListDiv = $("#reporter_list");
 
     if($(reporterList).find(".card").length > 0) {
         // There are cards inside
-        let reporterListDiv = $("#reporter_list");
         reporterListDiv.empty();
         reporterListDiv.html(reporterList);
         numCards = $(".card-container").length;
@@ -57,7 +59,13 @@ async function loadFollowing(){
     else{
         numCards = 0;
         let page = parseInt(sessionStorage.getItem("page"));
-        sessionStorage.setItem("page", (page-1).toString());
+        if(page === 1)
+            noElemMessage(
+                reporterListDiv,
+                "You don't follow any reporter. Use the search bar to find and follow new reporters"
+            );
+        else
+            sessionStorage.setItem("page", (page-1).toString());
     }
 
     nextPaging(numCards);

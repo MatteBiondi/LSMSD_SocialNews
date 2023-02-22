@@ -15,7 +15,7 @@
             integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
             crossorigin="anonymous">
     </script>
-    <script src="${pageContext.request.contextPath}/scripts/reader/searchPage.js"></script>
+    <script src="${pageContext.request.contextPath}/scripts/reader/searchPage.js" type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>

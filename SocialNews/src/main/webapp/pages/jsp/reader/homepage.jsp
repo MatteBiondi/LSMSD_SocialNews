@@ -13,7 +13,7 @@
             integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
             crossorigin="anonymous">
     </script>
-    <script src="${pageContext.request.contextPath}/scripts/reader/homepage.js"></script>
+    <script src="${pageContext.request.contextPath}/scripts/reader/homepage.js" type="module"></script>
 </head>
 <body>
     <!-- Navbar section -->
