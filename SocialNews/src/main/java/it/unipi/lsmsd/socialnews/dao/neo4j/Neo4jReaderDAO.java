@@ -109,8 +109,8 @@ public class Neo4jReaderDAO {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (r:Reporter) " +
-                            "OPTIONAL MATCH (r)  <-[f:FOLLOW]- (rr:Reader) "+
-                            "WHERE rr.readerId <> $readerId " +
+                            "WHERE NOT (:Reader {readerId: $readerId}) -[:FOLLOW]-> (r) " +
+                            "OPTIONAL MATCH (r) <-[f:FOLLOW]-() " +
                             "WITH r as suggestedReporters, count(f) as NumFollower "+
                             "RETURN suggestedReporters " +
                             "ORDER BY NumFollower DESC " +
