@@ -91,7 +91,7 @@ public class ReporterDAOImpl implements ReporterDAO {
         boolean resultNeo = false;
         try {
             session.startTransaction();
-            resultMongo = mongoReporterDAO.removeReporter(session, reporterId); //TODO: remove comments
+            resultMongo = mongoReporterDAO.removeReporter(session, reporterId);
             resultNeo = String.valueOf(neo4jReporterDAO.deleteReporter(reporterId)).equals(reporterId);
             session.commitTransaction();
         }
