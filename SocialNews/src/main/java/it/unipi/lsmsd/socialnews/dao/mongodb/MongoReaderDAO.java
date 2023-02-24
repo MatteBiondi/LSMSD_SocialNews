@@ -73,7 +73,7 @@ public class MongoReaderDAO extends MongoDAO<Reader> {
                         filterDoc,
                         Filters.or(
                                 Filters.and(
-                                        Filters.lte("fullName", offset.getFullName()),
+                                        Filters.eq("fullName", offset.getFullName()),
                                         Filters.lt("_id", offset.getId())
                                 ),
                                 Filters.lt("fullName", offset.getFullName())
@@ -110,7 +110,7 @@ public class MongoReaderDAO extends MongoDAO<Reader> {
                         filterDoc,
                         Filters.or(
                                 Filters.and(
-                                        Filters.gte("fullName", offset.getFullName()),
+                                        Filters.eq("fullName", offset.getFullName()),
                                         Filters.gt("_id", offset.getId())
                                 ),
                                 Filters.gt("fullName", offset.getFullName())

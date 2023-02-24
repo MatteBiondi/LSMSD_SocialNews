@@ -57,25 +57,11 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
     }
 
     public Reporter reporterByReporterId(String reporterId, Integer pageSize) throws SocialNewsDataAccessException {
-        return reporterByReporterId(reporterId, null, pageSize);
-    }
-
-    public Reporter reporterByReporterId(String reporterId, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
         try{
             List<Bson> stages = new ArrayList<>();
 
             stages.add(Aggregates.match(Filters.eq("reporterId", reporterId)));
             stages.add(Aggregates.unwind("$posts", new UnwindOptions().preserveNullAndEmptyArrays(true)));
-            if(offset != null){
-                stages.add(Aggregates.match(
-                        Filters.or(
-                                Filters.and(
-                                        Filters.lte("posts.timestamp", offset.getTimestamp()),
-                                        Filters.lt("posts._id", offset.getId())
-                                ),
-                                Filters.lt("posts.timestamp", offset.getTimestamp()))
-                ));
-            }
             stages.add(Aggregates.sort(Sorts.descending("posts.timestamp", "posts._id")));
             stages.add(Aggregates.limit(pageSize));
             stages.add(Aggregates.group("$reporterId",
@@ -116,7 +102,7 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
                     filter,
                     Filters.or(
                             Filters.and(
-                                    Filters.lte("fullName", offset.getFullName()),
+                                    Filters.eq("fullName", offset.getFullName()),
                                     Filters.lt("reporterId", offset.getReporterId())
                             ),
                             Filters.lt("fullName", offset.getFullName())
@@ -154,7 +140,7 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
                     filter,
                     Filters.or(
                             Filters.and(
-                                    Filters.gte("fullName", offset.getFullName()),
+                                    Filters.eq("fullName", offset.getFullName()),
                                     Filters.gt("reporterId", offset.getReporterId())
                             ),
                             Filters.gt("fullName", offset.getFullName())
@@ -186,7 +172,7 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
                         filterDoc,
                         Filters.or(
                                 Filters.and(
-                                        Filters.lte("fullName", offset.getFullName()),
+                                        Filters.eq("fullName", offset.getFullName()),
                                         Filters.lt("reporterId", offset.getReporterId())
                                 ),
                                 Filters.lt("fullName", offset.getFullName())
@@ -223,7 +209,7 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
                         filterDoc,
                         Filters.or(
                                 Filters.and(
-                                        Filters.gte("fullName", offset.getFullName()),
+                                        Filters.eq("fullName", offset.getFullName()),
                                         Filters.gt("reporterId", offset.getReporterId())
                                 ),
                                 Filters.gt("fullName", offset.getFullName())

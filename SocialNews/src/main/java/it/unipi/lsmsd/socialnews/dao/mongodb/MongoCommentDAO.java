@@ -40,17 +40,17 @@ public class MongoCommentDAO extends MongoDAO<Comment> {
                         filter,
                         Filters.or(
                                 Filters.and(
-                                        Filters.lte("timestamp", offset.getTimestamp()),
-                                        Filters.lt("reader._id", offset.getReader().getId())
+                                        Filters.eq("timestamp", offset.getTimestamp()),
+                                        Filters.lt("_id", offset.getId())
                                 ),
                                 Filters.lt("timestamp", offset.getTimestamp())
                         ));
 
             List<Bson> stages = new ArrayList<>();
             stages.add(Aggregates.match(filter));
-            stages.add(Aggregates.sort(Sorts.descending("timestamp", "reader._id")));
+            stages.add(Aggregates.sort(Sorts.descending("timestamp", "_id")));
             stages.add(Aggregates.limit(pageSize));
-            stages.add(Aggregates.sort(Sorts.ascending("timestamp", "reader._id")));
+            stages.add(Aggregates.sort(Sorts.ascending("timestamp", "_id")));
 
             getCollection().aggregate(stages).into(comments);
             return comments;
@@ -70,15 +70,15 @@ public class MongoCommentDAO extends MongoDAO<Comment> {
                         filter,
                         Filters.or(
                                 Filters.and(
-                                        Filters.gte("timestamp", offset.getTimestamp()),
-                                        Filters.gt("reader._id", offset.getReader().getId())
+                                        Filters.eq("timestamp", offset.getTimestamp()),
+                                        Filters.gt("_id", offset.getId())
                                 ),
                                 Filters.gt("timestamp", offset.getTimestamp())
                         ));
 
             getCollection()
                     .find(filter)
-                    .sort(Sorts.ascending("timestamp", "reader._id"))
+                    .sort(Sorts.ascending("timestamp", "_id"))
                     .limit(pageSize)
                     .into(comments);
             return comments;
@@ -103,6 +103,17 @@ public class MongoCommentDAO extends MongoDAO<Comment> {
     public Long removeCommentsByReaderId(String readerId) throws SocialNewsDataAccessException {
         try{
             DeleteResult result = getCollection().deleteMany(Filters.eq("reader._id", readerId));
+            return result.getDeletedCount();
+        }
+        catch (MongoException me){
+            me.printStackTrace();
+            throw new SocialNewsDataAccessException("Deletion failed: " + me.getMessage());
+        }
+    }
+
+    public Long removeCommentsByReporterId(String reporterId) throws SocialNewsDataAccessException{
+        try{
+            DeleteResult result = getCollection().deleteMany(Filters.eq("post.reporterId", reporterId));
             return result.getDeletedCount();
         }
         catch (MongoException me){

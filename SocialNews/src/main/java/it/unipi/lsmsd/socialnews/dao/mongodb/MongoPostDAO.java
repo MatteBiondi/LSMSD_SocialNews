@@ -44,7 +44,7 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
                 stages.add(Aggregates.match(
                         Filters.or(
                                 Filters.and(
-                                        Filters.gte("posts.timestamp", offset.getTimestamp()),
+                                        Filters.eq("posts.timestamp", offset.getTimestamp()),
                                         Filters.gt("posts._id", offset.getId())
                                 ),
                                 Filters.gt("posts.timestamp", offset.getTimestamp()))
@@ -78,7 +78,7 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
                 stages.add(Aggregates.match(
                         Filters.or(
                                 Filters.and(
-                                        Filters.lte("posts.timestamp", offset.getTimestamp()),
+                                        Filters.eq("posts.timestamp", offset.getTimestamp()),
                                         Filters.lt("posts._id", offset.getId())
                                 ),
                                 Filters.lt("posts.timestamp", offset.getTimestamp()))
@@ -118,7 +118,7 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
                 stages.add(Aggregates.match(
                         Filters.or(
                                 Filters.and(
-                                        Filters.gte("posts.timestamp", offset.getTimestamp()),
+                                        Filters.eq("posts.timestamp", offset.getTimestamp()),
                                         Filters.gt("posts._id", offset.getId())
                                 ),
                                 Filters.gt("posts.timestamp", offset.getTimestamp()))
@@ -159,7 +159,7 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
                 stages.add(Aggregates.match(
                         Filters.or(
                                 Filters.and(
-                                        Filters.lte("posts.timestamp", offset.getTimestamp()),
+                                        Filters.eq("posts.timestamp", offset.getTimestamp()),
                                         Filters.lt("posts._id", offset.getId())
                                 ),
                                 Filters.lt("posts.timestamp", offset.getTimestamp()))

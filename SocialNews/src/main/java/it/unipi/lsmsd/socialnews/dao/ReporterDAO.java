@@ -48,19 +48,6 @@ public interface ReporterDAO {
     Reporter reporterByReporterId(String reporterId, Integer pageSize) throws SocialNewsDataAccessException;
 
     /**
-     * Retrieves information about a reporter, including all his\her posts, limiting the post list size to the
-     * dimension specified, starting to the posts specified as argument. It allows the implementation of pagination
-     * of the posts
-     *
-     * @param reporterId reporter identifier
-     * @param offset post from which the query starts to retrieve information
-     * @param pageSize number of posts to retrieve
-     * @return reporter objects containing all the information, including posts
-     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
-     */
-    Reporter reporterByReporterId(String reporterId, Post offset, Integer pageSize) throws SocialNewsDataAccessException;
-
-    /**
      * Retrieves information about all the reporter saved on database that matches the fullName specified, excluding
      * posts, limiting the list size to the dimension specified, starting from the reporter specified as argument in
      * reverse order.

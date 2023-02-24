@@ -65,11 +65,6 @@ public class ReporterDAOImpl implements ReporterDAO {
     }
 
     @Override
-    public Reporter reporterByReporterId(String reporterId, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
-        return mongoReporterDAO.reporterByReporterId(reporterId, offset, pageSize);
-    }
-
-    @Override
     public List<Reporter> reportersByFullNamePrev(String fullNamePattern, Reporter offset, Integer pageSize) throws SocialNewsDataAccessException {
         return mongoReporterDAO.reportersByFullNamePrev(fullNamePattern, offset, pageSize);
     }
@@ -96,7 +91,7 @@ public class ReporterDAOImpl implements ReporterDAO {
         boolean resultNeo = false;
         try {
             session.startTransaction();
-            resultMongo = mongoReporterDAO.removeReporter(session, reporterId);
+            resultMongo = mongoReporterDAO.removeReporter(session, reporterId); //TODO: remove comments
             resultNeo = String.valueOf(neo4jReporterDAO.deleteReporter(reporterId)).equals(reporterId);
             session.commitTransaction();
         }
