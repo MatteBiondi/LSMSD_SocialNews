@@ -252,6 +252,23 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
         }
     }
 
+    public Long updateNumOfReport(String reporterId, Integer increment) throws SocialNewsDataAccessException{
+        try{
+            return getCollection()
+                    .updateOne(
+                            Filters.and(
+                                    Filters.exists("email", true),
+                                    Filters.eq("reporterId", reporterId)),
+                            Updates.inc("numOfReport", increment))
+                    .getModifiedCount();
+        }
+        catch (MongoException me){
+            me.printStackTrace();
+            throw new SocialNewsDataAccessException("Updated failed: " + me.getMessage());
+        }
+    }
+
+
     public Boolean checkAndSwapDocument(String reporterEmail) throws SocialNewsDataAccessException{
         try (ClientSession session = openSession()){
             return session.withTransaction(() -> {

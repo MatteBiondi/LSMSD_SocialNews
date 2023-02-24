@@ -235,4 +235,18 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
             throw new SocialNewsDataAccessException("Query failed: " + me.getMessage());
         }
     }
+
+    public Long updateNumOfComment(String postId, Integer increment) throws SocialNewsDataAccessException{
+        try{
+            return getCollection()
+                .updateOne(
+                        Filters.eq("posts._id", postId),
+                        Updates.inc("posts.$.numOfComment", increment))
+                .getModifiedCount();
+        }
+        catch (MongoException me){
+            me.printStackTrace();
+            throw new SocialNewsDataAccessException("Updated failed: " + me.getMessage());
+        }
+    }
 }
