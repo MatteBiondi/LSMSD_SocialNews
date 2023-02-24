@@ -27,7 +27,7 @@ function initGrid(){
 }
 
 function showReporterHomepage(ev){
-    location.href = `${document.URL.slice(0,document.URL.search('admin')-1)}/reporter?reporterId=${ev.currentTarget.dataset['id']}`
+    location.href = `${document.URL.slice(0,document.URL.search('admin')-1)}/reporterPage?id=${ev.currentTarget.dataset['id']}`
 }
 
 function addEventListeners(){

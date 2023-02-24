@@ -1,18 +1,19 @@
-// mongodb+srv://<credentials>@mongocluster.5jxoxyx.mongodb.net/?appName=mongosh+1.6.2
-// use socialNewsDB
-
 /****************************
  1) Search posts by hashtags
  ****************************/
-let hashtag = 'news'
-let offset = ISODate('2023-02-01T21:57:05.536Z');
+let hashtag = 'BREAKING'
+let offset = ISODate('2010-02-01T21:57:05.536Z');
 db.reporters.aggregate([
     {$match:{'posts.hashtags':hashtag}},
-    {$project:{reporterId:1, posts:{$filter:{input:'$posts', as:'posts', cond:{$in:[hashtag, '$$posts.hashtags']}}}}},
+    {$project:{reporterId:1, posts:{$filter:{input:'$posts', as:'posts', cond:{$and:[
+                            {$in:[hashtag, {$ifNull:['$$posts.hashtags',[]]}]},
+                            {$gte:['$$posts.timestamp',ISODate('2023-01-17T00:00:00.000Z')]}
+                        ]}}}}},
     {$unwind:'$posts'},
-    {$match:{'posts.timestamp':{$lt:offset}}},
-    {$limit:25},
-    {$group:{reporterId: {$first: '$reporterId'}, _id: '$reporterId', posts: { $push: '$posts'}}}
+    {$sort:{'posts.timestamp':-1,'posts._id':-1}},
+    {$limit:10},
+    {$group:{reporterId: {$first: '$reporterId'}, _id: '$posts._id', posts: { $push: '$posts'}}},
+    {$sort:{'posts.timestamp':-1,'posts._id':-1}},
 ])
 
 /********************************************
@@ -40,6 +41,22 @@ db.reporters.aggregate([
         posts: {$push:'$posts'}
     }},
 ])
+
+/********************************************
+ 3) Reporters by full name
+ ********************************************/
+let regex = "(?=.*\\bM.*\\b)(?=.*\\bR.*\\b)"
+db.reporters.find({$and:[
+        {fullName: {$regex: regex ,$options:'i'}},
+        {$or:[
+            {$and:[
+                {fullName: {$gte: 'Mario Rossi'}},
+                {reporterId:{$gt: 'b3c022e7-8ecd-429e-b2c8-3b86fb0a8c44'}}
+            ]},
+            {fullName: {$gt:'Mario Rossi'}}
+        ]}
+    ]}, {fullName:1}).limit(5).sort({fullName:1})
+
 
 /**
  * Statistics

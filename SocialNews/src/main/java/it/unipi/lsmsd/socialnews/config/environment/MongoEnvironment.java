@@ -7,7 +7,8 @@ public final class MongoEnvironment {
     private static final String DEFAULT_PASSWORD = "root";
     private static final String DEFAULT_HOSTNAME = "172.16.5.20:27017,172.16.5.21:27017,172.16.5.22:27017";
     private static final String DEFAULT_DATABASE = "socialNewsDB";
-    private static final String DEFAULT_OPTS = "authSource=admin&replicaSet=socialNews&appname=SocialNewsWebapp&ssl=false";
+    private static final String DEFAULT_OPTS = "authSource=admin&replicaSet=socialNews&appname=SocialNewsWebapp&ssl" +
+            "=false&readPreference=nearest";
     // <protocol>://<username>:<password>@<hostname>/defaultDB/?<options>
     private static final String DEFAULT_URI_FORMAT = "%s://%s:%s@%s/%s?%s";
 
@@ -54,7 +55,7 @@ public final class MongoEnvironment {
     }
 
     private static String getMongoOptions() {
-        String options = System.getenv("MONGO_OPTIONS");//TODO: write\read concern, replicas\sharding config
+        String options = System.getenv("MONGO_OPTIONS");
         if (options == null || options.isEmpty()) {
             return DEFAULT_OPTS;
         }
