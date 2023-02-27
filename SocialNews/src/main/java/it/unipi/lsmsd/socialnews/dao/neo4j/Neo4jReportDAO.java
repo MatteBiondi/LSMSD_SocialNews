@@ -80,7 +80,7 @@ public class Neo4jReportDAO {
                     "MATCH (reporter:Reporter) -[:WRITE]-> (post:Post) <-[report:REPORT]- (reader:Reader) " +
                             "WHERE reporter.reporterId = $reporterId " +
                             "RETURN reader.readerId as readerId, report, post.postId as postId "+
-                            "ORDER BY report.reportId ASC " +
+                            "ORDER BY report.timestamp DESC " +
                             "SKIP $offset " +
                             "LIMIT $limit",
                     parameters("reporterId", reporterId, "offset", offset, "limit", limit));
