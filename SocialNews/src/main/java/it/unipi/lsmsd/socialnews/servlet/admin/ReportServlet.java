@@ -50,7 +50,8 @@ public class ReportServlet extends HttpServlet {
         }
         catch (SocialNewsServiceException ex){
             ex.printStackTrace();
-            response.getWriter().write(error.toString());
+            response.setStatus(500);
+            response.getWriter().write(error.put("message", ex.getMessage()).toString());
 
         }
     }
@@ -68,7 +69,7 @@ public class ReportServlet extends HttpServlet {
         } catch (SocialNewsServiceException | RuntimeException ex) {
             ex.printStackTrace();
             response.setStatus(500);
-            response.getWriter().write(error.toString());
+            response.getWriter().write(error.put("message", ex.getMessage()).toString());
         }
     }
 }
