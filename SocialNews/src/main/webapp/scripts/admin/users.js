@@ -65,14 +65,14 @@ const reportPage = new class {
                 url: `${location.href.split('admin')[0]}/admin/report?type=post&reporterId=${this.#reporterId}` +
                     `&postId=${this.#reports[index]['postId']}`,
             });
-            console.log(post);
+
 
             this.postContainer.html(`
                 <div class="post-container container my-5 search-result" style="width: auto">
                     <header class="post-header">
                         <a href="${location.href.split('admin')[0]}/reporterPage?id=${this.#reporterId}" 
                             class="option"><i class="bi bi-person"></i></a>
-                        <a data-ref="${post.postId}" class="option"><i class="bi bi-trash3"></i></a>
+                        <i id="removePost" class="option bi bi-trash3"></i>
                     </header>
                     <hr>
                     <p class="post-text">${post.text}</p>
@@ -85,11 +85,32 @@ const reportPage = new class {
                     </footer>
                 </div>
             `)
+            $('#removePost').on('click', () => this.#removePost(this.#reporterId, post.id))
             this.postModal.show();
         }
         catch (error){
+            if('responseJSON' in error){
+                this.postContainer.html("<span class='fs-3'>The post may have been deleted</span>")
+                this.postModal.show()
+            }
+            else{
+                showMessage('danger', `Something went wrong`);
+            }
+        }
+    }
+    async #removePost(reporterId, postId){
+        try{
+            await $.ajax({
+                type: 'post',
+                url: `${location.href.split('admin')[0]}/reporter/posthandling?operation=delete&reporterID=${this.#reporterId}` +
+                    `&postID=${postId}`,
+            });
+            showMessage("Post successfully deleted")
+            this.postModal.hide()
+        }
+        catch (error){
             if('responseJSON' in error)
-                showMessage('danger', `Something went wrong: ${error['responseJSON']['message']}`);
+                showMessage('danger', `Something went wrong: ${error['responseJSON']['message']}`.toLowerCase());
             else
                 showMessage('danger', `Something went wrong`);
         }
@@ -122,7 +143,7 @@ const reportPage = new class {
             </li>`)
         }
         this.prev.prop('disabled', (this.#page === 0));
-        this.next.prop('disabled', this.#reports.length < this.#pageLength);
+        this.next.prop('disabled', this.#reports.length < this.#pageLength || this.#reports.length === 0);
         this.pageElem.text(this.#page+1);
 
         $('.report-delete').on('click', (ev) => this.#deleteReport(ev.currentTarget.parentElement.dataset['index']));
