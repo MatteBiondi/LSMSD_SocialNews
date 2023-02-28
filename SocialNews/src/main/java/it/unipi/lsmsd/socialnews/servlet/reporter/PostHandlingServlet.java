@@ -69,7 +69,7 @@ public class PostHandlingServlet extends HttpServlet {
             String postID = request.getParameter("postID");
             try {
                 ServiceLocator.getPostService().removePost(postID, reporterID);
-                writer.write("{result: ok}");
+                writer.write("{\"result\": \"ok\"}");
             } catch (SocialNewsServiceException ex) {
                 String message = ex.getMessage();
                 LOGGER.warning(String.format("Service error occurred: %s", message));
