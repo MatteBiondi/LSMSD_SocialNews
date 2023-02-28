@@ -1,7 +1,13 @@
+@import "../postCard.css";
+
 #content{
     overflow: hidden;
 }
 
 zg-icon{
     margin: 0;
+}
+
+.report i:hover{
+    color: blue;
 }
