@@ -34,6 +34,11 @@ public class PostDAOImpl implements PostDAO {
     }
 
     @Override
+    public Post postByPostId(String reporterId, String postId) throws SocialNewsDataAccessException {
+        return mongoPostDAO.postByPostId(reporterId, postId);
+    }
+
+    @Override
     public List<Post> postsByReporterIdPrev(String reporterId, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
         return mongoPostDAO.postsByReporterIdPrev(reporterId, offset, pageSize);
     }
