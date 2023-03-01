@@ -147,7 +147,21 @@ public class RedundancyUpdater {
         try{
             session.startTransaction();
 
-            storeCommentsIntoDB();
+            // DB redundancy update
+            for (String key : postCommentCounts.keySet()) {
+                try {
+                    Integer value = postCommentCounts.get(key);
+                    if (mongoPostDAO.updateNumOfComment(session, key, value) == 0) {
+                        logger.warn("Post " + key + " -> "+value+" not modified. Maybe it has been deleted.");
+                    }
+                    else{
+                        logger.info("Post comment redundancies applied");
+                    }
+                    postCommentCounts.remove(key);
+                } catch (Exception e) {
+                    logger.error("Error in applying changes to DB: " + e.getMessage());
+                }
+            }
 
             // Renew content of log file
             if(renewCommentsLogFileContent())
@@ -171,7 +185,21 @@ public class RedundancyUpdater {
         try{
             session.startTransaction();
 
-            storeReportsIntoDB();
+            // DB redundancy update
+            for (String key : postReportCounts.keySet()) {
+                try {
+                    Integer value = postReportCounts.get(key);
+                    if(mongoReporterDAO.updateNumOfReport(session, key, value) == 0){
+                        logger.warn("Reporter "+key+" -> "+value+" not modified. Maybe it has been deleted");
+                    }
+                    else {
+                        logger.info("Post report redundancies applied");
+                    }
+                    postReportCounts.remove(key);
+                } catch (Exception e){
+                    logger.error("Error in applying report changes to database for "+key+": "+ e.getMessage());
+                }
+            }
 
             // Renew content of log file
             if(renewReportsLogFileContent())
@@ -186,42 +214,6 @@ public class RedundancyUpdater {
             session.abortTransaction();
         } finally {
             session.close();
-        }
-    }
-
-    private void storeCommentsIntoDB(){
-        // DB redundancy update
-        for (String key : postCommentCounts.keySet()) {
-            try {
-                Integer value = postCommentCounts.get(key);
-                if (mongoPostDAO.updateNumOfComment(key, value) == 0) {
-                    logger.warn("Post " + key + " -> "+value+" not modified. Maybe it has been deleted.");
-                }
-                else{
-                    logger.info("Post comment redundancies applied");
-                }
-                postCommentCounts.remove(key);
-            } catch (Exception e) {
-                logger.error("Error in applying changes to DB: " + e.getMessage());
-            }
-        }
-    }
-
-    private void storeReportsIntoDB(){
-        // DB redundancy update
-        for (String key : postReportCounts.keySet()) {
-            try {
-                Integer value = postReportCounts.get(key);
-                if(mongoReporterDAO.updateNumOfReport(key, value) == 0){
-                    logger.warn("Reporter "+key+" -> "+value+" not modified. Maybe it has been deleted");
-                }
-                else {
-                    logger.info("Post report redundancies applied");
-                }
-                postReportCounts.remove(key);
-            } catch (Exception e){
-                logger.error("Error in applying report changes to database for "+key+": "+ e.getMessage());
-            }
         }
     }
 
