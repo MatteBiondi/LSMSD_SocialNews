@@ -5,11 +5,25 @@ import java.io.Serializable;
 public class RedundancyTask implements Serializable {
 
     private TaskType operationType;
-    private String identifier; //postId or reporterId based on operationType
+
+    //postId or reporterId based on operationType
+    //Not considered in case of STOP_RUNNING operation
+    private String identifier;
+
+    //Not negative integer counter
+    private int counter;
 
     public RedundancyTask(TaskType operationType, String identifier) {
+        this(operationType, identifier, 1);
+    }
+
+    public RedundancyTask(TaskType operationType, String identifier, int counter) {
         this.operationType = operationType;
         this.identifier = identifier;
+
+        if (counter == 0)
+            counter = 1;
+        this.counter = counter<0? -counter : counter;
     }
 
     public TaskType getOperationType() {
@@ -26,6 +40,16 @@ public class RedundancyTask implements Serializable {
 
     public void setIdentifier(String identifier) {
         this.identifier = identifier;
+    }
+
+    public int getCounter() {
+        return counter;
+    }
+
+    public void setCounter(int counter) {
+        if (counter == 0)
+            counter = 1;
+        this.counter = counter<0? -counter : counter;
     }
 
     @Override
