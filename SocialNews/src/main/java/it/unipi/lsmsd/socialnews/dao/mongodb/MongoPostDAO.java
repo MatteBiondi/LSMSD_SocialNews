@@ -34,6 +34,28 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
         }
     }
 
+    public Post postByPostId(String reporterId, String postId) throws SocialNewsDataAccessException{
+        try{
+            Reporter reporter =
+                    getCollection()
+                            .find(Filters.and(
+                                    Filters.eq("reporterId", reporterId),
+                                            Filters.elemMatch("posts", Filters.eq("_id", postId))))
+                            .projection(Projections.elemMatch("posts", Filters.eq("_id", postId)))
+                            .sort(Sorts.ascending("posts"))
+                            .first();
+
+            if(reporter != null && reporter.getPosts() != null && !reporter.getPosts().isEmpty())
+                return reporter.getPosts().get(0);
+            else
+                throw new SocialNewsDataAccessException("Post not in the system");
+        }
+        catch (MongoException me){
+            me.printStackTrace();
+            throw new SocialNewsDataAccessException("Insertion failed: " + me.getMessage());
+        }
+    }
+
     public List<Post> postsByReporterIdPrev(String reporterId, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
         try{
             List<Bson> stages = new ArrayList<>();
@@ -236,10 +258,11 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
         }
     }
 
-    public Long updateNumOfComment(String postId, Integer increment) throws SocialNewsDataAccessException{
+    public Long updateNumOfComment(ClientSession session, String postId, Integer increment) throws SocialNewsDataAccessException{
         try{
             return getCollection()
                 .updateOne(
+                        session,
                         Filters.eq("posts._id", postId),
                         Updates.inc("posts.$.numOfComment", increment))
                 .getModifiedCount();

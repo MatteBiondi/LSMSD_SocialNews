@@ -150,6 +150,16 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public PostDTO retrievePost(String reporterId, String postId) throws SocialNewsServiceException {
+        try {
+            return Util.buildPostDTO(DAOLocator.getPostDAO().postByPostId(reporterId, postId), null);
+        } catch (SocialNewsDataAccessException ex) {
+            ex.printStackTrace();
+            throw new SocialNewsServiceException("Database error: " + ex.getMessage());
+        }
+    }
+
+    @Override
     public void removeReader(String toRemoveReaderId) throws SocialNewsServiceException {
         try {
             Long removedCounter = DAOLocator.getReaderDAO().removeReader(toRemoveReaderId);

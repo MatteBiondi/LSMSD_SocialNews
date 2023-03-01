@@ -133,7 +133,7 @@ public final class Util {
     }
 
     public static ReportDTO buildReportDTO(Report source){
-        return (ReportDTO) buildDTO(source, Report.class);
+        return (ReportDTO) buildDTO(source, ReportDTO.class);
     }
 
     public static Admin buildAdmin(AdminDTO source){

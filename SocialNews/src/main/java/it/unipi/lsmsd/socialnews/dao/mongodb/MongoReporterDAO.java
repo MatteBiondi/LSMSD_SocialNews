@@ -6,7 +6,6 @@ import com.mongodb.client.model.*;
 import com.mongodb.client.result.DeleteResult;
 import com.mongodb.client.result.InsertOneResult;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
-import it.unipi.lsmsd.socialnews.dao.model.Post;
 import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import org.bson.Document;
 import org.bson.conversions.Bson;
@@ -252,10 +251,11 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
         }
     }
 
-    public Long updateNumOfReport(String reporterId, Integer increment) throws SocialNewsDataAccessException{
+    public Long updateNumOfReport(ClientSession session, String reporterId, Integer increment) throws SocialNewsDataAccessException{
         try{
             return getCollection()
                     .updateOne(
+                            session,
                             Filters.and(
                                     Filters.exists("email", true),
                                     Filters.eq("reporterId", reporterId)),
@@ -281,7 +281,7 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
                     );
                     Document docSize = getRawCollection("reporters").aggregate(session, stages).first();
 
-                    if (docSize.getDouble("sizeMB") > MAX_DOC_SIZE_MB) {
+                    if (docSize != null && docSize.getDouble("sizeMB") > MAX_DOC_SIZE_MB) {
                         Reporter reporter = reporterByEmail(reporterEmail);
                         reporter.setId(UUID.randomUUID().toString());
                         getCollection().updateOne(session, Filters.eq("email", reporterEmail), Updates.combine(

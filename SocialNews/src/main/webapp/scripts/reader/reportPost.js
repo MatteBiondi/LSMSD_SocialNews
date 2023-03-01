@@ -24,7 +24,7 @@ $(document).ready(async () => {
             $.post(form.action,
                 formData,
                 function(){
-                    showMessage('success', 'Reporter registered successfully');
+                    showMessage('success', 'Report created successfully');
                     // Clean form content
                     $("#reason").val("");
                 })
