@@ -258,10 +258,11 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
         }
     }
 
-    public Long updateNumOfComment(String postId, Integer increment) throws SocialNewsDataAccessException{
+    public Long updateNumOfComment(ClientSession session, String postId, Integer increment) throws SocialNewsDataAccessException{
         try{
             return getCollection()
                 .updateOne(
+                        session,
                         Filters.eq("posts._id", postId),
                         Updates.inc("posts.$.numOfComment", increment))
                 .getModifiedCount();
