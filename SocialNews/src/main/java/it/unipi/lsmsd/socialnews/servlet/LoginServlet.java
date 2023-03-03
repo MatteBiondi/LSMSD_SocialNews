@@ -68,6 +68,7 @@ public class LoginServlet extends HttpServlet {
                     session.setAttribute("email", email);
                     session.setAttribute("userType", "reader");
                     session.setAttribute("id", readerDTO.getId());
+                    session.setAttribute("fullName", readerDTO.getFullName());
                     // Set session to expire in 30 mins
                     session.setMaxInactiveInterval(30 * 60);
 

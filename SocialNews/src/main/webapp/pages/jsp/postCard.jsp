@@ -1,7 +1,7 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page contentType="text/html;charset=UTF-8" %>
 
-<div id="${param.postId}" class="post-container container my-5 search-result"
+<div id="${param.postId}" reporter="${param.reporterId}" class="post-container container my-5 search-result"
      data-millis-time="${param.postMillisTimestamp}">
     <header class="post-header">
         <c:choose>
@@ -16,10 +16,10 @@
                 </a>
             </c:when>
             <c:otherwise>
-                <a  data-ref="${param.postId}" class="option">
+                <span  data-post="${param.postId}" data-reporter="${param.reporterId}" class="option remove-button">
                     <!--Remove post-->
-                    <i class="bi bi-trash3" onclick="removePost('${param.reporterId}','${param.postId}')"></i>
-                </a>
+                    <i class="bi bi-trash3"></i>
+                </span>
             </c:otherwise>
         </c:choose>
     </header>
@@ -34,8 +34,14 @@
         </c:if>
         <p class="timestamp">${param.postFormattedTimestamp}</p>
         <hr>
-        <div class="show-comm-div">
-            <button class="show-comm">Show comments</button>
+        <c:if  test="${ sessionScope.userType == \"reader\" }">
+        <div class="form-group">
+            <textarea class="form-control new-comment-textarea" id="message" rows="3" placeholder="Enter comment text here"></textarea>
+            <button class="write-comment">Publish</button>
+        </div>
+        </c:if>
+        <div class="show-comm-div" page="null">
+            <button data-post="${param.postId}" data-reporter="${param.reporterId}" class="show-comm">Show comments</button>
         </div>
     </footer>
 </div>

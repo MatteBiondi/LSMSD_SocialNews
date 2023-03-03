@@ -19,9 +19,10 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/reporterHomepage.css" type="text/css" media="screen">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="${pageContext.request.contextPath}/scripts/reporter/homepage.js" type="module"></script>
 </head>
-<body data-reporter-id="${reporterPage.reporter.id}" data-is-follower="${reporterPage.isFollower}">
+<body data-user-id="${userID}" data-reporter-id="${reporterPage.reporter.id}" data-is-follower="${reporterPage.isFollower}">
     <!-- Navbar section -->
     <c:choose>
         <c:when test="${userType==\"admin\"}">
@@ -71,7 +72,7 @@
         <div id="new-post-div" class="post-container container my-5">
             <h2 id="add-post-title">Write a new post</h2>
             <div class="form-group">
-                <textarea class="form-control" id="message" rows="3" placeholder="Enter post text here"></textarea>
+                <textarea class="form-control" id="new-post-textarea" rows="3" placeholder="Enter post text here"></textarea>
                 <input id="hashtags-input" type="text" class="form-control" placeholder="Enter content hashtags (without the # symbol and separated by space)">
                 <input id="related-links-input" type="text" class="form-control" placeholder="Enter related links (separated by space)">
             </div>
@@ -81,6 +82,7 @@
 
     <jsp:include page="/pages/jsp/postList.jsp"/>
 
-    <!-- todo: paging for posts -->
+    <!-- Pagination section -->
+    <jsp:include page="/pages/common/pagination.jsp"/>
 </body>
 </html>
