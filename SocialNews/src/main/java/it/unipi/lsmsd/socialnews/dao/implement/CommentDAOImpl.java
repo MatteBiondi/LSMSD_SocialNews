@@ -5,6 +5,11 @@ import it.unipi.lsmsd.socialnews.dao.CommentDAO;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Comment;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoCommentDAO;
+import it.unipi.lsmsd.socialnews.dao.redundancy.RedundancyTask;
+import it.unipi.lsmsd.socialnews.dao.redundancy.RedundancyUpdater;
+import it.unipi.lsmsd.socialnews.dao.redundancy.TaskType;
+import it.unipi.lsmsd.socialnews.threading.ServiceWorkerPool;
+
 import java.util.Date;
 import java.util.List;
 
@@ -18,6 +23,8 @@ public class CommentDAOImpl implements CommentDAO {
 
     @Override
     public String createComment(Comment newComment) throws SocialNewsDataAccessException {
+        RedundancyTask task = new RedundancyTask(TaskType.ADD_COMMENT, newComment.getPost().getId());
+        ServiceWorkerPool.getPool().submitTask(() -> RedundancyUpdater.getInstance().addTask(task));
         return mongoCommentDAO.createComment(newComment);
     }
 
@@ -32,7 +39,9 @@ public class CommentDAOImpl implements CommentDAO {
     }
 
     @Override
-    public Long removeComment(String commentId) throws SocialNewsDataAccessException {
+    public Long removeComment(String commentId, String postId) throws SocialNewsDataAccessException {
+        RedundancyTask task = new RedundancyTask(TaskType.REMOVE_COMMENT, postId);
+        ServiceWorkerPool.getPool().submitTask(() -> RedundancyUpdater.getInstance().addTask(task));
         return mongoCommentDAO.removeComment(commentId);
     }
 

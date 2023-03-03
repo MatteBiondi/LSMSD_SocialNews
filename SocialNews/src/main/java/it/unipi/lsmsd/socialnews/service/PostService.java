@@ -103,7 +103,8 @@ public interface PostService {
      * Remove a comment from the system, removing the information stored in the database
      *
      * @param toRemoveCommentId identifier of the comment to remove
+     * @param postId identifier of the parent post
      * @throws SocialNewsServiceException in case of failure of the operation or if the comment is not in the system
      */
-    void removeComment(String toRemoveCommentId) throws SocialNewsServiceException;
+    void removeComment(String toRemoveCommentId, String postId) throws SocialNewsServiceException;
 }

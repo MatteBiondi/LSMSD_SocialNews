@@ -132,9 +132,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void removeComment(String toRemoveCommentId) throws SocialNewsServiceException {
+    public void removeComment(String toRemoveCommentId, String postId) throws SocialNewsServiceException {
         try {
-            Long removedCounter = DAOLocator.getCommentDAO().removeComment(toRemoveCommentId);
+            Long removedCounter = DAOLocator.getCommentDAO().removeComment(toRemoveCommentId, postId);
             if (removedCounter == 0){
                 throw new SocialNewsServiceException("Comment not in the system");
             }

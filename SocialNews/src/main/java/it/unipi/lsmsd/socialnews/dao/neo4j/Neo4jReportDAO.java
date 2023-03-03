@@ -1,6 +1,7 @@
 package it.unipi.lsmsd.socialnews.dao.neo4j;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Report;
 import org.neo4j.driver.Query;
@@ -102,16 +103,24 @@ public class Neo4jReportDAO {
 
     // DELETE OPERATIONS
 
-    public Integer deleteReport(String reportId) throws SocialNewsDataAccessException {
+    public ObjectNode deleteReport(String reportId) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
-                    "MATCH (:Reader) -[r:REPORT]-> (:Post) "+
-                            "WHERE r.reportId = $reportId "+
-                            "DELETE r",
+                    "MATCH (reader:Reader) -[report:REPORT]-> (post:Post) "+
+                            "MATCH (reporter:Reporter) -[:WRITE]-> (post)"+
+                            "WHERE report.reportId = $reportId "+
+                            "DELETE report "+
+                            "RETURN reporter.reporterId as reporterId",
                     parameters("reportId", reportId)
             );
+            Result result = session.writeTransaction(tx -> tx.run(query));
 
-            return session.writeTransaction(tx -> tx.run(query)).consume().counters().relationshipsDeleted();
+            ObjectMapper objectMapper = new ObjectMapper();
+            ObjectNode toReturn = objectMapper.createObjectNode();
+            toReturn.put("deletedCounter", result.consume().counters().relationshipsDeleted());
+            toReturn.put("reporterId", result.single().get("reporterId").asString());
+
+            return toReturn;
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Report deletion failed: "+ e.getMessage());

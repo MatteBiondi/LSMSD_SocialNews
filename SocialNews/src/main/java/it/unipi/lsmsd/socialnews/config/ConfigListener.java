@@ -2,8 +2,9 @@ package it.unipi.lsmsd.socialnews.config;
 
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoConnection;
 import it.unipi.lsmsd.socialnews.dao.neo4j.Neo4jConnection;
+import it.unipi.lsmsd.socialnews.dao.redundancy.RedundancyUpdater;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
-import it.unipi.lsmsd.socialnews.service.util.ServiceWorkerPool;
+import it.unipi.lsmsd.socialnews.threading.ServiceWorkerPool;
 import it.unipi.lsmsd.socialnews.service.util.Statistic;
 import it.unipi.lsmsd.socialnews.service.util.Util;
 import it.unipi.lsmsd.socialnews.servlet.admin.UsersServlet;
@@ -41,19 +42,21 @@ public class ConfigListener implements ServletContextListener {
                 properties.getProperty("defaultUnitOfTime")
         );
         ServiceWorkerPool.getPool();
+        RedundancyUpdater.getInstance();
         logger.info("Configuration complete");
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        MongoConnection.getConnection().close();
-        Neo4jConnection.getConnection().close();
         try {
             ServiceWorkerPool.getPool().shutdown();
         } catch (SocialNewsServiceException ex) {
             ex.printStackTrace();
             logger.error("Error during shutdown: " + ex.getMessage());
         }
+        RedundancyUpdater.getInstance().stopRedundanciesUpdate();
+        MongoConnection.getConnection().close();
+        Neo4jConnection.getConnection().close();
         logger.info("Shutdown complete");
     }
 }
