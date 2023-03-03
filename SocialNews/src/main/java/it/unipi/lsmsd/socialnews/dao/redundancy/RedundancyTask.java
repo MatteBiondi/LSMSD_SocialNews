@@ -7,7 +7,6 @@ public class RedundancyTask implements Serializable {
     private TaskType operationType;
 
     //postId or reporterId based on operationType
-    //Not considered in case of STOP_RUNNING operation
     private String identifier;
 
     //Not negative integer counter

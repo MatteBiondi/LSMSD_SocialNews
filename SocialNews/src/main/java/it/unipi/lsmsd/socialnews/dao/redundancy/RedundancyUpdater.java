@@ -116,7 +116,7 @@ public class RedundancyUpdater {
         }
     }
 
-    public boolean addTask(RedundancyTask task){
+    public void addTask(RedundancyTask task){
         try {
             switch (task.getOperationType()) {
                 case ADD_COMMENT, REMOVE_COMMENT -> {
@@ -129,16 +129,13 @@ public class RedundancyUpdater {
                         writeLog(REPORT_FILE_PATH, task, true);
                     }
                 }
-                case STOP_RUNNING       ->  stopRedundanciesUpdate();
                 default                 ->  throw new IllegalArgumentException("Fail to identify operation type in task execution");
             }
-            return true;
         } catch (SocialNewsRedundancyTaskException appException){
             logger.error("Error in writing in log files: "+ appException.getMessage());
         }catch (Exception e){
             logger.error("Unexpected exception: "+e.getMessage());
         }
-        return false;
     }
 
     private void applyCommentsChangesToDB() {
@@ -164,15 +161,15 @@ public class RedundancyUpdater {
             }
 
             // Renew content of log file
-            if(renewCommentsLogFileContent())
-                // Flush local maps
-                postCommentCounts.clear();
-            else
-                printMapContent(COMMENTS);
+            renewCommentsLogFileContent();
+
+            // Flush local maps
+            postCommentCounts.clear();
 
             session.commitTransaction();
         } catch (Exception ex){
             logger.error("Unable to apply comments changes to database for one or more posts: "+ex.getMessage());
+            printMapContent(COMMENTS);
             session.abortTransaction();
         } finally {
             session.close();
@@ -202,22 +199,22 @@ public class RedundancyUpdater {
             }
 
             // Renew content of log file
-            if(renewReportsLogFileContent())
-                // Flush local maps
-                postReportCounts.clear();
-            else
-                printMapContent(REPORTS);
+            renewReportsLogFileContent();
 
+            // Flush local maps
+            postReportCounts.clear();
+            
             session.commitTransaction();
         } catch (Exception ex){
             logger.error("Unable to apply reports changes to database for one or more reporter: "+ex.getMessage());
+            printMapContent(REPORTS);
             session.abortTransaction();
         } finally {
             session.close();
         }
     }
 
-    private boolean renewCommentsLogFileContent(){
+    private void renewCommentsLogFileContent() throws SocialNewsRedundancyTaskException{
         // Write in the log file the task for failed redundancies operation on database
         try {
             writeLog(COMMENT_FILE_PATH,null,false);
@@ -227,14 +224,13 @@ public class RedundancyUpdater {
 
                 writeLog(COMMENT_FILE_PATH,new RedundancyTask(taskType, key, value),true);
             }
-            return true;
         } catch (Exception e){
             logger.error("Error in overwrite log file content: "+ e.getMessage());
-            return false;
+            throw new SocialNewsRedundancyTaskException("Error in writing comments log file");
         }
     }
 
-    private boolean renewReportsLogFileContent(){
+    private void renewReportsLogFileContent() throws SocialNewsRedundancyTaskException{
         // Write in the log file the task for failed redundancies operation on database
         try {
             writeLog(REPORT_FILE_PATH,null,false);
@@ -244,10 +240,9 @@ public class RedundancyUpdater {
 
                 writeLog(REPORT_FILE_PATH,new RedundancyTask(taskType, key, value),true);
             }
-            return true;
         } catch (Exception e){
             logger.error("Error in overwrite log file content: "+ e.getMessage());
-            return false;
+            throw new SocialNewsRedundancyTaskException("Error in writing reports log file");
         }
     }
 
@@ -319,7 +314,7 @@ public class RedundancyUpdater {
         return tasks;
     }
 
-    private void stopRedundanciesUpdate (){
+    public void stopRedundanciesUpdate (){
         logger.info("RedundancyUpdater exiting.");
         executor.shutdown();
         applyRedundanciesFromLog();
