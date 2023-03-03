@@ -1,5 +1,12 @@
 package it.unipi.lsmsd.socialnews.service.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.cfg.MapperConfig;
+import com.fasterxml.jackson.databind.introspect.AnnotatedMethod;
 import it.unipi.lsmsd.socialnews.dao.model.*;
 import it.unipi.lsmsd.socialnews.dto.*;
 import org.modelmapper.Conditions;
@@ -14,6 +21,7 @@ import java.util.Properties;
 public final class Util {
 
     private final static ModelMapper modelMapper = new ModelMapper();
+    private final static ObjectMapper jsonMapper = new ObjectMapper();
     private static Properties properties;
 
 
@@ -46,6 +54,8 @@ public final class Util {
         modelMapper.createTypeMap(ReportDTO.class, Report.class)
                 .addMappings(mapper -> mapper.skip(Report::setReportId))
                 .setPropertyCondition(Conditions.isNotNull());
+
+        jsonMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
     /**
@@ -118,6 +128,25 @@ public final class Util {
         PostDTO postDTO = (PostDTO) buildDTO(source, PostDTO.class);
         postDTO.setReporterId(reporterId);
         return postDTO;
+    }
+
+    public static PostDTO buildPostDTO(JsonNode source){
+        try {
+            return jsonMapper
+                    .setPropertyNamingStrategy(new PropertyNamingStrategy(){
+                        @Override
+                        public String nameForSetterMethod(MapperConfig<?> config, AnnotatedMethod method,
+                                                          String defaultName){
+                            if (defaultName.equals("id")) {
+                                return "_id";
+                            }
+                            return super.nameForSetterMethod(config, method, defaultName);
+                        }
+                    })
+                    .readValue(source.toString(), PostDTO.class);
+        } catch (JsonProcessingException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public static CommentDTO buildCommentDTO(Comment source){
