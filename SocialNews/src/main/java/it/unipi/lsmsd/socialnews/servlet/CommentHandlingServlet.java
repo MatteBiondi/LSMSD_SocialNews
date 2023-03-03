@@ -47,7 +47,7 @@ public class CommentHandlingServlet extends HttpServlet {
                 writer.write(String.format("%s", message));
             } catch (Exception ex){
                 String message = ex.getMessage();
-                LOGGER.warning(String.format("Service error occurred: %s", message));
+                LOGGER.warning(String.format("Unexpected service error occurred: %s", message));
                 writer.write(String.format("%s", message));
             }
         }
@@ -71,7 +71,7 @@ public class CommentHandlingServlet extends HttpServlet {
                 writer.write(String.format("%s", message));
             } catch (Exception ex){
                 String message = ex.getMessage();
-                LOGGER.warning(String.format("Service error occurred: %s", message));
+                LOGGER.warning(String.format("Unexpected service error occurred: %s", message));
                 writer.write(String.format("%s", message));
             }
         }
@@ -116,7 +116,7 @@ public class CommentHandlingServlet extends HttpServlet {
             String commentId = request.getParameter("commentId");
             try {
                 System.out.println(commentId);
-                ServiceLocator.getPostService().removeComment(commentId);
+                ServiceLocator.getPostService().removeComment(commentId, postId);
                 writer.write("success");
             } catch (SocialNewsServiceException ex) {
                 String message = ex.getMessage();

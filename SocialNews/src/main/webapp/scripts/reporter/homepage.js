@@ -489,7 +489,7 @@ function createNewComment(postId, commentId, readerId, readerName, text, timesta
         let removeIcon = $("<i></i>");
         removeIcon.attr("class","bi bi-trash3");
         removeIcon.click(function() {
-            removeComment(commentId);
+            removeComment(commentId, postId);
         });
         removeSpan.append(removeIcon);
     }
@@ -514,7 +514,7 @@ function createNewComment(postId, commentId, readerId, readerName, text, timesta
     commentsDiv.prepend(newComment[0]);
 }
 
-function removeComment(commentId) {
+function removeComment(commentId, postId) {
     // Get root of current pathname
     let rootPathname = window.location.pathname.match(/^\/[^/]+/)[0];
     let baseUrl = window.location.origin + rootPathname ;
@@ -523,6 +523,7 @@ function removeComment(commentId) {
         `${baseUrl}/commenthandling`,
         {
             operation: "remove",
+            postId: postId,
             commentId: commentId
         }
     ).done(function() {
