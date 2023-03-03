@@ -18,6 +18,17 @@ public interface PostDAO {
     String createPost(String reporterId, Post newPost) throws SocialNewsDataAccessException;
 
     /**
+     * Retrieves a post identified by its id
+     *
+     * @param reporterId post identifier used to filter the posts
+     * @param postId post identifier used to filter the posts
+     * @return post object containing all the information
+     * @throws SocialNewsDataAccessException in case of failure of the query operation on database or if the post is
+     * not in the system
+     */
+    Post postByPostId(String reporterId, String postId) throws SocialNewsDataAccessException;
+
+    /**
      * Retrieves information about all the posts saved on database associated to the reporterId, limiting the
      * list size to the dimension specified, starting from the post specified as argument in reverse order It allows the
      * implementation of pagination of the posts

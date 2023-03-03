@@ -33,11 +33,49 @@
 </header>
 
 <section id="content">
-    <zing-grid id="users-table" height="0px" caption="Registered ${param.type}" search page-size="${pageSize}"
+    <div id="report-modal" class="modal fade modal-xl" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Reports</h1>
+                </div>
+                <div class="modal-body">
+                    <ul id="report-content-list" class="list-group report-list"><!-- FILLED BY AJAX --></ul>
+                </div>
+                <div class="d-flex modal-footer">
+                    <div class="d-flex justify-content-between w-100">
+                        <div>Page <span id="page">1</span></div>
+                        <div>
+                            <button id="report-prev" type="button" class="btn btn-primary">Prev</button>
+                            <button id="report-next" type="button" class="btn btn-primary">Next</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+        </div>
+    </div>
+    <div id="post-modal" class="modal fade modal-xl" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5">Post</h1>
+                </div>
+                <div class="modal-body">
+                    <div id="post"><!-- FILLED BY AJAX --></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <zing-grid id="users-table" height="0px" caption="Registered ${param.type}" search
+    page-size="${pageSize}"
                align="center" zebra column-resizable frozen-columns-left="1">
         <zg-data>
             <zg-param name="src"
-                      value="${baseURL}/admin/users?type=${param.type}&data=true">
+                      value="${baseURL}/admin/users?type=${param.type}&data=users">
             </zg-param>
             <zg-param name="recordPath" value="users"></zg-param>
             <!-- PAGING -->
@@ -88,9 +126,9 @@
                             <i slot="icon"></i>
                         </zg-button>
                     </zg-column>
-                    <zg-column header="Reports" index="numOfReport" cell-class="render">
-                        <zg-button data-count-report="[[index.numOfReport]]" data-col="report">
-                            <zg-label slot="label"></zg-label>
+                    <zg-column header="Reports" index="id,numOfReport" cell-class="renderReport">
+                        <zg-button data-num-of-report="[[index.numOfReport]]"
+                                   data-id="[[index.id]]" data-col="report">
                             <i slot="icon"></i>
                         </zg-button>
                     </zg-column>
@@ -114,29 +152,4 @@
     </zing-grid>
 </section>
 </body>
-<script>
-    const classes = {
-    remove:{
-        button:'btn btn-danger',
-        icon:'bi bi-trash3-fill'
-    },
-    home:{
-        button:'view-btn btn btn-primary',
-        icon:'view-icon bi bi-eye-fill'
-    },
-    report:{
-        button:'btn btn-danger',
-        icon:'report-icon bi bi-exclamation-diamond-fill'
-    }}
-
-    function render(value, elem){
-        if(value !== undefined){
-            let col =  $(elem).find('zg-button')[0]['dataset']['col'];
-            $(elem).find('zg-button').addClass(classes[col]['button']);
-            $(elem).find('i').addClass(classes[col]['icon']);
-            if(col === 'report.')
-                $(elem).find('zg-label').text(value);
-        }
-    }
-</script>
 </html>

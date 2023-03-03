@@ -110,6 +110,16 @@ public interface AdminService {
      */
     List<ReportDTO> nextPageReports(String reporterId, Integer reportOffset) throws SocialNewsServiceException;
 
+    /**
+     * Retrieves a post identified by its id
+     *
+     * @param reporterId reporter
+     * @param postId post identifier used to filter the posts
+     * @return post object containing all the information
+     * @throws SocialNewsServiceException in case of failure of the query operation on database or if the post is
+     * not in the system
+     */
+    PostDTO retrievePost(String reporterId, String postId) throws SocialNewsServiceException;
 
     /**
      * Removes a reader from the system, deleting all the information stored into the database, including the

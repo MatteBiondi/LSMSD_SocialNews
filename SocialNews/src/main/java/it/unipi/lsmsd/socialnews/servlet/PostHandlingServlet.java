@@ -63,11 +63,7 @@ public class PostHandlingServlet extends HttpServlet {
                 System.out.println(prevPageJSON);
                 writer.write(prevPageJSON);
             }
-        } catch (SocialNewsServiceException ex) {
-            String message = ex.getMessage();
-            LOGGER.warning(String.format("Service error occurred: %s", message));
-            writer.write(String.format("%s", message));
-        } catch (Exception ex){
+        } catch (Exception ex) {
             String message = ex.getMessage();
             LOGGER.warning(String.format("Service error occurred: %s", message));
             writer.write(String.format("%s", message));
@@ -120,9 +116,9 @@ public class PostHandlingServlet extends HttpServlet {
             response.setContentType("text/plain");
 
             String postID = request.getParameter("postID");
-            writer.write("success");
             try {
                 ServiceLocator.getPostService().removePost(postID, reporterID);
+                writer.write("{\"result\": \"ok\"}");
             } catch (SocialNewsServiceException ex) {
                 String message = ex.getMessage();
                 LOGGER.warning(String.format("Service error occurred: %s", message));
