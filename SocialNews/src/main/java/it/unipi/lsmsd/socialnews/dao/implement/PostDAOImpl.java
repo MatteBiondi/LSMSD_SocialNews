@@ -1,10 +1,10 @@
 package it.unipi.lsmsd.socialnews.dao.implement;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.mongodb.client.ClientSession;
 import it.unipi.lsmsd.socialnews.dao.PostDAO;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
 import it.unipi.lsmsd.socialnews.dao.model.Post;
-import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoPostDAO;
 import it.unipi.lsmsd.socialnews.dao.neo4j.Neo4jPostDAO;
 import org.slf4j.Logger;
@@ -49,12 +49,12 @@ public class PostDAOImpl implements PostDAO {
     }
 
     @Override
-    public List<Reporter> postsByHashtagPrev(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
+    public ArrayNode postsByHashtagPrev(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
         return  mongoPostDAO.postsByHashtagPrev(hashtag, offset, pageSize);
     }
 
     @Override
-    public List<Reporter> postsByHashtagNext(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
+    public ArrayNode postsByHashtagNext(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
         return mongoPostDAO.postsByHashtagNext(hashtag, offset, pageSize);
     }
 
@@ -71,8 +71,8 @@ public class PostDAOImpl implements PostDAO {
         }
         catch (Exception ex){
             if(resultNeo){
-            logger.error(String.format("Post %s of reporter %s, check consistency on databases", postId,
-                    reporterId));
+                logger.error(String.format("Post %s of reporter %s, check consistency on databases", postId,
+                        reporterId));
             }
             session.abortTransaction();
             session.close();

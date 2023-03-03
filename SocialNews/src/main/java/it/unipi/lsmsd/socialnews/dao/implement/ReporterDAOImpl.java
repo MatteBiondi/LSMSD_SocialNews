@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mongodb.client.ClientSession;
 import it.unipi.lsmsd.socialnews.dao.ReporterDAO;
 import it.unipi.lsmsd.socialnews.dao.exception.SocialNewsDataAccessException;
-import it.unipi.lsmsd.socialnews.dao.model.Post;
 import it.unipi.lsmsd.socialnews.dao.model.Reporter;
 import it.unipi.lsmsd.socialnews.dao.mongodb.MongoReporterDAO;
 import it.unipi.lsmsd.socialnews.dao.neo4j.Neo4jReporterDAO;

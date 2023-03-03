@@ -1,5 +1,7 @@
 package it.unipi.lsmsd.socialnews.dao.mongodb;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.mongodb.MongoException;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.model.*;
@@ -40,7 +42,7 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
                     getCollection()
                             .find(Filters.and(
                                     Filters.eq("reporterId", reporterId),
-                                            Filters.elemMatch("posts", Filters.eq("_id", postId))))
+                                    Filters.elemMatch("posts", Filters.eq("_id", postId))))
                             .projection(Projections.elemMatch("posts", Filters.eq("_id", postId)))
                             .sort(Sorts.ascending("posts"))
                             .first();
@@ -59,30 +61,42 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
     public List<Post> postsByReporterIdPrev(String reporterId, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
         try{
             List<Bson> stages = new ArrayList<>();
+            stages.add(Aggregates.match(Filters.and(
+                    Filters.eq("reporterId", reporterId),
+                    Filters.exists("posts", true))));
 
-            stages.add(Aggregates.match(Filters.eq("reporterId", reporterId)));
-            stages.add(Aggregates.unwind("$posts"));
             if(offset != null){
-                stages.add(Aggregates.match(
-                        Filters.or(
-                                Filters.and(
-                                        Filters.eq("posts.timestamp", offset.getTimestamp()),
-                                        Filters.gt("posts._id", offset.getId())
-                                ),
-                                Filters.gt("posts.timestamp", offset.getTimestamp()))
-                ));
+                Bson filter = Document.parse(String.format(
+                        "{$filter: {" +
+                                "input: '$posts'," +
+                                "as: 'posts'," +
+                                "cond: {" +
+                                "    $or: [" +
+                                "        {$and: [{$eq:['$$posts.timestamp', new Date(%d)]}, {$gt:['$$posts._id', '%s']}]}," +
+                                "        {$gt: ['$$posts.timestamp', new Date(%d)]}]}}}",
+                        offset.getTimestamp().getTime(), offset.getId(), offset.getTimestamp().getTime()));
+
+                stages.add(Aggregates.project(Projections.fields(
+                        Projections.include("reporterId"),
+                        Projections.computed("posts", filter))));
             }
-            stages.add(Aggregates.sort(Sorts.ascending("posts.timestamp", "posts._id")));
-            stages.add(Aggregates.limit(pageSize));
-            stages.add(Aggregates.sort(Sorts.descending("posts.timestamp", "posts._id")));
             stages.add(Aggregates.group("$reporterId",Accumulators.push("posts", "$posts")));
+            stages.add(Aggregates.project(
+                    Projections.fields(
+                            Projections.excludeId(),
+                            Projections.computed("posts",
+                                    Document.parse(String.format(
+                                            "{$sortArray:{input:{$filter: {" +
+                                                    "input:{" +
+                                                    "    $sortArray:{" +
+                                                    "        input:{$reduce: {input:'$posts', initialValue: []," +
+                                                    "                            in: {$concatArrays: ['$$value', '$$this']}}}," +
+                                                    "        sortBy:{'timestamp':1}}}," +
+                                                    "cond:{}, limit:%d}}, sortBy:{'timestamp':-1}}}", pageSize))))));
 
             Reporter reporter = getCollection().aggregate(stages).first();
 
-            if(reporter == null)
-                return new ArrayList<>();// Empty list
-            else
-                return reporter.getPosts();
+            return reporter == null ? new ArrayList<>():reporter.getPosts();
         }
         catch (MongoException me){
             me.printStackTrace();
@@ -93,29 +107,43 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
     public List<Post> postsByReporterIdNext(String reporterId, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
         try{
             List<Bson> stages = new ArrayList<>();
+            stages.add(Aggregates.match(Filters.and(
+                    Filters.eq("reporterId", reporterId),
+                    Filters.exists("posts", true))));
 
-            stages.add(Aggregates.match(Filters.eq("reporterId", reporterId)));
-            stages.add(Aggregates.unwind("$posts"));
             if(offset != null){
-                stages.add(Aggregates.match(
-                        Filters.or(
-                                Filters.and(
-                                        Filters.eq("posts.timestamp", offset.getTimestamp()),
-                                        Filters.lt("posts._id", offset.getId())
-                                ),
-                                Filters.lt("posts.timestamp", offset.getTimestamp()))
-                ));
+                Bson filter = Document.parse(String.format(
+                        "{$filter: {" +
+                                "input: '$posts'," +
+                                "as: 'posts'," +
+                                "cond: {" +
+                                "    $or: [" +
+                                "        {$and: [{$eq:['$$posts.timestamp', new Date(%d)]}, {$lt:['$$posts._id', '%s']}]}," +
+                                "        {$lt: ['$$posts.timestamp', new Date(%d)]}]}}}",
+                        offset.getTimestamp().getTime(), offset.getId(), offset.getTimestamp().getTime()));
+
+                stages.add(Aggregates.project(Projections.fields(
+                        Projections.include("reporterId"),
+                        Projections.computed("posts", filter))));
             }
-            stages.add(Aggregates.sort(Sorts.descending("posts.timestamp", "posts._id")));
-            stages.add(Aggregates.limit(pageSize));
             stages.add(Aggregates.group("$reporterId",Accumulators.push("posts", "$posts")));
+            stages.add(Aggregates.project(
+                    Projections.fields(
+                            Projections.include("reporterId"),
+                            Projections.computed("posts",
+                                    Document.parse(String.format(
+                                            "{$filter: {" +
+                                                    "input:{" +
+                                                    "    $sortArray:{" +
+                                                    "        input:{$reduce: {input:'$posts', initialValue: []," +
+                                                    "                            in: {$concatArrays: ['$$value', '$$this']}}}," +
+                                                    "        sortBy:{'timestamp':-1}}}," +
+                                                    "cond:{}, limit:%d}}}", pageSize))))));
+
 
             Reporter reporter = getCollection().aggregate(stages).first();
 
-            if(reporter == null)
-                return new ArrayList<>();// Empty list
-            else
-                return reporter.getPosts();
+            return reporter == null ? new ArrayList<>():reporter.getPosts();
         }
         catch (MongoException me){
             me.printStackTrace();
@@ -123,40 +151,50 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
         }
     }
 
-    public List<Reporter> postsByHashtagPrev(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
+    public ArrayNode postsByHashtagPrev(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
         try{
-            List<Reporter> reporters = new ArrayList<>();
             List<Bson> stages = new ArrayList<>();
+            String paginationFilter = "";
+
+            if(offset != null){
+                paginationFilter = String.format(
+                        "{$or: [" +
+                                "{$and: [{" +
+                                "$eq:['$$posts.timestamp', new Date(%d)]}," +
+                                "{$gt:['$$posts._id', '%s']}]}," +
+                                "{$gt: ['$$posts.timestamp', new Date(%d)]}]}",
+                        offset.getTimestamp().getTime(),
+                        offset.getId(),
+                        offset.getTimestamp().getTime());
+            }
+            Bson filter = Document.parse(
+                    String.format(
+                            "{$filter: {input: '$posts', as: 'posts', cond: {" +
+                                    "    $and: [" +
+                                    "        {$in: ['%s', {$ifNull: ['$$posts.hashtags', []]}]}" + paginationFilter + "]}}}",
+                            hashtag));
             stages.add(Aggregates.match(Filters.eq("posts.hashtags", hashtag)));
             stages.add(Aggregates.project(Projections.fields(
                     Projections.include("reporterId"),
-                    Projections.computed(
-                            "posts",
-                            Document.parse(String.format(
-                                    "{$filter:{input:'$posts', as:'posts', cond:{$in:['%s',{$ifNull:['$$posts.hashtags',[]]}]}}}", hashtag))))
-            ));
-            stages.add(Aggregates.unwind("$posts"));
-            if(offset != null){
-                stages.add(Aggregates.match(
-                        Filters.or(
-                                Filters.and(
-                                        Filters.eq("posts.timestamp", offset.getTimestamp()),
-                                        Filters.gt("posts._id", offset.getId())
-                                ),
-                                Filters.gt("posts.timestamp", offset.getTimestamp()))
-                ));
-            }
-            stages.add(Aggregates.group("$posts._id",
-                    List.of(
-                            Accumulators.push("posts", "$posts"),
-                            Accumulators.first("reporterId","$reporterId")))
-            );
-            stages.add(Aggregates.sort(Sorts.ascending("posts.timestamp", "posts._id")));
-            stages.add(Aggregates.limit(pageSize));
-            stages.add(Aggregates.sort(Sorts.descending("posts.timestamp", "posts._id")));
+                    Projections.computed("posts", filter))));
+            stages.add(Aggregates.addFields(new Field<>("posts.reporterId", "$reporterId")));
+            stages.add(Aggregates.group("",Accumulators.push("posts", "$posts")));
+            stages.add(Aggregates.project(
+                    Projections.fields(
+                            Projections.excludeId(),
+                            Projections.computed("posts",
+                                    Document.parse(String.format(
+                                            "{$sortArray:{input:{$filter: {" +
+                                                    "input:{" +
+                                                    "    $sortArray:{" +
+                                                    "        input:{$reduce: {input:'$posts', initialValue: []," +
+                                                    "                            in: {$concatArrays: ['$$value', '$$this']}}}," +
+                                                    "        sortBy:{'timestamp':1}}}," +
+                                                    "cond:{}, limit:%d}}, sortBy:{'timestamp':-1}}}", pageSize))))));
 
-            getCollection().aggregate(stages).into(reporters);
-            return reporters;
+            List<Document> posts = new ArrayList<>();
+            getRawCollection("reporters").aggregate(stages).into(posts);
+            return (ArrayNode) new ObjectMapper().valueToTree(posts).get(0).get("posts");
         }
         catch (MongoException me){
             me.printStackTrace();
@@ -164,40 +202,50 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
         }
     }
 
-    public List<Reporter> postsByHashtagNext(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
+    public ArrayNode postsByHashtagNext(String hashtag, Post offset, Integer pageSize) throws SocialNewsDataAccessException {
         try{
-            List<Reporter> reporters = new ArrayList<>();
             List<Bson> stages = new ArrayList<>();
+            String paginationFilter = "";
+
+            if(offset != null){
+                paginationFilter = String.format(
+                        "{$or: [" +
+                                "{$and: [{" +
+                                "$eq:['$$posts.timestamp', new Date(%d)]}," +
+                                "{$lt:['$$posts._id', '%s']}]}," +
+                                "{$lt: ['$$posts.timestamp', new Date(%d)]}]}",
+                        offset.getTimestamp().getTime(),
+                        offset.getId(),
+                        offset.getTimestamp().getTime());
+            }
+            Bson filter = Document.parse(
+                    String.format(
+                            "{$filter: {input: '$posts', as: 'posts', cond: {" +
+                                    "    $and: [" +
+                                    "        {$in: ['%s', {$ifNull: ['$$posts.hashtags', []]}]}" + paginationFilter + "]}}}",
+                            hashtag));
             stages.add(Aggregates.match(Filters.eq("posts.hashtags", hashtag)));
             stages.add(Aggregates.project(Projections.fields(
                     Projections.include("reporterId"),
-                    Projections.computed(
-                    "posts",
-                    Document.parse(String.format(
-                            "{$filter:{input:'$posts', as:'posts', cond:{$in:['%s',{$ifNull:['$$posts.hashtags',[]]}]}}}", hashtag))))
-            ));
-            stages.add(Aggregates.unwind("$posts"));
-            if(offset != null){
-                stages.add(Aggregates.match(
-                        Filters.or(
-                                Filters.and(
-                                        Filters.eq("posts.timestamp", offset.getTimestamp()),
-                                        Filters.lt("posts._id", offset.getId())
-                                ),
-                                Filters.lt("posts.timestamp", offset.getTimestamp()))
-                        ));
-            }
-            stages.add(Aggregates.group("$posts._id",
-                    List.of(
-                            Accumulators.push("posts", "$posts"),
-                            Accumulators.first("reporterId","$reporterId")))
-            );
-            stages.add(Aggregates.sort(Sorts.descending("posts.timestamp", "posts._id")));
-            stages.add(Aggregates.limit(pageSize));
+                    Projections.computed("posts", filter))));
+            stages.add(Aggregates.addFields(new Field<>("posts.reporterId", "$reporterId")));
+            stages.add(Aggregates.group("",Accumulators.push("posts", "$posts")));
+            stages.add(Aggregates.project(
+                    Projections.fields(
+                            Projections.excludeId(),
+                            Projections.computed("posts",
+                                    Document.parse(String.format(
+                                            "{$filter: {" +
+                                                    "input:{" +
+                                                    "    $sortArray:{" +
+                                                    "        input:{$reduce: {input:'$posts', initialValue: []," +
+                                                    "                            in: {$concatArrays: ['$$value', '$$this']}}}," +
+                                                    "        sortBy:{'timestamp':-1}}}," +
+                                                    "cond:{}, limit:%d}}}", pageSize))))));
 
-
-            getCollection().aggregate(stages).into(reporters);
-            return reporters;
+            List<Document> posts = new ArrayList<>();
+            getRawCollection("reporters").aggregate(stages).into(posts);
+            return (ArrayNode) new ObjectMapper().valueToTree(posts).get(0).get("posts");
         }
         catch (MongoException me){
             me.printStackTrace();
@@ -231,19 +279,35 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
         try{
             List<Bson> stages = new ArrayList<>();
 
-            stages.add(Aggregates.match(Filters.eq("reporterId", reporterId)));
-            stages.add(Aggregates.project(Projections.fields(
-                        Projections.exclude("_id"),
-                        Projections.include("posts", "reporterId"))));
-            stages.add(Aggregates.unwind("$posts"));
             stages.add(Aggregates.match(Filters.and(
-                    Filters.gte("posts.timestamp", from),
-                    Filters.exists("posts.numOfComment", true))));
-            stages.add(Aggregates.sort(Sorts.descending("posts.numOfComment", "posts.timestamp")));
-            stages.add(Aggregates.limit(nTop));
+                    Filters.eq("reporterId", reporterId),
+                    Filters.exists("posts", true)))
+            );
+            stages.add(Aggregates.project(Projections.fields(
+                    Projections.excludeId(),
+                    Projections.include("posts", "reporterId"),
+                    Projections.computed("posts",Document.parse(String.format(
+                        "{$filter: {" +
+                            "input: '$posts'," +
+                            "as: 'posts'," +
+                                "cond: {$and:[" +
+                                "{$gte: ['$$posts.timestamp', new Date(%d)]}, " +
+                                "{$gte: ['$$posts.numOfComment', 1]}]}}}", from.getTime()
+                    ))))));
             stages.add(Aggregates.group("$reporterId",
                     Accumulators.first("reporterId","$reporterId"),
                     Accumulators.push("posts","$posts")));
+            stages.add(Aggregates.project(Projections.fields(
+                    Projections.excludeId(),
+                    Projections.include("reporterId"),
+                    Projections.computed("posts", Document.parse(String.format(
+                        "{$filter: {" +
+                        "input:{" +
+                        "    $sortArray:{" +
+                        "        input:{$reduce: {input:'$posts', initialValue: [], in: {$concatArrays: ['$$value', '$$this']}}}," +
+                        "        sortBy:{'numOfComment':-1, timestamp:-1, _id:-1}}}," +
+                        "cond:{}, limit: %d}}", nTop)))))
+            );
 
             Reporter reporter = getCollection().aggregate(stages).first();
 
