@@ -9,7 +9,7 @@ import it.unipi.lsmsd.socialnews.dto.*;
 import it.unipi.lsmsd.socialnews.service.AdminService;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
 import it.unipi.lsmsd.socialnews.service.util.Page;
-import it.unipi.lsmsd.socialnews.service.util.ServiceWorkerPool;
+import it.unipi.lsmsd.socialnews.threading.ServiceWorkerPool;
 import it.unipi.lsmsd.socialnews.service.util.Statistic;
 import it.unipi.lsmsd.socialnews.service.util.Util;
 import java.security.NoSuchAlgorithmException;

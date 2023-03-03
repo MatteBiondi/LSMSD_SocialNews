@@ -47,10 +47,11 @@ public interface CommentDAO {
      * Remove a comment from the database
      *
      * @param commentId comment identifier
+     * @param postId post identifier
      * @return number of comments removed from database
      * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
      */
-    Long removeComment(String commentId) throws SocialNewsDataAccessException;
+    Long removeComment(String commentId, String postId) throws SocialNewsDataAccessException;
 
     /**
      * Computes the top N most active readers in the system, ranked by the number of comments written, starting from

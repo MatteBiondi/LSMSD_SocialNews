@@ -1,6 +1,7 @@
-package it.unipi.lsmsd.socialnews.service.util;
+package it.unipi.lsmsd.socialnews.threading;
 
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
+import it.unipi.lsmsd.socialnews.service.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,10 @@ public final class ServiceWorkerPool {
 
     public Future<?> submitTask(Callable<?> task){
         return pool.submit(task);
+    }
+
+    public void submitTask(Runnable task) {
+        pool.submit(task);
     }
 
     public void shutdown() throws SocialNewsServiceException {
