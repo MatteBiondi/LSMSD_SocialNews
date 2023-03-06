@@ -78,7 +78,6 @@ public class RedundancyUpdater {
     }
 
     private void applyRedundanciesFromLog(){
-        logger.info("inizio");
         List<RedundancyTask> pendentTasks = new ArrayList<>();
 
         // Take lock on comments file
