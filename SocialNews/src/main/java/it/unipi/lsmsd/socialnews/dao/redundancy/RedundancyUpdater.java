@@ -12,6 +12,21 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
+
+class AppendingObjectOutputStream extends ObjectOutputStream {
+
+    public AppendingObjectOutputStream(OutputStream out) throws IOException {
+        super(out);
+    }
+
+    @Override
+    protected void writeStreamHeader() throws IOException {
+        // do not write a header, but reset
+        reset();
+    }
+
+}
+
 public class RedundancyUpdater {
     private static final Logger logger = LoggerFactory.getLogger(ServletContextListener.class);
     private static volatile RedundancyUpdater instance;
@@ -46,7 +61,8 @@ public class RedundancyUpdater {
         applyRedundanciesFromLog();
 
         executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(this::applyRedundanciesFromLog, 0, 1, TimeUnit.HOURS);
+        executor.scheduleAtFixedRate(this::applyRedundanciesFromLog, 1, 1, TimeUnit.HOURS);
+        logger.info("Redundancy updater started");
     }
 
     public static RedundancyUpdater getInstance() {
@@ -57,10 +73,12 @@ public class RedundancyUpdater {
                 }
             }
         }
+        logger.info("Redundancy updater instance taken");
         return instance;
     }
 
     private void applyRedundanciesFromLog(){
+        logger.info("inizio");
         List<RedundancyTask> pendentTasks = new ArrayList<>();
 
         // Take lock on comments file
@@ -114,6 +132,8 @@ public class RedundancyUpdater {
             case REMOVE_REPORT  ->  removeReport(task.getIdentifier(), task.getCounter());
             default             ->  throw new IllegalArgumentException("Fail to identify operation type in task execution");
         }
+        logger.info("Redundancy updater: task executed");
+
     }
 
     public void addTask(RedundancyTask task){
@@ -121,12 +141,12 @@ public class RedundancyUpdater {
             switch (task.getOperationType()) {
                 case ADD_COMMENT, REMOVE_COMMENT -> {
                     synchronized(commentFileLock){
-                        writeLog(COMMENT_FILE_PATH, task, true);
+                        writeLog(COMMENT_FILE_PATH, task);
                     }
                 }
                 case ADD_REPORT, REMOVE_REPORT -> {
                     synchronized(reportFileLock){
-                        writeLog(REPORT_FILE_PATH, task, true);
+                        writeLog(REPORT_FILE_PATH, task);
                     }
                 }
                 default                 ->  throw new IllegalArgumentException("Fail to identify operation type in task execution");
@@ -136,6 +156,7 @@ public class RedundancyUpdater {
         }catch (Exception e){
             logger.error("Unexpected exception: "+e.getMessage());
         }
+        logger.info("Redundancy updater: task added");
     }
 
     private void applyCommentsChangesToDB() {
@@ -174,6 +195,7 @@ public class RedundancyUpdater {
         } finally {
             session.close();
         }
+        logger.info("Redundancy updater: redundancies changes applied");
     }
 
     private void applyReportsChangesToDB() {
@@ -212,38 +234,41 @@ public class RedundancyUpdater {
         } finally {
             session.close();
         }
+        logger.info("Redundancy updater: redundancies changes applied");
     }
 
     private void renewCommentsLogFileContent() throws SocialNewsRedundancyTaskException{
         // Write in the log file the task for failed redundancies operation on database
         try {
-            writeLog(COMMENT_FILE_PATH,null,false);
+            emptyFile(COMMENT_FILE_PATH);
             for (String key : postCommentCounts.keySet()) {
                 Integer value = postCommentCounts.get(key);
                 TaskType taskType = value < 0? TaskType.REMOVE_COMMENT : TaskType.ADD_COMMENT;
 
-                writeLog(COMMENT_FILE_PATH,new RedundancyTask(taskType, key, value),true);
+                writeLog(COMMENT_FILE_PATH,new RedundancyTask(taskType, key, value));
             }
         } catch (Exception e){
             logger.error("Error in overwrite log file content: "+ e.getMessage());
             throw new SocialNewsRedundancyTaskException("Error in writing comments log file");
         }
+        logger.info("Redundancy updater: comments log file updated");
     }
 
     private void renewReportsLogFileContent() throws SocialNewsRedundancyTaskException{
         // Write in the log file the task for failed redundancies operation on database
         try {
-            writeLog(REPORT_FILE_PATH,null,false);
+            emptyFile(REPORT_FILE_PATH);
             for (String key : postReportCounts.keySet()) {
                 Integer value = postReportCounts.get(key);
                 TaskType taskType = value < 0? TaskType.REMOVE_REPORT : TaskType.ADD_REPORT;
 
-                writeLog(REPORT_FILE_PATH,new RedundancyTask(taskType, key, value),true);
+                writeLog(REPORT_FILE_PATH,new RedundancyTask(taskType, key, value));
             }
         } catch (Exception e){
             logger.error("Error in overwrite log file content: "+ e.getMessage());
             throw new SocialNewsRedundancyTaskException("Error in writing reports log file");
         }
+        logger.info("Redundancy updater: reports log file updated");
     }
 
     private void addComment (String postId, int counter) {
@@ -279,29 +304,45 @@ public class RedundancyUpdater {
         }
     }
 
-    private void writeLog (String filePath, RedundancyTask task, boolean appendMode) throws SocialNewsRedundancyTaskException {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath, appendMode))) {
-            // Lock on file has been already taken from caller method
-            oos.writeObject(task);
-        }catch (Exception e){
-            logger.warn("Write log file error");
-            throw new SocialNewsRedundancyTaskException("Exception in log write operation");
+    private void writeLog (String filePath, RedundancyTask task) throws SocialNewsRedundancyTaskException {
+        if(new File(filePath).length() == 0) {
+            // Write file for the first time (header included)
+            try (FileOutputStream fileOutputStream = new FileOutputStream(filePath);
+                 ObjectOutputStream stream = new ObjectOutputStream(fileOutputStream)) {
+                // Lock on file has been already taken from caller method
+                stream.writeObject(task);
+            } catch (Exception e) {
+                logger.warn("Write log file error");
+                throw new SocialNewsRedundancyTaskException("Exception in log write operation");
+            }
+        }else{
+            // Append content to file (header excluded)
+            try (FileOutputStream fileOutputStream = new FileOutputStream(filePath,true);
+                 AppendingObjectOutputStream stream = new AppendingObjectOutputStream(fileOutputStream)) {
+                // Lock on file has been already taken from caller method
+                stream.writeObject(task);
+            } catch (Exception e) {
+                logger.warn("Write log file error: appending content");
+                throw new SocialNewsRedundancyTaskException("Exception in log write operation: appending content");
+            }
         }
     }
 
     private List<RedundancyTask> extractFromLog (String filePath) throws SocialNewsRedundancyTaskException {
         List<RedundancyTask> tasks = new ArrayList<>();
 
-        try (ObjectInputStream objectInputStream = new ObjectInputStream(new FileInputStream(filePath))) {
+        try (   FileInputStream fileInputStream = new FileInputStream(filePath);
+                ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream)) {
 
             // Lock on file has been already taken from caller method
-            while (objectInputStream.available() > 0) {
-                tasks.add((RedundancyTask) objectInputStream.readObject());
+            while (true) {
+                RedundancyTask task = (RedundancyTask) objectInputStream.readObject();
+                if (task == null)
+                    break;
+                tasks.add(task);
             }
-
-            // Delete file content
-            writeLog(filePath, null, false);
-
+        }catch (EOFException e) {
+            // Reached the end of the file
         }catch (FileNotFoundException e) {
             // The file does not exist yet, no changes need to be applied
             logger.warn("Not existing log file: "+filePath);
@@ -309,6 +350,9 @@ public class RedundancyUpdater {
             // Error while reading the file
             logger.warn("Extract from log file error:"+filePath);
             throw new SocialNewsRedundancyTaskException("Exception in log read operation");
+        }finally {
+            // Delete file content
+            emptyFile(filePath);
         }
 
         return tasks;
@@ -318,5 +362,52 @@ public class RedundancyUpdater {
         logger.info("RedundancyUpdater exiting.");
         executor.shutdown();
         applyRedundanciesFromLog();
+    }
+
+    private void emptyFile(String filePath) throws SocialNewsRedundancyTaskException {
+        try {
+            new FileOutputStream(filePath).close();
+        }catch (Exception e){
+            throw new SocialNewsRedundancyTaskException("Impossible to empty file: "+filePath);
+        }
+    }
+
+    private boolean deleteFile(String filePath){
+        return new File(filePath).delete();
+    }
+
+    // Utility function for debug purpose only
+    private void printFileInfo(){
+
+        File commentFile = new File(COMMENT_FILE_PATH);
+        try {
+            if (commentFile.createNewFile()) {
+                System.out.println("File created: " + commentFile.getName());
+            } else {
+                System.out.println("File " + commentFile.getName() + " already exists");
+            }
+        } catch (IOException e) {
+            System.out.println("Error in file creation " + commentFile.getName());
+            e.printStackTrace();
+        }
+
+        File reportFile = new File(REPORT_FILE_PATH);
+        try {
+            if (reportFile.createNewFile()) {
+                System.out.println("File created: " + reportFile.getName());
+            } else {
+                System.out.println("File " + reportFile.getName() + " already exists");
+            }
+        } catch (IOException e) {
+            System.out.println("Error in file creation " + reportFile.getName());
+            e.printStackTrace();
+        }
+
+        System.out.println("Path: " + commentFile.getAbsolutePath() +
+                " Space: "+ commentFile.length()+
+                " Last modification:" + commentFile.lastModified());
+        System.out.println("Path: " + reportFile.getAbsolutePath() +
+                " Space: "+ reportFile.length()+
+                " Last modification:" + reportFile.lastModified());
     }
 }
