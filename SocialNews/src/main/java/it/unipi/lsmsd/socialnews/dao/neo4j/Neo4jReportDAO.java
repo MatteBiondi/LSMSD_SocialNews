@@ -113,14 +113,14 @@ public class Neo4jReportDAO {
                             "RETURN reporter.reporterId as reporterId",
                     parameters("reportId", reportId)
             );
-            Result result = session.writeTransaction(tx -> tx.run(query));
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            ObjectNode toReturn = objectMapper.createObjectNode();
-            toReturn.put("deletedCounter", result.consume().counters().relationshipsDeleted());
-            toReturn.put("reporterId", result.single().get("reporterId").asString());
-
-            return toReturn;
+            return session.writeTransaction(tx -> {
+                Result result = tx.run(query);
+                ObjectMapper objectMapper = new ObjectMapper();
+                ObjectNode toReturn = objectMapper.createObjectNode();
+                toReturn.put("reporterId", result.single().get("reporterId").asString());
+                toReturn.put("deletedCounter", result.consume().counters().relationshipsDeleted());
+                return toReturn;
+            });
         } catch (Exception e){
             e.printStackTrace();
             throw new SocialNewsDataAccessException("Report deletion failed: "+ e.getMessage());
