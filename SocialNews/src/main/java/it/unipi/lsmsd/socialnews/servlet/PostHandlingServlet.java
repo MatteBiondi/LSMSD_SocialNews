@@ -10,7 +10,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.*;
@@ -29,8 +28,7 @@ public class PostHandlingServlet extends HttpServlet {
             throws ServletException, IOException {
         PrintWriter writer = response.getWriter();
 
-        HttpSession session = request.getSession(false);
-        String reporterId = (String) session.getAttribute("id");
+        String reporterId = request.getParameter("reporterId");
         String lastPostId = request.getParameter("lastId");
         long lastTimestamp = Long.parseLong(request.getParameter("lastTimestamp"));
         String direction = request.getParameter("direction");
@@ -72,7 +70,7 @@ public class PostHandlingServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws IOException {
         PrintWriter writer = response.getWriter();
 
         String reporterID = request.getParameter("reporterID");

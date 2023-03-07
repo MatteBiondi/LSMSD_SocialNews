@@ -44,7 +44,7 @@ $(document).ready(async () => {
         let readerId = $("body").attr("data-user-id");
         let target = event.currentTarget;
         let reporterId = $(target).attr("data-reporter");
-        publishNewComment(postId, readerId, reporterId, readerId);
+        publishNewComment(postId, readerId, reporterId);
     })
 
     if(isFollower === "true"){
@@ -80,7 +80,7 @@ function publishNewPost(reporterID) {
                 let hashtags = newPostJson["hashtags"];
                 let links = newPostJson["links"];
                 let timestamp = newPostJson["timestamp"];
-                createNewPost(reporterID, postID, textarea, hashtags, links, timestamp, "Now");
+                createNewPost(reporterID, reporterID, postID, textarea, hashtags, links, timestamp, "Now");
             } catch (e) {
                 console.error("Error parsing JSON: " + e);
             }
@@ -96,7 +96,7 @@ function cleanNewPostForm() {
     $("#related-links-input").val("");
 }
 
-function createNewPost(reporterID, postID, text, hashtags, links, timestamp, formattedTimestamp) {
+function createNewPost(reporterID, userID, postID, text, hashtags, links, timestamp, formattedTimestamp) {
 
     let newPost = $("<div></div>");
     newPost.attr({
@@ -148,11 +148,31 @@ function createNewPost(reporterID, postID, text, hashtags, links, timestamp, for
         postFooter.append(postLinks);
     }
 
-    let postTimestamp = $("<p>" + formattedTimestamp + "</p>"); //fixme: problema -> non ho l'attributo data-millis-time. Controllare e vedere dove andava messo.
+    let postTimestamp = $("<p>" + formattedTimestamp + "</p>");
     postTimestamp.attr("class","timestamp");
     postFooter.append(postTimestamp);
 
     postFooter.append($("<hr>"));
+
+    if(reporterID !== userID) {
+
+        let newTextarea = $("<textarea>", {
+            "class": "form-control new-comment-textarea",
+            "id": "message",
+            "placeholder": "Enter comment text here",
+            "data-form-type": "other"
+        });
+        postFooter.append(newTextarea);
+
+        let newCommentBtn = $("<button>", {
+            "class": "write-comment",
+            "text": "Publish"
+        });
+        newCommentBtn.click(function() {
+            publishNewComment(postID, userID, reporterID);
+        });
+        postFooter.append(newCommentBtn);
+    }
 
     let showCommentsDiv = $("<div></div>");
     showCommentsDiv.attr("class","show-comm-div");
@@ -160,6 +180,10 @@ function createNewPost(reporterID, postID, text, hashtags, links, timestamp, for
 
     let showCommentsButton = $("<button>Show comments</button>");
     showCommentsButton.attr("class","show-comm");
+    showCommentsButton.click(function() {
+        let userID = $("body").attr("data-user-id");
+        showComments(reporterID, postID, userID);
+    });
     showCommentsDiv.append(showCommentsButton);
 
     $("#post-items").prepend(newPost);
@@ -280,6 +304,9 @@ async function pageRequest(direction){
     let lastId = sessionStorage.getItem("lastId");
     let lastTimestamp = sessionStorage.getItem("lastTimestamp");
 
+    let body=$('body');
+    let reporterId = body.attr("data-reporter-id");
+
     console.log("Page request");
 
     // Get root of current pathname
@@ -287,7 +314,7 @@ async function pageRequest(direction){
     let baseUrl = window.location.origin + rootPathname ;
 
     let newPostsListJSON = await $.get(
-        `${baseUrl}/posthandling?direction=${direction}&lastId=${lastId}&lastTimestamp=${lastTimestamp}`
+        `${baseUrl}/posthandling?direction=${direction}&lastId=${lastId}&lastTimestamp=${lastTimestamp}&reporterId=${reporterId}`
     );
 
     let newPostsList = JSON.parse(newPostsListJSON);
@@ -317,6 +344,7 @@ function loadNewPage(newPostsList) {
 
         let body=$('body');
         let reporterId = body.attr("data-reporter-id");
+        let userId = body.attr("data-user-id");
 
         $.each(newPostsList, function(index, postJSON) {
             let postId = postJSON["id"];
@@ -331,7 +359,7 @@ function loadNewPage(newPostsList) {
             let timestamp = postJSON["timestamp"];
             let formattedTimestamp = getFormattedTimestamp(timestamp);
 
-            createNewPost(reporterId, postId, text, hashtags, links, timestamp, formattedTimestamp);
+            createNewPost(reporterId, userId, postId, text, hashtags, links, timestamp, formattedTimestamp);
         });
         numPost = newPostsList.length;
     }
@@ -369,7 +397,7 @@ function previousPaging() {
 
 /********** Show comments functionalities **********/
 
-async function showComments(reporterId, postId, userId) {
+export async function showComments(reporterId, postId, userId) {
     // Get root of current pathname
     let rootPathname = window.location.pathname.match(/^\/[^/]+/)[0];
     let baseUrl = window.location.origin + rootPathname ;
@@ -421,6 +449,12 @@ function loadNoCommentsMessage(postId) {
     showCommentsButton.remove();
 }
 
+function removeNoCommentsMessage(postId) {
+    let postDiv = document.getElementById(postId);
+    let commentsDiv = postDiv.querySelector("div.show-comm-div");
+    commentsDiv.innerHTML = "";
+}
+
 function loadComments(reporterId, postId, commentsFromPost, userId) {
 
     $.each(commentsFromPost, function(index, comment) {
@@ -435,7 +469,7 @@ function loadComments(reporterId, postId, commentsFromPost, userId) {
     })
 }
 
-function publishNewComment(postId, readerId, reporterId, userId) {
+function publishNewComment(postId, readerId, reporterId) {
     let postDiv = document.getElementById(postId);
     let textarea = postDiv.querySelector(".new-comment-textarea");
     let commentText = textarea.value;
@@ -455,10 +489,11 @@ function publishNewComment(postId, readerId, reporterId, userId) {
         function(newCommentJson) {
             textarea.value = "";
             try {
-                let commentId = newCommentJson["commentId"];
+                let commentId = newCommentJson["_id"];
                 let timestamp = newCommentJson["timestamp"];
                 let readerName = newCommentJson["reader"]["fullName"];
-                createNewComment(postId, commentId, readerId, readerName, commentText, timestamp, "Now", userId);
+                removeNoCommentsMessage(postId);
+                createNewComment(postId, commentId, readerId, readerName, commentText, timestamp, "Now", readerId);
             } catch (e) {
                 console.error("Error parsing JSON: " + e);
             }
@@ -543,12 +578,11 @@ function hideRemovedComment(commentId) {
 const COMMENTS_PER_PAGE = 20;
 
 function takeLastComment(postId){
-    let postDiv = document.getElementById("32c5847d-df39-4c88-8cb5-ed0a6afa30bd");
+    let postDiv = document.getElementById(postId);
     let showCommDiv = postDiv.getElementsByClassName("comment-container");
     let lastComment = showCommDiv[showCommDiv.length-1];
     console.log(lastComment);
 
-    //todo: salvare le cose in altro modo
     console.log("takeLastComment");
     sessionStorage.setItem("commentsLastId", lastComment.getAttribute("id"));
     sessionStorage.setItem("commentsLastTimestamp", lastComment.getAttribute("data-millis-time"));
