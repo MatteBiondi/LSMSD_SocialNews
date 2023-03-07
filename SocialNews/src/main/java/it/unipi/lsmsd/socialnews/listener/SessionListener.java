@@ -19,7 +19,9 @@ public class SessionListener implements HttpSessionListener {
 
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
-        if(se.getSession().getAttribute("userType").equals("reporter")){
+        String userType = (String) se.getSession().getAttribute("userType");
+
+        if(userType != null && userType.equals("reporter")){
             String email = (String) se.getSession().getAttribute("email");
             try {
                 if(DAOLocator.getReporterDAO().checkAndSwap(email)){

@@ -60,21 +60,30 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
             List<Bson> stages = new ArrayList<>();
 
             stages.add(Aggregates.match(Filters.eq("reporterId", reporterId)));
-            stages.add(Aggregates.unwind("$posts", new UnwindOptions().preserveNullAndEmptyArrays(true)));
-            stages.add(Aggregates.sort(Sorts.descending("posts.timestamp", "posts._id")));
-            stages.add(Aggregates.limit(pageSize));
+            stages.add(Aggregates.sort(Sorts.descending("email")));
             stages.add(Aggregates.group("$reporterId",
+                    Accumulators.push("posts", "$posts"),
                     Accumulators.first("email","$email"),
                     Accumulators.first("reporterId","$reporterId"),
                     Accumulators.first("fullName","$fullName"),
                     Accumulators.first("gender","$gender"),
                     Accumulators.first("dateOfBirth","$dateOfBirth"),
                     Accumulators.first("location","$location"),
-                    Accumulators.first("date","$dateOfBirth"),
                     Accumulators.first("cell","$cell"),
-                    Accumulators.first("picture","$picture"),
-                    Accumulators.push("posts", "$posts")));
-
+                    Accumulators.first("picture","$picture")
+            ));
+            stages.add(Aggregates.project(Projections.fields(
+                    Projections.include("reporterId", "email", "reporterId", "fullName", "gender",
+                            "dateOfBirth", "location", "cell", "picture"),
+                    Projections.computed("posts",
+                            Document.parse(String.format(
+                                    "{$filter: {" +
+                                            "input:{" +
+                                            "    $sortArray:{" +
+                                            "        input:{$reduce: {input:'$posts', initialValue: []," +
+                                            "                            in: {$concatArrays: ['$$value', '$$this']}}}," +
+                                            "        sortBy:{'timestamp':-1}}}," +
+                                            "cond:{}, limit:%d}}}}", pageSize))))));
             return getCollection().aggregate(stages).first();
         }
         catch (MongoException me){
@@ -267,7 +276,6 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
             throw new SocialNewsDataAccessException("Updated failed: " + me.getMessage());
         }
     }
-
 
     public Boolean checkAndSwapDocument(String reporterEmail) throws SocialNewsDataAccessException{
         try (ClientSession session = openSession()){

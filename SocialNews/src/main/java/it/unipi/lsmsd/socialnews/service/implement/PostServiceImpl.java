@@ -20,16 +20,13 @@ public class PostServiceImpl implements PostService {
             Post offset  = postOffset == null ? null:Util.buildPost(postOffset);
             List<PostDTO> pagePostDTO = new ArrayList<>();
             switch (page){
-                case FIRST, NEXT -> DAOLocator.getPostDAO()
-                        .postsByHashtagNext(hashtag, offset, Util.getIntProperty("listSearchPostsPageSize", 20))
-                        .forEach(reporter -> reporter.getPosts()
-                                .forEach(post -> pagePostDTO.add(Util.buildPostDTO(post, reporter.getReporterId()))));
-                case PREV -> DAOLocator.getPostDAO()
-                        .postsByHashtagPrev(hashtag, offset, Util.getIntProperty("listSearchPostsPageSize", 20))
-                        .forEach(reporter -> reporter.getPosts()
-                                .forEach(post -> pagePostDTO.add(Util.buildPostDTO(post, reporter.getReporterId()))));
-            }
+                case FIRST, NEXT -> DAOLocator.getPostDAO().postsByHashtagNext(hashtag, offset, Util.getIntProperty(
+                                "listSearchPostsPageSize", 20))
+                        .forEach(post -> pagePostDTO.add(Util.buildPostDTO(post)));
+                case PREV ->DAOLocator.getPostDAO().postsByHashtagPrev(hashtag, offset, Util.getIntProperty("listSearchPostsPageSize", 20))
+                        .forEach(post -> pagePostDTO.add(Util.buildPostDTO(post)));
 
+            }
             return pagePostDTO;
         } catch (SocialNewsDataAccessException ex) {
             ex.printStackTrace();

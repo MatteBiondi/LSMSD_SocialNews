@@ -1,5 +1,8 @@
 import {loadScript, computeWindowHeight, showMessage} from "../util.js";
+import {showComments} from "../reporter/homepage.js"
+
 const script = loadScript("https://cdn.zinggrid.com/zinggrid.min.js");
+loadScript("https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js");
 
 // Report page
 const reportPage = new class {
@@ -62,13 +65,13 @@ const reportPage = new class {
         try{
             let post = await $.ajax({
                 type: 'get',
-                url: `${location.href.split('admin')[0]}/admin/report?type=post&reporterId=${this.#reporterId}` +
+                url: `${location.href.split('admin')[0]}admin/report?type=post&reporterId=${this.#reporterId}` +
                     `&postId=${this.#reports[index]['postId']}`,
             });
 
 
             this.postContainer.html(`
-                <div class="post-container container my-5 search-result" style="width: auto">
+                <div id="${this.#reports[index]['postId']}" class="post-container container my-5 search-result" style="width: auto">
                     <header class="post-header">
                         <a href="${location.href.split('admin')[0]}/reporterPage?id=${this.#reporterId}" 
                             class="option"><i class="bi bi-person"></i></a>
@@ -77,15 +80,16 @@ const reportPage = new class {
                     <hr>
                     <p class="post-text">${post.text}</p>
                     <footer>
-                        <p class="hashtags">${post.hashtags}</p>
-                        <p class="related-links">${post.links}</p>
+                        <p class="hashtags">${post.hashtags !== undefined ? post.hashtags:""}</p>
+                        <p class="related-links">${post.links !== undefined ? post.links:""}</p>
                         <p class="timestamp">${new Date(post.timestamp).toLocaleString()}</p>
                         <hr>
-                        <div class="show-comm-div"><button class="show-comm">Show comments</button></div>
+                        <div id="showComment" class="show-comm-div"><button class="show-comm">Show comments</button></div>
                     </footer>
                 </div>
             `)
             $('#removePost').on('click', () => this.#removePost(this.#reporterId, post.id))
+            $('#showComment').on('click', () => showComments(this.#reporterId, this.#reports[index]['postId'], null));
             this.postModal.show();
         }
         catch (error){
@@ -102,7 +106,7 @@ const reportPage = new class {
         try{
             await $.ajax({
                 type: 'post',
-                url: `${location.href.split('admin')[0]}/reporter/posthandling?operation=delete&reporterID=${this.#reporterId}` +
+                url: `${location.href.split('admin')[0]}posthandling?operation=delete&reporterID=${this.#reporterId}` +
                     `&postID=${postId}`,
             });
             showMessage("Post successfully deleted")

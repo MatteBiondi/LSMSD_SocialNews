@@ -28,7 +28,6 @@ public final class MongoConnection {
                 .serverApi(ServerApi                        //Stable API V1
                         .builder()
                         .version(ServerApiVersion.V1)
-                        .strict(true)
                         .deprecationErrors(true)
                         .build())
                 .build();
@@ -70,7 +69,7 @@ public final class MongoConnection {
         try{
             Bson command = new BsonDocument("ping", new BsonInt64(1));
             Document commandResult = database.runCommand(command);
-            if(commandResult.containsKey("ok") && commandResult.getInteger("ok") == 1)
+            if(commandResult.containsKey("ok") && commandResult.getDouble("ok") == 1)
                 return true;
         }
         catch (MongoException ex){
