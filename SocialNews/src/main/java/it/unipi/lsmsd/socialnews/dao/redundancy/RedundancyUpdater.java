@@ -363,6 +363,13 @@ public class RedundancyUpdater {
     public void stopRedundanciesUpdate (){
         logger.info("RedundancyUpdater exiting.");
         executor.shutdown();
+        try {
+            if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException ex) {
+            logger.error("Error in shutting down redundancy updater thread: "+ex.getMessage());
+        }
         applyRedundanciesFromLog();
     }
 
