@@ -61,7 +61,7 @@ public class RedundancyUpdater {
         applyRedundanciesFromLog();
 
         executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(this::applyRedundanciesFromLog, 1, 1, TimeUnit.HOURS);
+        executor.scheduleAtFixedRate(this::applyRedundanciesFromLog, 1, 1, TimeUnit.MINUTES);
         logger.info("Redundancy updater started");
     }
 
@@ -168,11 +168,12 @@ public class RedundancyUpdater {
             for (String key : postCommentCounts.keySet()) {
                 try {
                     Integer value = postCommentCounts.get(key);
-                    if (mongoPostDAO.updateNumOfComment(session, key, value) == 0) {
-                        logger.warn("Post " + key + " -> "+value+" not modified. Maybe it has been deleted.");
-                    }
-                    else{
-                        logger.info("Post comment redundancies applied");
+                    if(value != 0) {
+                        if (mongoPostDAO.updateNumOfComment(session, key, value) == 0) {
+                            logger.warn("Post " + key + " -> " + value + " not modified. Maybe post has been deleted.");
+                        } else {
+                            logger.info("Post comment redundancies applied");
+                        }
                     }
                     postCommentCounts.remove(key);
                 } catch (Exception e) {
@@ -207,11 +208,13 @@ public class RedundancyUpdater {
             for (String key : postReportCounts.keySet()) {
                 try {
                     Integer value = postReportCounts.get(key);
-                    if(mongoReporterDAO.updateNumOfReport(session, key, value) == 0){
-                        logger.warn("Reporter "+key+" -> "+value+" not modified. Maybe it has been deleted");
-                    }
-                    else {
-                        logger.info("Post report redundancies applied");
+                    if(value != 0){
+                        if(mongoReporterDAO.updateNumOfReport(session, key, value) == 0){
+                            logger.warn("Reporter "+key+" -> "+value+" not modified. Maybe reporter has been deleted");
+                        }
+                        else {
+                            logger.info("Post report redundancies applied");
+                        }
                     }
                     postReportCounts.remove(key);
                 } catch (Exception e){
