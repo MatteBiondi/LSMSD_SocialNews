@@ -76,7 +76,7 @@ public class ReportDAOImpl implements ReportDAO {
     @Override
     public Integer deleteReport(String reportId) throws SocialNewsDataAccessException {
         ObjectNode result = neo4JReportDAO.deleteReport(reportId);
-        RedundancyTask task = new RedundancyTask(TaskType.REMOVE_REPORT, result.get("reporterId").toString());
+        RedundancyTask task = new RedundancyTask(TaskType.REMOVE_REPORT, result.get("reporterId").asText());
         ServiceWorkerPool.getPool().submitTask(() -> RedundancyUpdater.getInstance().addTask(task));
         return result.get("deletedCounter").asInt();
     }
