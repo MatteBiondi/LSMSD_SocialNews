@@ -75,7 +75,7 @@ function publishNewPost(reporterID) {
         function(newPostJson) {
             cleanNewPostForm();
             try {
-                let postID = newPostJson["reporterId"];
+                let postID = newPostJson["id"]; //tofix: non ritorna l'id
                 let textarea = newPostJson["text"];
                 let hashtags = newPostJson["hashtags"];
                 let links = newPostJson["links"];
@@ -452,7 +452,9 @@ function loadNoCommentsMessage(postId) {
 function removeNoCommentsMessage(postId) {
     let postDiv = document.getElementById(postId);
     let commentsDiv = postDiv.querySelector("div.show-comm-div");
-    commentsDiv.innerHTML = "";
+    if (commentsDiv.querySelector(".empty-data-msg")) {
+        commentsDiv.innerHTML = "";
+    }
 }
 
 function loadComments(reporterId, postId, commentsFromPost, userId) {
@@ -489,7 +491,7 @@ function publishNewComment(postId, readerId, reporterId) {
         function(newCommentJson) {
             textarea.value = "";
             try {
-                let commentId = newCommentJson["_id"];
+                let commentId = newCommentJson["id"];
                 let timestamp = newCommentJson["timestamp"];
                 let readerName = newCommentJson["reader"]["fullName"];
                 removeNoCommentsMessage(postId);

@@ -95,7 +95,8 @@ public class PostHandlingServlet extends HttpServlet {
             PostDTO newPost = new PostDTO(reporterID, text, linksList, hashtagsList);
 
             try {
-                ServiceLocator.getPostService().publishPost(newPost);
+                String newPostId = ServiceLocator.getPostService().publishPost(newPost);
+                newPost.setId(newPostId);
                 String newPostJson = toJSON(newPost);
                 writer.write(newPostJson);
             } catch (SocialNewsServiceException ex) {

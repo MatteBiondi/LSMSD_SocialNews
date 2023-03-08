@@ -45,7 +45,7 @@ public class CommentHandlingServlet extends HttpServlet {
                 String message = ex.getMessage();
                 LOGGER.warning(String.format("Service error occurred: %s", message));
                 writer.write(String.format("%s", message));
-            } catch (Exception ex){
+            } catch (Exception ex) {
                 String message = ex.getMessage();
                 LOGGER.warning(String.format("Unexpected service error occurred: %s", message));
                 writer.write(String.format("%s", message));
@@ -96,7 +96,8 @@ public class CommentHandlingServlet extends HttpServlet {
             CommentDTO newComment = new CommentDTO(readerId, readerFullName, postId, reporterId, text);
 
             try {
-                ServiceLocator.getPostService().publishComment(newComment);
+                String newCommentId = ServiceLocator.getPostService().publishComment(newComment);
+                newComment.setId(newCommentId);
                 String newPostJson = toJSON(newComment);
                 writer.write(newPostJson);
             } catch (SocialNewsServiceException ex) {
