@@ -44,14 +44,14 @@ const reportPage = new class {
         this.#numOfLoaded += this.#reports.length;
     }
 
-    async #deleteReport(index){
+    async #deleteReport(elem, index){
         try{
              await $.ajax({
                 type: 'delete',
                 url: `${location.href.split('admin')[0]}/admin/report?reportId=${this.#reports[index]['reportId']}`,
              });
-             this.reportList.find('li')[index].remove();
-             showMessage('success', 'Report successfully deleted')
+             showMessage('success', 'Report successfully deleted');
+             elem.remove();
         }
         catch (error){
             if('responseJSON' in error)
@@ -150,7 +150,7 @@ const reportPage = new class {
         this.next.prop('disabled', this.#reports.length < this.#pageLength || this.#reports.length === 0);
         this.pageElem.text(this.#page+1);
 
-        $('.report-delete').on('click', (ev) => this.#deleteReport(ev.currentTarget.parentElement.dataset['index']));
+        $('.report-delete').on('click', (ev) => this.#deleteReport(ev.currentTarget.closest("li"), ev.currentTarget.parentElement.dataset['index']));
         $('.report-view-post').on('click', (ev) => this.#showPost(ev.currentTarget.parentElement.dataset['index']));
 
         return this;
