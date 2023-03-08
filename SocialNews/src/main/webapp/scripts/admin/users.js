@@ -230,7 +230,7 @@ window.render = function render(value, elem){
 window.renderReport = function renderReport(id, numOfReport, elem){
     let button = $(elem).find('zg-button')
     let icon = $(elem).find('i')
-    if(numOfReport !== undefined){
+    if(numOfReport !== undefined && numOfReport > 0){
         icon.addClass('report-icon bi bi-exclamation-diamond-fill');
         button.addClass('report-btn btn btn-danger');
         button.on("click", async (ev) => (await reportPage.loadReports(ev.currentTarget.dataset['id'])).show());
