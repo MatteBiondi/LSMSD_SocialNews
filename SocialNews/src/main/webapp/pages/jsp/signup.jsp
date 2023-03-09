@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Social News - Sign Up form</title>
-
+    <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/images/icon.svg">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/signup.css" type="text/css" media="screen">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
           rel="stylesheet" integrity="sha384-iYQeCzEYFbKjA/T2uDLTpkwGzCiq6soy8tYaI1GyVh/UjpbCx/TYkiZhlZB6+fzT"
