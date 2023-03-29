@@ -251,7 +251,7 @@ const nationalityStatistic = new class extends Chart{
 
 const hottestMoments = new class extends Chart{
     constructor(){
-        super('hottest-moment-bar', 'bar', {statistic: 'hottestMomentsOfDay', windowSize:'3',
+        super('hottest-moment', 'bar', {statistic: 'hottestMomentsOfDay', windowSize:'3',
             lastN: '1', unitOfTime:'Month'});
     }
 
@@ -274,6 +274,34 @@ const hottestMoments = new class extends Chart{
     }
 }
 
+const hottestPosts = new class extends Table{
+    constructor(){
+        super('hottest-posts-grid',{statistic: 'hottestPosts', lastN: '1', unitOfTime:'Month'});
+    }
+
+    render(data) {
+        let tmp = [];
+        for(let post of data) {
+
+            let newElem = [];
+            newElem["id"] = post.id;
+            newElem["text"] = post.text;
+            newElem["hashtags"] = post.hashtags;
+            let milliseconds = parseInt(post.timestamp);
+            newElem["timestamp"] = getFormattedTimestamp(milliseconds);
+            tmp.push(newElem);
+        }
+
+        data = tmp;
+        super.render(data, ['ID','Text', 'Hashtags', 'Publication date'])
+    }
+}
+
+function getFormattedTimestamp(milliseconds) {
+    let date = moment(milliseconds);
+    return date.format("ddd MMM DD HH:mm:ss [CET] YYYY");
+}
+
 export const AdminDashboard = new class extends Dashboard {
     constructor() {
         super({
@@ -287,6 +315,9 @@ export const AdminDashboard = new class extends Dashboard {
 
 export const ReporterDashboard = new class extends Dashboard {
     constructor() {
-        super({'hottestMoments':hottestMoments},'');
+        super({
+            'hottestPosts': hottestPosts,
+            'hottestMomentsOfDay':hottestMoments
+        }, document.URL);
     }
 }

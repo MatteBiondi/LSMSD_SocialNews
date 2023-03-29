@@ -1,0 +1,10 @@
+.widget{
+    transform: translateY(40%)!important;
+}
+
+.h4 {
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 10px;
+}
