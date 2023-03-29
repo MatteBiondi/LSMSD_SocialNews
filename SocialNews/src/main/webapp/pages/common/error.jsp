@@ -7,6 +7,7 @@
 %>
 <head>
     <title><%= statusCode%> Error occurred - Error Report</title>
+    <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/images/icon.svg">
 </head>
 <body>
 <h1>An HTTP error occurred</h1>

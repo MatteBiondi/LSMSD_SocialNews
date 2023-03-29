@@ -5,6 +5,7 @@
 <head>
     <title>Social News - Report Post</title>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/x-icon" href="${pageContext.request.contextPath}/images/icon.svg">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/contentPage.css" type="text/css" media="screen">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/reportPost.css" type="text/css" media="screen">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" crossorigin="anonymous">
