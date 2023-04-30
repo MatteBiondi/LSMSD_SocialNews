@@ -50,7 +50,7 @@
         </div>
 
         <div id="user" class="icon-button dropdown">
-            <span class="text-reset hidden-arrow" data-bs-toggle="dropdown">
+            <span class="text-reset hidden-arrow cursor-pointer" data-bs-toggle="dropdown">
                 <i class="bi bi-gear fs-3"></i>
             </span>
             <ul class="dropdown-menu dropdown-menu-end">
@@ -60,7 +60,7 @@
                     </li>
                 </c:if>
                 <li>
-                    <span id="logout" class="dropdown-item">Logout</span>
+                    <span id="logout" class="dropdown-item cursor-pointer">Logout</span>
                 </li>
             </ul>
         </div>
