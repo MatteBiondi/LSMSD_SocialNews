@@ -24,7 +24,7 @@ public class ReportPostServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/plain");
 
         // Take post id, reason and reporterId from request
