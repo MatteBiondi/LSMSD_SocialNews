@@ -30,10 +30,7 @@ public class ProfileServlet extends HttpServlet {
             request.setAttribute("email", email);
             request.setAttribute("gender", reader.getGender());
             request.setAttribute("country", reader.getCountry());
-            // todo: is it needed?
             request.setAttribute("image", request.getContextPath() + "/images/user-avatar.svg");
-
-            // todo: change password/delete profile?
         } catch(SocialNewsServiceException ex){
             String message = ex.getMessage();
             LOGGER.warning(String.format("Service error occurred: %s", message));

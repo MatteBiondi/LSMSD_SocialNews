@@ -620,7 +620,6 @@ async function commentsPageRequest(postId){
 }
 
 function loadNewCommentsPage(postId, newCommentsList) {
-    // todo
     let numComments;
     let userId = $("body").attr("data-user-id");
 
