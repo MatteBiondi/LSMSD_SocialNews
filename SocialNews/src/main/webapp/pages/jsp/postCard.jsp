@@ -45,5 +45,3 @@
         </div>
     </footer>
 </div>
-
-<!--TODO: js post (es show comment)-->

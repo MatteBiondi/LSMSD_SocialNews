@@ -49,6 +49,11 @@
     margin-left: 15px;
 }
 
-.search-item{
+.search-item,
+.cursor-pointer{
     cursor: pointer;
+}
+
+a{
+    color: inherit;
 }

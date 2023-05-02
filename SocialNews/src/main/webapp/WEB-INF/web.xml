@@ -14,8 +14,7 @@
   <session-config>
     <session-timeout>30</session-timeout>
   </session-config>
-  
-  <!--TODO check this part-->
+
   <filter-mapping>
     <filter-name>RequestLoggingFilter</filter-name>
     <url-pattern />
@@ -24,10 +23,8 @@
     <filter-name>AuthenticationFilter</filter-name>
     <url-pattern />
   </filter-mapping>
-  <!--
   <filter-mapping>
-    <filter-name>UnauthorizedAccessFilter</filter-name>
+    <filter-name>UnauthorisedAccessFilter</filter-name>
     <url-pattern />
   </filter-mapping>
-  -->
 </web-app>
