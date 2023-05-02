@@ -194,8 +194,6 @@ function removePost(reporterID, postID) {
     let rootPathname = window.location.pathname.match(/^\/[^/]+/)[0];
     let baseUrl = window.location.origin + rootPathname ;
 
-
-    console.log("removePost");
     $.post(
         `${baseUrl}/posthandling`,
         {
@@ -264,7 +262,6 @@ $(document).ready(async () => {
     // Retrieve number of first page posts and evaluate next page button
     nextPaging($(".search-result").length);
 
-
     $("#previous").on(
         "click",
         () => {
@@ -296,8 +293,6 @@ function takeLastPost(direction){
     else
         lastPost = $("#post-items").children().last();
 
-    console.log("takeLastPost");
-    console.log(lastPost);
     sessionStorage.setItem("lastId", lastPost.attr('id'));
     sessionStorage.setItem("lastTimestamp", lastPost.attr("data-millis-time"));
 }
@@ -309,8 +304,6 @@ async function pageRequest(direction){
     let body=$('body');
     let reporterId = body.attr("data-reporter-id");
 
-    console.log("Page request");
-
     // Get root of current pathname
     let rootPathname = window.location.pathname.match(/^\/[^/]+/)[0];
     let baseUrl = window.location.origin + rootPathname ;
@@ -320,12 +313,7 @@ async function pageRequest(direction){
     );
 
     let newPostsList = JSON.parse(newPostsListJSON);
-
-    //if(direction==="previous")
     newPostsList.reverse();
-
-    console.log(newPostsList);
-
     loadNewPage(newPostsList);
 }
 
@@ -562,9 +550,7 @@ function takeLastComment(postId){
     let postDiv = document.getElementById(postId);
     let showCommDiv = postDiv.getElementsByClassName("comment-container");
     let lastComment = showCommDiv[showCommDiv.length-1];
-    console.log(lastComment);
 
-    console.log("takeLastComment");
     sessionStorage.setItem("commentsLastId", lastComment.getAttribute("id"));
     sessionStorage.setItem("commentsLastTimestamp", lastComment.getAttribute("data-millis-time"));
 }
@@ -577,8 +563,6 @@ async function commentsPageRequest(postId){
     let showCommDiv = postDiv.querySelector("div.show-comm-div");
     let page = parseInt(showCommDiv.getAttribute("page")) + 1;
 
-    console.log("Comments Page request");
-
     let urlOrigin = window.location.origin;
     // Get root of current pathname
     let rootPathname = window.location.pathname.match(/^\/[^/]+/)[0];
@@ -590,10 +574,7 @@ async function commentsPageRequest(postId){
 
     let newCommentsList = JSON.parse(newCommentsListJSON);
 
-    //if(direction==="previous")
     newCommentsList.reverse();
-
-    console.log(newCommentsList);
 
     loadNewCommentsPage(postId, newCommentsList);
 }
@@ -603,8 +584,6 @@ function loadNewCommentsPage(postId, newCommentsList) {
     let numComments;
 
     if(newCommentsList.length > 0) {
-
-        console.log("length risultato > 0");
 
         $.each(newCommentsList, function(index, commentJSON) {
 
