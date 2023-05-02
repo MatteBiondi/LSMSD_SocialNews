@@ -1,17 +1,7 @@
 .background {
     background-color: #002266;
-    background-image: url("https://i3.lensdump.com/i/TrsjNA.jpeg");
-    background-position: bottom left;
+    background: url("https://i3.lensdump.com/i/TDPv0Q.jpeg") no-repeat top left fixed;
     background-size: cover;
-    background-repeat: no-repeat;
-}
-
-.container {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
 }
 
 h1 {
@@ -19,7 +9,7 @@ h1 {
     text-shadow: 1px 1px #333;
     font-size: 3em;
     font-weight: bold;
-    font-family: Garamond;
+    font-family: Garamond, serif;
 }
 
 .btn {
@@ -38,7 +28,7 @@ h1 {
     text-shadow: 1px 1px black;
     font-size: 1.5em;
     margin-bottom: 1em;
-    font-family: Garamond;
+    font-family: Garamond, serif;
 }
 
 img {
@@ -46,19 +36,10 @@ img {
     height: 80px;
 }
 
-#buttons-div, #join-div {
-    margin-left: 50%;
-}
-
-#join-div {
-    width: 50vw;
-}
-
 #join-us {
-    font-family: Garamond;
+    font-family: Garamond, serif;
     font-weight: bold;
     color: white;
-    margin-left: 50%;
 }
 
 .card-body {

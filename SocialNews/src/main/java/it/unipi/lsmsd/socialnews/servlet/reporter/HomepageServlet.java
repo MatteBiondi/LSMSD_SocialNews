@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.util.*;
 import java.util.logging.Logger;
@@ -21,37 +20,6 @@ import java.util.logging.Logger;
 public class HomepageServlet extends HttpServlet {
 
     private static final Logger LOGGER = Logger.getLogger(HomepageServlet.class.getName());
-
-    // Number of post for each page
-    private int pageLength;
-
-    // Number of items in the pages menu
-    private int navPageLen;
-
-    @Override
-    public void init(){
-        InputStream input = null;
-        Properties properties = new Properties();
-        try {
-            // Load servlet properties. See in "src/main/resources/servlet.properties"
-            input = this.getClass().getClassLoader().getResourceAsStream("servlet.properties");
-            properties.load(input);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (input != null)
-                    input.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        // Read interested values
-        pageLength = Integer.parseInt(properties.getProperty("page_length", "10"));
-        navPageLen = Integer.parseInt(properties.getProperty("nav_page_length", "5"));
-        LOGGER.info("Init ReaderHomepageServlet");
-    }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

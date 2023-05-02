@@ -35,8 +35,7 @@ $(document).ready(async () => {
         let target = event.currentTarget;
         let postId = $(target).attr("data-post");
         let reporter = $(target).attr("data-reporter");
-        let userId = $("body").attr("data-user-id");
-        showComments(reporter, postId, userId);
+        showComments(reporter, postId);
     });
 
     writeCommentBtn.click( function(event) {
@@ -75,12 +74,8 @@ function publishNewPost(reporterID) {
         function(newPostJson) {
             cleanNewPostForm();
             try {
-                let postID = newPostJson["id"]; //tofix: non ritorna l'id
-                let textarea = newPostJson["text"];
-                let hashtags = newPostJson["hashtags"];
-                let links = newPostJson["links"];
-                let timestamp = newPostJson["timestamp"];
-                createNewPost(reporterID, reporterID, postID, textarea, hashtags, links, timestamp, "Now");
+
+                createNewPost(reporterID, newPostJson);
             } catch (e) {
                 console.error("Error parsing JSON: " + e);
             }
@@ -96,13 +91,13 @@ function cleanNewPostForm() {
     $("#related-links-input").val("");
 }
 
-function createNewPost(reporterID, userID, postID, text, hashtags, links, timestamp, formattedTimestamp) {
+function createNewPost(reporterID, post) {
 
     let newPost = $("<div></div>");
     newPost.attr({
         "class": "post-container container my-5 search-result",
-        "id": postID,
-        "data-millis-time": timestamp
+        "id": post["id"],
+        "data-millis-time": post["timestamp"]
     });
 
     let postHeader = $("<header></header>");
@@ -111,25 +106,27 @@ function createNewPost(reporterID, userID, postID, text, hashtags, links, timest
 
     let removeSpan = $("<span></span>")
     removeSpan.attr("class","option");
-    removeSpan.attr("data-ref", postID);
+    removeSpan.attr("data-ref", post["id"]);
     postHeader.append(removeSpan);
 
     let removeIcon = $("<i></i>");
     removeIcon.attr("class","bi bi-trash3");
     removeIcon.click(function() {
-        removePost(reporterID, postID);
+        removePost(reporterID, post["id"]);
     });
     removeSpan.append(removeIcon);
 
     newPost.append($("<hr>"));
 
-    let postText = $("<p>" + text + "</p>");
+    let postText = $("<p>" + post["text"] + "</p>");
     postText.attr("class","post-text");
     newPost.append(postText);
 
     let postFooter = $("<footer></footer>");
     newPost.append(postFooter);
 
+    let hashtagField = post["hashtags"];
+    let hashtags = hashtagField === undefined ? "":hashtagField;
     let hashtagsString = hashtags.toString();
     if(hashtagsString !== "") {
         hashtagsString = hashtagsString.replace(/,/g, " ");
@@ -139,6 +136,8 @@ function createNewPost(reporterID, userID, postID, text, hashtags, links, timest
         postFooter.append(postHashtags);
     }
 
+    let linkField = post["links"];
+    let links = linkField === undefined? "":linkField;
     let linksString = links.toString();
     if(linksString !== "") {
         linksString = linksString.replace(/,/g, " ");
@@ -148,12 +147,14 @@ function createNewPost(reporterID, userID, postID, text, hashtags, links, timest
         postFooter.append(postLinks);
     }
 
+    let formattedTimestamp = getFormattedTimestamp(post["timestamp"]);
     let postTimestamp = $("<p>" + formattedTimestamp + "</p>");
     postTimestamp.attr("class","timestamp");
     postFooter.append(postTimestamp);
 
     postFooter.append($("<hr>"));
 
+    let userID = $('body').attr("data-user-id");
     if(reporterID !== userID) {
 
         let newTextarea = $("<textarea>", {
@@ -169,7 +170,7 @@ function createNewPost(reporterID, userID, postID, text, hashtags, links, timest
             "text": "Publish"
         });
         newCommentBtn.click(function() {
-            publishNewComment(postID, userID, reporterID);
+            publishNewComment(post["id"], userID, reporterID);
         });
         postFooter.append(newCommentBtn);
     }
@@ -181,8 +182,7 @@ function createNewPost(reporterID, userID, postID, text, hashtags, links, timest
     let showCommentsButton = $("<button>Show comments</button>");
     showCommentsButton.attr("class","show-comm");
     showCommentsButton.click(function() {
-        let userID = $("body").attr("data-user-id");
-        showComments(reporterID, postID, userID);
+        showComments(reporterID, post["id"]);
     });
     showCommentsDiv.append(showCommentsButton);
 
@@ -225,8 +225,9 @@ function followReporter (reporterId){
             showMessage('success', 'Follow operation successfully executed');
             $("#follow-button").hide();
             $("#unfollow-button").show();
-            let numFollower = parseInt($("#followers-number").text()) + 1;
-            $("#followers-number").text(numFollower);
+            let followersNumberElem = $("#followers-number");
+            let numFollower = parseInt(followersNumberElem.text()) + 1;
+            followersNumberElem.text(numFollower);
         }).fail(function() {
         showMessage('danger', `Something went wrong. Please retry later`);
     });
@@ -243,8 +244,9 @@ function unfollowReporter (reporterId){
             showMessage('success', 'Unfollow operation successfully executed');
             $("#unfollow-button").hide();
             $("#follow-button").show();
-            let numFollower = parseInt($("#followers-number").text()) - 1;
-            $("#followers-number").text(numFollower);
+            let followersNumberElem = $("#followers-number");
+            let numFollower = parseInt(followersNumberElem.text()) - 1;
+            followersNumberElem.text(numFollower);
         }).fail(function() {
         showMessage('danger', `Something went wrong. Please retry later`);
     });
@@ -335,31 +337,15 @@ function loadNewPage(newPostsList) {
 
     let numPost;
 
-    console.log("loadNewPage");
-
     if(newPostsList.length > 0) {
         cleanDashboard();
 
-        console.log("length risultato > 0");
-
         let body=$('body');
         let reporterId = body.attr("data-reporter-id");
-        let userId = body.attr("data-user-id");
 
         $.each(newPostsList, function(index, postJSON) {
-            let postId = postJSON["id"];
-            let text = postJSON["text"];
 
-            let hashtagField = postJSON["hashtags"];
-            let hashtags = hashtagField === undefined ? "":hashtagField;
-
-            let linkField = postJSON["links"];
-            let links = linkField === undefined? "":linkField;
-
-            let timestamp = postJSON["timestamp"];
-            let formattedTimestamp = getFormattedTimestamp(timestamp);
-
-            createNewPost(reporterId, userId, postId, text, hashtags, links, timestamp, formattedTimestamp);
+            createNewPost(reporterId, postJSON);
         });
         numPost = newPostsList.length;
     }
@@ -397,7 +383,7 @@ function previousPaging() {
 
 /********** Show comments functionalities **********/
 
-export async function showComments(reporterId, postId, userId) {
+export async function showComments(reporterId, postId) {
     // Get root of current pathname
     let rootPathname = window.location.pathname.match(/^\/[^/]+/)[0];
     let baseUrl = window.location.origin + rootPathname ;
@@ -409,7 +395,7 @@ export async function showComments(reporterId, postId, userId) {
     let commentsFromPost = JSON.parse(commentsFromPostJSON);
 
     if(commentsFromPost.length > 0) {
-        loadComments(reporterId, postId, commentsFromPost, userId);
+        loadComments(reporterId, postId, commentsFromPost);
 
         let postDiv = document.getElementById(postId);
         let showCommBtn = postDiv.querySelector("button.show-comm");
@@ -457,17 +443,11 @@ function removeNoCommentsMessage(postId) {
     }
 }
 
-function loadComments(reporterId, postId, commentsFromPost, userId) {
+function loadComments(reporterId, postId, commentsFromPost) {
 
     $.each(commentsFromPost, function(index, comment) {
 
-        let commentId = comment["id"];
-        let timestamp = comment["timestamp"];
-        let formattedTimestamp = getFormattedTimestamp(timestamp);
-        let readerName = comment["reader"]["fullName"];
-        let readerId = comment["reader"]["id"];
-        let commentText = comment["text"];
-        createNewComment(postId, commentId, readerId, readerName, commentText, timestamp, formattedTimestamp, userId);
+        createNewComment(postId, comment);
     })
 }
 
@@ -491,11 +471,8 @@ function publishNewComment(postId, readerId, reporterId) {
         function(newCommentJson) {
             textarea.value = "";
             try {
-                let commentId = newCommentJson["id"];
-                let timestamp = newCommentJson["timestamp"];
-                let readerName = newCommentJson["reader"]["fullName"];
                 removeNoCommentsMessage(postId);
-                createNewComment(postId, commentId, readerId, readerName, commentText, timestamp, "Now", readerId);
+                createNewComment(postId, newCommentJson);
             } catch (e) {
                 console.error("Error parsing JSON: " + e);
             }
@@ -505,12 +482,12 @@ function publishNewComment(postId, readerId, reporterId) {
     });
 }
 
-function createNewComment(postId, commentId, readerId, readerName, text, timestamp, formattedTimestamp, userId) {
+function createNewComment(postId, comment) {
     let newComment = $("<div></div>");
     newComment.attr({
         "class": "comment-container container my-5",
-        "id": commentId,
-        "data-millis-time": timestamp
+        "id": comment["id"],
+        "data-millis-time": comment["timestamp"]
     });
 
     let commentHeader = $("<header></header>");
@@ -519,29 +496,31 @@ function createNewComment(postId, commentId, readerId, readerName, text, timesta
 
     let removeSpan = $("<span></span>")
     removeSpan.attr("class","option");
-    removeSpan.attr("data-ref", commentId);
+    removeSpan.attr("data-ref", comment["id"]);
     commentHeader.append(removeSpan);
 
-    if(userId === readerId) {
+    let userId = $("body").attr("data-user-id");
+    if(userId === comment["reader"]["id"]) {
         let removeIcon = $("<i></i>");
         removeIcon.attr("class","bi bi-trash3");
         removeIcon.click(function() {
-            removeComment(commentId, postId);
+            removeComment(comment["id"], postId);
         });
         removeSpan.append(removeIcon);
     }
 
-    let reader = $("<h3>" + readerName + "</h3>");
+    let reader = $("<h3>" + comment["reader"]["fullName"] + "</h3>");
     reader.attr("class", "reader-name");
     newComment.append(reader);
 
-    let commentText = $("<p>" + text + "</p>");
+    let commentText = $("<p>" + comment["text"] + "</p>");
     commentText.attr("class","comment-text");
     newComment.append(commentText);
 
     let commentFooter = $("<footer></footer>");
     newComment.append(commentFooter);
 
+    let formattedTimestamp = getFormattedTimestamp(comment["timestamp"]);
     let commentTimestamp = $("<p>" + formattedTimestamp + "</p>");
     commentTimestamp.attr("class","timestamp");
     commentFooter.append(commentTimestamp);
@@ -620,25 +599,16 @@ async function commentsPageRequest(postId){
 }
 
 function loadNewCommentsPage(postId, newCommentsList) {
-    // todo
-    let numComments;
-    let userId = $("body").attr("data-user-id");
 
-    console.log("loadNewCommentsPage");
+    let numComments;
 
     if(newCommentsList.length > 0) {
 
         console.log("length risultato > 0");
 
         $.each(newCommentsList, function(index, commentJSON) {
-            let commentId = commentJSON["id"];
-            let readerFullName = commentJSON["reader"]["fullName"];
-            let readerId = commentJSON["reader"]["id"];
-            let text = commentJSON["text"];
-            let timestamp = commentJSON["timestamp"];
-            let formattedTimestamp = getFormattedTimestamp(timestamp);
 
-            createNewComment(postId, commentId, readerId, readerFullName, text, timestamp, formattedTimestamp, userId);
+            createNewComment(postId, commentJSON);
         });
         numComments = newCommentsList.length;
     }
