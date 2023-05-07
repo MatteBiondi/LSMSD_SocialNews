@@ -9,10 +9,10 @@ mkdir -p ~/mongo/{data,logs,auth}
 openssl rand -base64 756 > ~/mongo/auth/keyfile.pem
 chmod 400 ~/mongo/auth/keyfile.pem
 
-# First replica node (primary): 172.16.5.20
+# First replica node: 172.16.5.20
 mongod --replSet socialNews --dbpath ~/mongo/data --port 27017 --bind_ip localhost,172.16.5.20 --oplogSize 200 --fork --logpath ~/mongo/logs/mongod.log --auth --keyFile ~/mongo/auth/keyfile.pem
 
-# Second replica node: 172.16.5.21
+# Second replica node (primary): 172.16.5.21
 mongod --replSet socialNews --dbpath ~/mongo/data --port 27017 --bind_ip localhost,172.16.5.21 --oplogSize 200 --fork --logpath ~/mongo/logs/mongod.log --auth --keyFile ~/mongo/auth/keyfile.pem
 
 # Third replica node: 172.16.5.22

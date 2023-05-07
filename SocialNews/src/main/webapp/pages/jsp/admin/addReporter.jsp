@@ -60,7 +60,7 @@
             </div>
             <div class="col-md-6">
                 <label for="address-number" class="form-label">Address number</label>
-                <input pattern="[a-zA-Z1-9]*" type="text" class="form-control" id="address-number"
+                <input pattern="[a-zA-Z0-9]*" type="text" class="form-control" id="address-number"
                        name="addressNumber">
             </div>
             <div class="col-md-6">
