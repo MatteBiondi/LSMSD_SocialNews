@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin/navbar.css" type="text/css" media="screen">
 <nav class="navbar bg-light">
     <div id="logo">
         <a class="navbar-brand" href="${pageContext.request.contextPath}/admin/homepage">
