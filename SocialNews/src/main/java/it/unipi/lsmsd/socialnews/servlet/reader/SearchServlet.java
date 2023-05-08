@@ -10,6 +10,7 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -49,6 +50,10 @@ public class SearchServlet extends HttpServlet {
                             reporters = ServiceLocator.getReaderService().prevPageReportersByFullName(searchValue, lastReporter);
 
                     }
+                    for (ReporterDTO reporter : reporters){
+                        reporter.setFullName(new String(reporter.getFullName().getBytes(StandardCharsets.UTF_8),
+                                StandardCharsets.ISO_8859_1));
+                    }
                     request.setAttribute("reporterList", reporters);
 
                 } else if (searchKey.equals("Hashtag")) {
@@ -76,11 +81,13 @@ public class SearchServlet extends HttpServlet {
                 LOGGER.warning(String.format("Service error occurred: %s", message));
                 PrintWriter writer = response.getWriter();
                 writer.write(String.format("%s", message));
+                return;
             } catch (Exception e) {
                 String message = e.getMessage();
                 LOGGER.warning(String.format("Unexpected error occurred: %s", message));
                 PrintWriter writer = response.getWriter();
                 writer.write(String.format("%s", message));
+                return;
             }
         }
 

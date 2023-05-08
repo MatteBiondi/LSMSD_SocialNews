@@ -41,24 +41,14 @@ public class PostHandlingServlet extends HttpServlet {
             lastPost.setTimestamp(new Date(lastTimestamp));
             lastPost.setReporterId(reporterId);
 
-            System.out.println("direction: " + direction);
-
             if(direction.equals("next")) {
-
-                System.out.println("next direction");
-
                 List<PostDTO> nextPage = reporterService.nextReporterPagePosts(lastPost);
                 String nextPageJSON = toJSONArray(nextPage);
                 writer.write(nextPageJSON);
             }
             else {
-
-                System.out.println("prev direction");
-                System.out.println(lastPost);
-
                 List<PostDTO> prevPage = reporterService.prevReporterPagePosts(lastPost);
                 String prevPageJSON = toJSONArray(prevPage);
-                System.out.println(prevPageJSON);
                 writer.write(prevPageJSON);
             }
         } catch (Exception ex) {
@@ -85,8 +75,6 @@ public class PostHandlingServlet extends HttpServlet {
             if (hashtags != null && !hashtags.isEmpty()) {
                 hashtagsList = Arrays.asList(hashtags.split(" "));
             }
-            hashtagsList.replaceAll(s -> "#" + s);
-
             String links = request.getParameter("links");
             List<String> linksList = new ArrayList<>();
             if (links != null && !links.isEmpty()) {

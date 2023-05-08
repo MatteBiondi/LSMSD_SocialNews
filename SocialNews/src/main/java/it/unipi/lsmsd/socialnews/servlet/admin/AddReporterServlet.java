@@ -11,6 +11,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @WebServlet(name = "NewReporterServlet", value = "/admin/addReporter")
 public class AddReporterServlet extends HttpServlet {
@@ -35,6 +36,7 @@ public class AddReporterServlet extends HttpServlet {
         try {
             String jsonReporter = request.getReader().readLine();
             ReporterDTO reporter = JSONConverter.ReporterDTOFromJSON(jsonReporter);
+            reporter.setFullName(new String(reporter.getFullName().getBytes(), StandardCharsets.UTF_8));
             String reporterId = ServiceLocator.getAdminService().registerReporter(reporter);
             logger.info("New reporter registered in the system: " + reporterId);
             response.getWriter().write(success.toString());

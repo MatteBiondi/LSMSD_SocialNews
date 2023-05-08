@@ -26,11 +26,20 @@
     <hr>
     <p class="post-text">${param.postText}</p>
     <footer>
-        <c:if test="${not empty param.postHashtags}">
-            <p class="hashtags">${param.postHashtags.replace("[", "").replace("]", "").replace(",","")}</p>
+        <c:if test='${not empty param.postHashtags.replace("[", "").replace("]", "").trim()}'>
+            <p class="hashtags">
+                <c:forEach items="${param.postHashtags}" var="hashtag">
+                    #${hashtag.replace("[", "").replace("]", "").trim()}
+                </c:forEach>
+            </p>
         </c:if>
-        <c:if test="${not empty param.postLinks}">
-            <p class="related-links">${param.postLinks.replace("[", "").replace("]", "").replace(",","")}</p>
+        <c:if test='${not empty param.postLinks.replace("[", "").replace("]", "").trim()}'>
+            <p class="related-links">
+                <c:forEach items="${param.postLinks}" var="link">
+                    <a href='${link.replace("[", "").replace("]", "").trim()}'>
+                            ${link.replace("[", "").replace("]", "").trim()}</a>
+                </c:forEach>
+            </p>
         </c:if>
         <p class="timestamp">${param.postFormattedTimestamp}</p>
         <hr>
