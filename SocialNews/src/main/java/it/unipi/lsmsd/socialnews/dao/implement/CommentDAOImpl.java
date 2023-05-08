@@ -23,9 +23,10 @@ public class CommentDAOImpl implements CommentDAO {
 
     @Override
     public String createComment(Comment newComment) throws SocialNewsDataAccessException {
+        String commentId = mongoCommentDAO.createComment(newComment);
         RedundancyTask task = new RedundancyTask(TaskType.ADD_COMMENT, newComment.getPost().getId());
         ServiceWorkerPool.getPool().submitTask(() -> RedundancyUpdater.getInstance().addTask(task));
-        return mongoCommentDAO.createComment(newComment);
+        return commentId;
     }
 
     @Override
@@ -40,9 +41,10 @@ public class CommentDAOImpl implements CommentDAO {
 
     @Override
     public Long removeComment(String commentId, String postId) throws SocialNewsDataAccessException {
+        Long deletedCount = mongoCommentDAO.removeComment(commentId);
         RedundancyTask task = new RedundancyTask(TaskType.REMOVE_COMMENT, postId);
         ServiceWorkerPool.getPool().submitTask(() -> RedundancyUpdater.getInstance().addTask(task));
-        return mongoCommentDAO.removeComment(commentId);
+        return deletedCount;
     }
 
     @Override
