@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
 /**
@@ -69,8 +68,7 @@ public class LoginServlet extends HttpServlet {
                     session.setAttribute("email", email);
                     session.setAttribute("userType", "reader");
                     session.setAttribute("id", readerDTO.getId());
-                    session.setAttribute("fullName", new String(readerDTO.getFullName().getBytes(),
-                            StandardCharsets.UTF_8));
+                    session.setAttribute("fullName",readerDTO.getFullName());
                     // Set session to expire in 30 mins
                     session.setMaxInactiveInterval(30 * 60);
 

@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
@@ -80,17 +81,24 @@ public class HomepageServlet extends HttpServlet {
                 else
                     followedReporter = ServiceLocator.getReaderService().firstPageFollowing(id);
 
+                for(ReporterDTO reporter: followedReporter){
+                    reporter.setFullName(new String(reporter.getFullName().getBytes(StandardCharsets.UTF_8),
+                            StandardCharsets.ISO_8859_1));
+                }
+
                 request.setAttribute("reporterList", followedReporter);
             } catch (SocialNewsServiceException ex) {
                 String message = ex.getMessage();
                 LOGGER.warning(String.format("Service error occurred: %s", message));
                 PrintWriter writer = response.getWriter();
                 writer.write(String.format("%s", message));
+                return;
             } catch (Exception e) {
                 String message = e.getMessage();
                 LOGGER.warning(String.format("Unexpected error occurred: %s", message));
                 PrintWriter writer = response.getWriter();
                 writer.write(String.format("%s", message));
+                return;
             }
         }
 

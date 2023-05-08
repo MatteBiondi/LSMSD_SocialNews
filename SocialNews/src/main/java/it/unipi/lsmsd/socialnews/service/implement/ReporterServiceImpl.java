@@ -86,7 +86,9 @@ public class ReporterServiceImpl implements ReporterService {
                     () -> DAOLocator.getReporterDAO().getNumOfFollowers(reporterId, readerId)
             ));
             Reporter reporter = (Reporter) futures.get(0).get();
-
+            if(reporter == null){
+                throw new SocialNewsServiceException("Reporter not in the system");
+            }
             ObjectNode followersObj = (ObjectNode) futures.get(1).get();
             Integer numFollowers = followersObj.get("numFollowers").asInt();
             Boolean isFollower = followersObj.get("follow").asInt() == 1;

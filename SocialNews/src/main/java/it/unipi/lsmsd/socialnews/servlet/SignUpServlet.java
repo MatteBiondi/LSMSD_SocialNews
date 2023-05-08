@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * This class allow the user to create its own profile and to see the signup form page.
@@ -43,9 +44,9 @@ public class SignUpServlet extends HttpServlet {
         // Post request are handled to let user create its own profile in the system.
 
         // Get signup form data
-        String name = request.getParameter("name");
+        String name = new String(request.getParameter("name").getBytes(), StandardCharsets.UTF_8);
         String email = request.getParameter("email");
-        String surname = request.getParameter("surname");
+        String surname = new String(request.getParameter("surname").getBytes(), StandardCharsets.UTF_8);
         String password = request.getParameter("password");
         String country = request.getParameter("country");
         String gender = request.getParameter("gender");

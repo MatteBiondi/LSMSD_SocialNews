@@ -10,7 +10,6 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -39,10 +38,10 @@ public class ReporterPageServlet extends HttpServlet {
             ReporterPageDTO reporterPage = ServiceLocator.getReporterService().loadReporterPage(reporterId, readerId);
             List<PostDTO> postsList = reporterPage.getPosts();
             reporterPage.setPosts(null); //avoid passing duplicate values
-            reporterPage.getReporter().setFullName(new String(reporterPage.getReporter().getFullName().getBytes(), StandardCharsets.UTF_8));
 
             request.setAttribute("reporterPage",reporterPage);
             request.setAttribute("postsList",postsList);
+            request.getRequestDispatcher(targetJSP).forward(request, response);
         } catch (SocialNewsServiceException ex) {
             String message = ex.getMessage();
             LOGGER.warning(String.format("Service error occurred: %s", message));
@@ -54,8 +53,6 @@ public class ReporterPageServlet extends HttpServlet {
             PrintWriter writer = response.getWriter();
             writer.write(String.format("%s", message));
         }
-
-        request.getRequestDispatcher(targetJSP).forward(request, response);
     }
 
     @Override

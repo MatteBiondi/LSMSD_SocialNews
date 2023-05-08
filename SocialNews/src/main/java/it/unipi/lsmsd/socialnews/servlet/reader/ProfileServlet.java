@@ -9,7 +9,6 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.logging.Logger;
 
 @WebServlet(name = "ProfileServlet", value = "/reader/profile")
@@ -25,8 +24,6 @@ public class ProfileServlet extends HttpServlet {
         try{
             // Retrieve any user information from database
             ReaderDTO reader = ServiceLocator.getReaderService().readerInfo(email);
-
-            reader.setFullName(new String(reader.getFullName().getBytes(), StandardCharsets.UTF_8));
 
             // Set any information as parameter for JSP page
             request.setAttribute("fullName", reader.getFullName());
