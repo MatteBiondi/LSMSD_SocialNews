@@ -12,7 +12,9 @@ import java.io.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-
+/**
+ * Util class to append content to log file
+ * */
 class AppendingObjectOutputStream extends ObjectOutputStream {
 
     public AppendingObjectOutputStream(OutputStream out) throws IOException {
@@ -27,23 +29,34 @@ class AppendingObjectOutputStream extends ObjectOutputStream {
 
 }
 
+
+/**
+ * Class that implement the operations for redundancies updating
+ */
 public class RedundancyUpdater {
     private static final Logger logger = LoggerFactory.getLogger(ServletContextListener.class);
+
+    // Singleton approach
     private static volatile RedundancyUpdater instance;
+
+    //ScheduledExecutorService to handle a periodic task
     private final ScheduledExecutorService executor;
 
     private static final String COMMENTS = "Comments";
     private static final String REPORTS = "Reports";
 
+    // Log files' name
     private static final String COMMENT_FILE_PATH = "comment_redundancy_log.dat";
     private static final String REPORT_FILE_PATH = "report_redundancy_log.dat";
 
+    // Map that allow to summarise operations contained in each log file
     private final Map<String, Integer> postCommentCounts; // postId -> commentCounter
     private final Map<String, Integer> postReportCounts; // reporterId -> reportCounter
 
     private final MongoPostDAO mongoPostDAO;
     private final MongoReporterDAO mongoReporterDAO;
 
+    // Objects used to get a lock to operate on the log files
     private final Object commentFileLock;
     private final Object reportFileLock;
 
@@ -58,13 +71,18 @@ public class RedundancyUpdater {
         mongoPostDAO = new MongoPostDAO();
         mongoReporterDAO = new MongoReporterDAO();
 
+        // Apply the redundancy contained in log files before to start
         applyRedundanciesFromLog();
 
         executor = Executors.newSingleThreadScheduledExecutor();
-        executor.scheduleAtFixedRate(this::applyRedundanciesFromLog, 1, 1, TimeUnit.MINUTES);
+        executor.scheduleAtFixedRate(this::applyRedundanciesFromLog, 1, 1, TimeUnit.HOURS);
         logger.info("Redundancy updater started");
     }
 
+    /**
+     * Method used to get the single instance of the class
+     * @return The instance of the class (Singleton approach)
+     */
     public static RedundancyUpdater getInstance() {
         if(instance == null){
             synchronized (RedundancyUpdater.class){
@@ -77,6 +95,11 @@ public class RedundancyUpdater {
         return instance;
     }
 
+    /**
+     * Function wrapping all the operations to apply logged updates to the DB. For each log file,
+     * it takes the lock on it, extract all the operations logged, summarise operations by means
+     * maps and apply changes to the database
+     */
     private void applyRedundanciesFromLog(){
         List<RedundancyTask> pendentTasks = new ArrayList<>();
 
@@ -102,6 +125,7 @@ public class RedundancyUpdater {
 
         pendentTasks.clear();
 
+        // Take lock on reports file
         synchronized (reportFileLock){
             // Read operations in log files
             try {
@@ -123,6 +147,11 @@ public class RedundancyUpdater {
         logger.info("Data redundancies about reports successfully applied");
     }
 
+    /**
+     * Method used to identify the type of the task to perform and write it in the appropriate map
+     * @param task that identify the type of operation (Creation/deletion of comment/report)
+     * @throws IllegalArgumentException
+     */
     private void executeTask(RedundancyTask task) throws IllegalArgumentException{
         switch (task.getOperationType()) {
             case ADD_COMMENT    ->  addComment(task.getIdentifier(), task.getCounter());
@@ -135,6 +164,10 @@ public class RedundancyUpdater {
 
     }
 
+    /**
+     * Method used to write in the log file the operation performed, in order to update the redundancy accordingly
+     * @param task that identify the type of operation (Creation/deletion of comment/report)
+     */
     public void addTask(RedundancyTask task){
         try {
             switch (task.getOperationType()) {
@@ -148,7 +181,7 @@ public class RedundancyUpdater {
                         writeLog(REPORT_FILE_PATH, task);
                     }
                 }
-                default                 ->  throw new IllegalArgumentException("Fail to identify operation type in task execution");
+                default -> throw new IllegalArgumentException("Fail to identify operation type in task execution");
             }
         } catch (SocialNewsRedundancyTaskException appException){
             logger.error("Error in writing in log files: "+ appException.getMessage());
@@ -158,6 +191,10 @@ public class RedundancyUpdater {
         logger.info("Redundancy updater: task added");
     }
 
+    /**
+     * Method used to update the value of the comment redundancy in the database,
+     * based on the values contained in the appropriate map
+     */
     private void applyCommentsChangesToDB() {
         // Open transaction
         ClientSession session = mongoPostDAO.openSession();
@@ -198,6 +235,11 @@ public class RedundancyUpdater {
         logger.info("Redundancy updater: redundancies changes applied");
     }
 
+
+    /**
+     * Method used to update the value of the report redundancy in the database,
+     * based on the values contained in the appropriate map
+     */
     private void applyReportsChangesToDB() {
         // Open transaction
         ClientSession session = mongoReporterDAO.openSession();
@@ -239,6 +281,12 @@ public class RedundancyUpdater {
         logger.info("Redundancy updater: redundancies changes applied");
     }
 
+
+    /**
+     * Method used to substitute the actual content of the log file with the "remained" values in the map after the
+     * redundancy update because the operation for these comments failed
+     * @throws SocialNewsRedundancyTaskException
+     */
     private void renewCommentsLogFileContent() throws SocialNewsRedundancyTaskException{
         // Write in the log file the task for failed redundancies operation on database
         try {
@@ -256,6 +304,11 @@ public class RedundancyUpdater {
         logger.info("Redundancy updater: comments log file updated");
     }
 
+    /**
+     * Method used to substitute the actual content of the log file with the "remained" values in the map after the
+     * redundancy update because the operation for these reports failed
+     * @throws SocialNewsRedundancyTaskException
+     */
     private void renewReportsLogFileContent() throws SocialNewsRedundancyTaskException{
         // Write in the log file the task for failed redundancies operation on database
         try {
@@ -273,22 +326,46 @@ public class RedundancyUpdater {
         logger.info("Redundancy updater: reports log file updated");
     }
 
+    /**
+     * Method used to update the value of the counter associated to a comment in the map
+     * @param postId used to identify a comment
+     * @param counter the number of comment to be added
+     */
     private void addComment (String postId, int counter) {
         postCommentCounts.put(postId, postCommentCounts.getOrDefault(postId, 0) + counter);
     }
 
+    /**
+     * Method used to update the value of the counter associated to a comment in the map
+     * @param postId used to identify a comment
+     * @param counter the number of comment to be removed
+     */
     private void removeComment (String postId, int counter){
         postCommentCounts.put(postId, postCommentCounts.getOrDefault(postId, 0) - counter);
     }
 
+    /**
+     * Method used to update the value of the counter associated to a report in the map
+     * @param reporterId used to identify a report
+     * @param counter the number of report to be added
+     */
     private void addReport (String reporterId, int counter){
         postReportCounts.put(reporterId, postReportCounts.getOrDefault(reporterId, 0) + counter);
     }
 
+    /**
+     * Method used to update the value of the counter associated to a report in the map
+     * @param reporterId used to identify a report
+     * @param counter the number of report to be removed
+     */
     private void removeReport (String reporterId, int counter){
         postReportCounts.put(reporterId, postReportCounts.getOrDefault(reporterId, 0) - counter);
     }
 
+    /**
+     * Method used to print the content of the resume operation maps
+     * @param type
+     */
     private void printMapContent(String type) {
         if (type.equals(COMMENTS)) {
             logger.info("Post comments redundancy content: ");
@@ -306,6 +383,12 @@ public class RedundancyUpdater {
         }
     }
 
+    /**
+     * Method used to write the content of the log file
+     * @param filePath that identify the log file to write
+     * @param task that identify the operation to write in the log
+     * @throws SocialNewsRedundancyTaskException
+     */
     private void writeLog (String filePath, RedundancyTask task) throws SocialNewsRedundancyTaskException {
         if(new File(filePath).length() == 0) {
             // Write file for the first time (header included)
@@ -330,6 +413,13 @@ public class RedundancyUpdater {
         }
     }
 
+
+    /**
+     * Method used to extract the logged operation from log file
+     * @param filePath that identify the log file
+     * @return list of the logged operations
+     * @throws SocialNewsRedundancyTaskException
+     */
     private List<RedundancyTask> extractFromLog (String filePath) throws SocialNewsRedundancyTaskException {
         List<RedundancyTask> tasks = new ArrayList<>();
 
@@ -360,6 +450,10 @@ public class RedundancyUpdater {
         return tasks;
     }
 
+
+    /**
+     * Method used to stop the periodic task
+     */
     public void stopRedundanciesUpdate (){
         logger.info("RedundancyUpdater exiting.");
         executor.shutdown();
@@ -370,9 +464,15 @@ public class RedundancyUpdater {
         } catch (InterruptedException ex) {
             logger.error("Error in shutting down redundancy updater thread: "+ex.getMessage());
         }
+        //Apply the saved redundancy before to stop
         applyRedundanciesFromLog();
     }
 
+    /**
+     * Empty a file
+     * @param filePath that identify the file
+     * @throws SocialNewsRedundancyTaskException
+     */
     private void emptyFile(String filePath) throws SocialNewsRedundancyTaskException {
         try {
             new FileOutputStream(filePath).close();
@@ -381,11 +481,21 @@ public class RedundancyUpdater {
         }
     }
 
+
+    /**
+     * Method that delete a file
+     * @param filePath that identify the file
+     * @return true in case of success, false otherwise
+     */
     private boolean deleteFile(String filePath){
         return new File(filePath).delete();
     }
 
     // Utility function for debug purpose only
+
+    /**
+     * Method used to retrieve some information about file
+     */
     private void printFileInfo(){
 
         File commentFile = new File(COMMENT_FILE_PATH);
