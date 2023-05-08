@@ -74,7 +74,7 @@ function publishNewPost(reporterID) {
         function(newPostJson) {
             cleanNewPostForm();
             try {
-
+                $('#no-post-msg').hide();
                 createNewPost(reporterID, newPostJson);
             } catch (e) {
                 console.error("Error parsing JSON: " + e);

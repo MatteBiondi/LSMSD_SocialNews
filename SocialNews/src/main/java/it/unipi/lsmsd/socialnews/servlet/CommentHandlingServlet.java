@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
@@ -39,6 +40,10 @@ public class CommentHandlingServlet extends HttpServlet {
 
                 List<CommentDTO> commentPage = ServiceLocator.getPostService().firstPageComments(postId);
                 String commentPageJSON = toJSONArray(commentPage);
+                for (CommentDTO comment : commentPage){
+                    comment.getReader().setFullName(new String(comment.getReader().getFullName().getBytes(),
+                            StandardCharsets.UTF_8));
+                }
                 writer.write(commentPageJSON);
 
             } catch (SocialNewsServiceException ex) {
@@ -61,7 +66,10 @@ public class CommentHandlingServlet extends HttpServlet {
 
             try {
                 List<CommentDTO> nextCommentsPage = ServiceLocator.getPostService().nextPageComments(postId, commentDTO);
-
+                for (CommentDTO comment : nextCommentsPage){
+                    comment.getReader().setFullName(new String(comment.getReader().getFullName().getBytes(),
+                            StandardCharsets.UTF_8));
+                }
                 String commentPageJSON = toJSONArray(nextCommentsPage);
                 writer.write(commentPageJSON);
 
