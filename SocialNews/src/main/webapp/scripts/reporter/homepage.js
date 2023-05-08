@@ -124,28 +124,26 @@ function createNewPost(reporterID, post) {
 
     let postFooter = $("<footer></footer>");
     newPost.append(postFooter);
-
     let hashtagField = post["hashtags"];
     let hashtags = hashtagField === undefined ? "":hashtagField;
-    let hashtagsString = hashtags.toString();
-    if(hashtagsString !== "") {
-        hashtagsString = hashtagsString.replace(/,/g, " ");
+    let hashtagsString = "";
 
-        let postHashtags = $("<p>" + hashtagsString + "</p>");
-        postHashtags.attr("class","hashtags");
-        postFooter.append(postHashtags);
+    for(let hashtag of hashtags){
+        hashtagsString += "#" + hashtag + " "
     }
+    let postHashtags = $("<p>" + hashtagsString + "</p>");
+    postHashtags.attr("class","hashtags");
+    postFooter.append(postHashtags);
 
     let linkField = post["links"];
     let links = linkField === undefined? "":linkField;
-    let linksString = links.toString();
-    if(linksString !== "") {
-        linksString = linksString.replace(/,/g, " ");
-
-        let postLinks = $("<p>" + linksString + "</p>");
-        postLinks.attr("class","related-links");
-        postFooter.append(postLinks);
+    let linksString = "";
+    for(let link of links){
+        linksString += `<a href=${link}>${link}</a> `
     }
+    let postLinks = $("<p>" + linksString + "</p>");
+    postLinks.attr("class","related-links");
+    postFooter.append(postLinks);
 
     let formattedTimestamp = getFormattedTimestamp(post["timestamp"]);
     let postTimestamp = $("<p>" + formattedTimestamp + "</p>");
