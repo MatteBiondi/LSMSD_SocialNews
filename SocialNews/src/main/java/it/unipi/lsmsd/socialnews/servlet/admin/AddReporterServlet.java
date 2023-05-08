@@ -41,6 +41,7 @@ public class AddReporterServlet extends HttpServlet {
         }
         catch (Exception ex){
             ex.printStackTrace();
+            response.setStatus(500);
             response.getWriter().write(mapper.createObjectNode()
                     .put("result","error")
                     .put("message",ex.getMessage())

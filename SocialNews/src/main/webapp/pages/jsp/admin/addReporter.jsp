@@ -36,7 +36,7 @@
             </div>
             <div class="col-md-6">
                 <label for="first-name" class="form-label">First Name</label>
-                <input pattern="[a-zA-Z ]*" type="text" name="firstName" class="form-control" id="first-name" required>
+                <input pattern="[a-zA-Z àèìòùáéíóú]*" type="text" name="firstName" class="form-control" id="first-name" required>
             </div>
             <div class="col-md-6">
                 <label for="last-name" class="form-label">Last Name</label>
