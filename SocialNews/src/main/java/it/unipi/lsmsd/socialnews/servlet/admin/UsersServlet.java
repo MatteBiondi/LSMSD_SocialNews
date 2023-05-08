@@ -13,6 +13,7 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -147,7 +148,8 @@ public class UsersServlet extends HttpServlet {
                 jsonResponse.putArray("users").addAll(nodes);
 
                 response.setContentType("application/json");
-                response.getWriter().write(jsonResponse.toString());
+                response.getWriter().write(new String(jsonResponse.toString().getBytes(StandardCharsets.UTF_8),
+                        StandardCharsets.ISO_8859_1));
             }
         } catch (SocialNewsServiceException ex) {
             response.setContentType("application/json");
