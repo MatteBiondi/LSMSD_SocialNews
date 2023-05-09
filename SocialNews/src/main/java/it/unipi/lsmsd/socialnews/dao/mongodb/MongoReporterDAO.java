@@ -1,6 +1,8 @@
 package it.unipi.lsmsd.socialnews.dao.mongodb;
 
 import com.mongodb.MongoException;
+import com.mongodb.ReadPreference;
+import com.mongodb.TransactionOptions;
 import com.mongodb.client.ClientSession;
 import com.mongodb.client.model.*;
 import com.mongodb.client.result.DeleteResult;
@@ -311,7 +313,7 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
                     ex.printStackTrace();
                     throw new RuntimeException();
                 }
-            });
+            }, TransactionOptions.builder().readPreference(ReadPreference.primary()).build());
         }
         catch (Exception ex){
             ex.printStackTrace();

@@ -245,7 +245,10 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
 
             List<Document> posts = new ArrayList<>();
             getRawCollection("reporters").aggregate(stages).into(posts);
-            return (ArrayNode) new ObjectMapper().valueToTree(posts).get(0).get("posts");
+            if(posts.size() > 0)
+                return (ArrayNode) new ObjectMapper().valueToTree(posts).get(0).get("posts");
+            else
+                return new ObjectMapper().valueToTree(new ArrayList<>());
         }
         catch (MongoException me){
             me.printStackTrace();
