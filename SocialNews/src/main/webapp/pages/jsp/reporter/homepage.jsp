@@ -23,7 +23,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="${pageContext.request.contextPath}/scripts/reporter/homepage.js" type="module"></script>
 </head>
-<body data-user-id="${userID}" data-reporter-id="${reporterPage.reporter.id}" data-is-follower="${reporterPage.isFollower}">
+<body data-user-id="${userID}" data-user-type="${userType}" data-reporter-id="${reporterPage.reporter.id}" data-is-follower="${reporterPage.isFollower}">
     <!-- Navbar section -->
     <c:choose>
         <c:when test="${userType==\"admin\"}">
@@ -73,9 +73,9 @@
         <div id="new-post-div" class="post-container container my-5">
             <h2 id="add-post-title">Write a new post</h2>
             <div class="form-group">
-                <textarea class="form-control" id="new-post-textarea" rows="3" placeholder="Enter post text here"></textarea>
-                <input id="hashtags-input" type="text" class="form-control" placeholder="Enter content hashtags (without the # symbol and separated by space)">
-                <input id="related-links-input" type="text" class="form-control" placeholder="Enter related links (separated by space)">
+                <label for="new-post-textarea"></label><textarea class="form-control" id="new-post-textarea" rows="3" placeholder="Enter post text here"></textarea>
+                <label for="hashtags-input"></label><input id="hashtags-input" type="text" class="form-control" placeholder="Enter content hashtags (without the # symbol and separated by space)">
+                <label for="related-links-input"></label><input id="related-links-input" type="text" class="form-control" placeholder="Enter related links (separated by space)">
             </div>
             <button id="write-post">Publish</button>
         </div>
