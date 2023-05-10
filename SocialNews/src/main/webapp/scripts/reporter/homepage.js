@@ -28,7 +28,9 @@ $(document).ready(async () => {
         let target = event.currentTarget;
         let postId = $(target).attr("data-post");
         let reporter = $(target).attr("data-reporter");
-        removePost(reporter, postId);
+        let confirmAction = confirm("Are you sure you want to delete this post?")
+        if (confirmAction === true)
+            removePost(reporter, postId);
     });
 
     showCommentsBtn.click( function(event) {
@@ -112,7 +114,9 @@ function createNewPost(reporterID, post) {
     let removeIcon = $("<i></i>");
     removeIcon.attr("class","bi bi-trash3");
     removeIcon.click(function() {
-        removePost(reporterID, post["id"]);
+        let confirmAction = confirm("Are you sure you want to delete this post?")
+        if (confirmAction === true)
+            removePost(reporterID, post["id"]);
     });
     removeSpan.append(removeIcon);
 
@@ -490,7 +494,9 @@ function createNewComment(postId, comment) {
         let removeIcon = $("<i></i>");
         removeIcon.attr("class","bi bi-trash3");
         removeIcon.click(function() {
-            removeComment(comment["id"], postId);
+            let confirmAction = confirm("Are you sure you want to delete this comment?")
+            if (confirmAction === true)
+                removeComment(comment["id"], postId);
         });
         removeSpan.append(removeIcon);
     }
