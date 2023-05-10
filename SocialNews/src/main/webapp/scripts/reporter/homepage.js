@@ -28,7 +28,9 @@ $(document).ready(async () => {
         let target = event.currentTarget;
         let postId = $(target).attr("data-post");
         let reporter = $(target).attr("data-reporter");
-        removePost(reporter, postId);
+        let confirmAction = confirm("Are you sure you want to delete this post?")
+        if (confirmAction === true)
+            removePost(reporter, postId);
     });
 
     showCommentsBtn.click( function(event) {
@@ -40,10 +42,9 @@ $(document).ready(async () => {
 
     writeCommentBtn.click( function(event) {
         let postId = $(this).closest('.post-container').attr('id');
-        let readerId = $("body").attr("data-user-id");
         let target = event.currentTarget;
         let reporterId = $(target).attr("data-reporter");
-        publishNewComment(postId, readerId, reporterId);
+        publishNewComment(postId, reporterId);
     })
 
     if(isFollower === "true"){
@@ -112,7 +113,9 @@ function createNewPost(reporterID, post) {
     let removeIcon = $("<i></i>");
     removeIcon.attr("class","bi bi-trash3");
     removeIcon.click(function() {
-        removePost(reporterID, post["id"]);
+        let confirmAction = confirm("Are you sure you want to delete this post?")
+        if (confirmAction === true)
+            removePost(reporterID, post["id"]);
     });
     removeSpan.append(removeIcon);
 
@@ -152,8 +155,8 @@ function createNewPost(reporterID, post) {
 
     postFooter.append($("<hr>"));
 
-    let userID = $('body').attr("data-user-id");
-    if(reporterID !== userID) {
+    let userType = $("body").attr("data-user-type");
+    if(userType === "reader") {
 
         let newTextarea = $("<textarea>", {
             "class": "form-control new-comment-textarea",
@@ -168,7 +171,7 @@ function createNewPost(reporterID, post) {
             "text": "Publish"
         });
         newCommentBtn.click(function() {
-            publishNewComment(post["id"], userID, reporterID);
+            publishNewComment(post["id"], reporterID);
         });
         postFooter.append(newCommentBtn);
     }
@@ -347,7 +350,7 @@ function loadNewPage(newPostsList) {
 
 function getFormattedTimestamp(milliseconds) {
     let date = moment(milliseconds);
-    return date.format("ddd MMM DD HH:mm:ss [CET] YYYY");
+    return date.format("ddd MMM DD HH:mm:ss YYYY");
 }
 
 function nextPaging(numPosts) {
@@ -355,8 +358,6 @@ function nextPaging(numPosts) {
         $("#next-button").addClass("disabled");
     else
         $("#next-button").removeClass("disabled");
-
-    console.log("nextPaging");
 }
 
 function previousPaging() {
@@ -384,8 +385,12 @@ export async function showComments(reporterId, postId) {
         loadComments(reporterId, postId, commentsFromPost);
 
         let postDiv = document.getElementById(postId);
+
+
         let showCommBtn = postDiv.querySelector("button.show-comm");
-        showCommBtn.remove();
+        if(showCommBtn)
+            showCommBtn.remove();
+
         let showMoreBtn = $("<button>Show more</button>");
         showMoreBtn.attr("class","show-comm");
         showMoreBtn.on(
@@ -431,13 +436,17 @@ function removeNoCommentsMessage(postId) {
 
 function loadComments(reporterId, postId, commentsFromPost) {
 
+    let postDiv = document.getElementById(postId);
+    let commentsDiv = postDiv.querySelector("div.show-comm-div");
+    commentsDiv.innerHTML = '';
+
     $.each(commentsFromPost, function(index, comment) {
 
         createNewComment(postId, comment);
     })
 }
 
-function publishNewComment(postId, readerId, reporterId) {
+function publishNewComment(postId, reporterId) {
     let postDiv = document.getElementById(postId);
     let textarea = postDiv.querySelector(".new-comment-textarea");
     let commentText = textarea.value;
@@ -485,12 +494,16 @@ function createNewComment(postId, comment) {
     removeSpan.attr("data-ref", comment["id"]);
     commentHeader.append(removeSpan);
 
-    let userId = $("body").attr("data-user-id");
-    if(userId === comment["reader"]["id"]) {
+    let body = $("body");
+    let userId = body.attr("data-user-id");
+    let userType = body.attr("data-user-type");
+    if(userId === comment["reader"]["id"] || userType === "admin") {
         let removeIcon = $("<i></i>");
         removeIcon.attr("class","bi bi-trash3");
         removeIcon.click(function() {
-            removeComment(comment["id"], postId);
+            let confirmAction = confirm("Are you sure you want to delete this comment?")
+            if (confirmAction === true)
+                removeComment(comment["id"], postId);
         });
         removeSpan.append(removeIcon);
     }
