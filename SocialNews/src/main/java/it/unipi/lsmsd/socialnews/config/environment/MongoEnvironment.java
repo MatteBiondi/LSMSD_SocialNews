@@ -1,5 +1,9 @@
 package it.unipi.lsmsd.socialnews.config.environment;
 
+/**
+ * MongoEnvironment class is a utility class to read parameters related to MongoDB configuration variables set on the
+ * deploying environment.
+ */
 public final class MongoEnvironment {
 
     private static final String DEFAULT_PROTOCOL = "mongodb";

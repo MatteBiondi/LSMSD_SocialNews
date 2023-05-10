@@ -1,5 +1,9 @@
 package it.unipi.lsmsd.socialnews.config.environment;
 
+/**
+ * Neo4jEnvironment class is a utility class to read parameters related to Neo4J configuration variables set on the
+ * deploying environment.
+ */
 public class Neo4jEnvironment {
     private static final String DEFAULT_HOST = "172.16.5.22";
     private static final Integer DEFAULT_PORT = 7687;

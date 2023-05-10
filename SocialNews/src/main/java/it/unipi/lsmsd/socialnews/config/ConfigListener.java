@@ -16,7 +16,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-
+/**
+ * The ConfigListener class is linked to events related to the application lifetime and implements two methods that will
+ * be called at startup and shutdown of the web-application deployed on application server. This is particularly
+ * useful to perform initialization and clean up operations.
+ */
 @WebListener
 public class ConfigListener implements ServletContextListener {
     private static final Logger logger = LoggerFactory.getLogger(ServletContextListener.class);
