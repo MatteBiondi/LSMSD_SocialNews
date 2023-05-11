@@ -7,7 +7,7 @@ body {
 #reporter {
     background-color: white;
     padding: 20px;
-    font-family: Garamond;
+    font-family: Garamond, serif;
 }
 
 #main-info {
@@ -30,8 +30,7 @@ body {
 }
 
 #follow-button,
-#unfollow-button,
-#write-post, .write-comment {
+#unfollow-button {
     background-color: transparent;
     border-radius: 15px;
     border: none;
@@ -40,7 +39,7 @@ body {
     height: 30px;
     font-size: 17px;
     font-weight: bold;
-    font-family: Garamond;
+    font-family: Garamond, serif;
     box-shadow: 0 3px 3px rgba(0,0,0,0.2);
 
     display: inline-flex;
@@ -49,9 +48,7 @@ body {
 }
 
 #follow-button:hover,
-#unfollow-button:hover,
-#write-post:hover,
-.write-comment:hover{
+#unfollow-button:hover {
     background-color: grey;
     color: white;
 }
@@ -59,11 +56,6 @@ body {
 #follow-button,
 #unfollow-button{
     display: none;
-}
-
-#write-post {
-    margin-top: 2%;
-    margin-bottom: 2%;
 }
 
 h2{
@@ -102,11 +94,6 @@ h2{
 
 #no-post-msg {
     color: white;
-}
-
-.form-control {
-    border: none;
-    margin: 1%;
 }
 
 .profile-image {
