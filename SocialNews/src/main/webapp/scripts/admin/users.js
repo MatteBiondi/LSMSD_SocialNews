@@ -73,7 +73,7 @@ const reportPage = new class {
             this.postContainer.html(`
                 <div id="${this.#reports[index]['postId']}" class="post-container container my-5 search-result" style="width: auto">
                     <header class="post-header">
-                        <a href="${location.href.split('admin')[0]}/reporterPage?id=${this.#reporterId}" 
+                        <a href="${location.href.split('admin')[0]}reporterPage?id=${this.#reporterId}" 
                             class="option"><i class="bi bi-person"></i></a>
                         <i id="removePost" class="option bi bi-trash3"></i>
                     </header>
