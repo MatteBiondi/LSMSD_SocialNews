@@ -150,7 +150,7 @@ public class RedundancyUpdater {
     /**
      * Method used to identify the type of the task to perform and write it in the appropriate map
      * @param task that identify the type of operation (Creation/deletion of comment/report)
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException in case of unrecognized operation type
      */
     private void executeTask(RedundancyTask task) throws IllegalArgumentException{
         switch (task.getOperationType()) {
@@ -285,7 +285,7 @@ public class RedundancyUpdater {
     /**
      * Method used to substitute the actual content of the log file with the "remained" values in the map after the
      * redundancy update because the operation for these comments failed
-     * @throws SocialNewsRedundancyTaskException
+     * @throws SocialNewsRedundancyTaskException in case of error in overwriting the log file
      */
     private void renewCommentsLogFileContent() throws SocialNewsRedundancyTaskException{
         // Write in the log file the task for failed redundancies operation on database
@@ -307,7 +307,7 @@ public class RedundancyUpdater {
     /**
      * Method used to substitute the actual content of the log file with the "remained" values in the map after the
      * redundancy update because the operation for these reports failed
-     * @throws SocialNewsRedundancyTaskException
+     * @throws SocialNewsRedundancyTaskException in case of error in overwriting the log file
      */
     private void renewReportsLogFileContent() throws SocialNewsRedundancyTaskException{
         // Write in the log file the task for failed redundancies operation on database
@@ -364,7 +364,7 @@ public class RedundancyUpdater {
 
     /**
      * Method used to print the content of the resume operation maps
-     * @param type
+     * @param type type of entity whose log is to be printed
      */
     private void printMapContent(String type) {
         if (type.equals(COMMENTS)) {
@@ -387,7 +387,7 @@ public class RedundancyUpdater {
      * Method used to write the content of the log file
      * @param filePath that identify the log file to write
      * @param task that identify the operation to write in the log
-     * @throws SocialNewsRedundancyTaskException
+     * @throws SocialNewsRedundancyTaskException in case of error in writing the log file
      */
     private void writeLog (String filePath, RedundancyTask task) throws SocialNewsRedundancyTaskException {
         if(new File(filePath).length() == 0) {
@@ -418,7 +418,7 @@ public class RedundancyUpdater {
      * Method used to extract the logged operation from log file
      * @param filePath that identify the log file
      * @return list of the logged operations
-     * @throws SocialNewsRedundancyTaskException
+     * @throws SocialNewsRedundancyTaskException in case of error in reading the log file
      */
     private List<RedundancyTask> extractFromLog (String filePath) throws SocialNewsRedundancyTaskException {
         List<RedundancyTask> tasks = new ArrayList<>();
@@ -471,7 +471,7 @@ public class RedundancyUpdater {
     /**
      * Empty a file
      * @param filePath that identify the file
-     * @throws SocialNewsRedundancyTaskException
+     * @throws SocialNewsRedundancyTaskException in case of unexpected error
      */
     private void emptyFile(String filePath) throws SocialNewsRedundancyTaskException {
         try {
