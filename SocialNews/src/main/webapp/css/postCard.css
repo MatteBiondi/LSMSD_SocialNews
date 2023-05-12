@@ -7,12 +7,45 @@
     border-radius: 20px;
     padding-left: 20px;
     padding-right: 20px;
-    font-family: Garamond;
+    font-family: Garamond, serif;
     box-shadow: 10px 10px 10px rgba(0,0,0,0.2);
 }
 
 .post-title {
     margin: 0;
+}
+
+#write-post, .write-comment {
+    background-color: transparent;
+    border-radius: 15px;
+    border: none;
+    color: grey;
+    width: fit-content;
+    height: 30px;
+    font-size: 17px;
+    font-weight: bold;
+    font-family: Garamond, serif;
+    box-shadow: 0 3px 3px rgba(0,0,0,0.2);
+
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#write-post:hover,
+.write-comment:hover {
+    background-color: grey;
+    color: white;
+}
+
+#write-post {
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+.form-control {
+    border: none;
+    margin: 1%;
 }
 
 .show-comm {

@@ -6,10 +6,12 @@
     <header class="post-header">
         <c:choose>
             <c:when  test="${ sessionScope.userType == \"reader\" }">
-                <a href="${pageContext.request.contextPath}/reporterPage?id=${param.reporterId}" class="option">
-                    <!--View profile-->
-                    <i class="bi bi-person"></i>
-                </a>
+                <c:if test="${!pageContext.request.requestURI.toString().contains('reporter/homepage')}">
+                    <a href="${pageContext.request.contextPath}/reporterPage?id=${param.reporterId}" class="option">
+                        <!--View profile-->
+                        <i class="bi bi-person"></i>
+                    </a>
+                </c:if>
                 <a href="${pageContext.request.contextPath}/reader/reportPost?reporterId=${param.reporterId}&postId=${param.postId}" class="option report-post">
                     <!--Add report-->
                     <i class="bi bi-flag"></i>
@@ -45,7 +47,7 @@
         <hr>
         <c:if  test="${ sessionScope.userType == \"reader\" }">
         <div class="form-group">
-            <textarea class="form-control new-comment-textarea" id="message" rows="3" placeholder="Enter comment text here"></textarea>
+            <label for="message"></label><textarea class="form-control new-comment-textarea" id="message" rows="3" placeholder="Enter comment text here"></textarea>
             <button class="write-comment">Publish</button>
         </div>
         </c:if>
