@@ -30,7 +30,7 @@ public class ConfigListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent sce) {
         try(InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("service.properties")){
             MongoConnection.getConnection().ping();
-            Neo4jConnection.getConnection();
+            Neo4jConnection.getConnection().ping();
 
             Properties properties = new Properties();
             properties.load(inputStream);
