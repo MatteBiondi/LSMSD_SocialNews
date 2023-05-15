@@ -4,6 +4,8 @@ import it.unipi.lsmsd.socialnews.dao.mongodb.MongoConnection;
 import it.unipi.lsmsd.socialnews.dao.neo4j.Neo4jConnection;
 import it.unipi.lsmsd.socialnews.dao.redundancy.RedundancyUpdater;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
+import it.unipi.lsmsd.socialnews.servlet.reader.HomepageServlet;
+import it.unipi.lsmsd.socialnews.servlet.reader.HomepageServlet;
 import it.unipi.lsmsd.socialnews.threading.ServiceWorkerPool;
 import it.unipi.lsmsd.socialnews.service.util.Statistic;
 import it.unipi.lsmsd.socialnews.service.util.Util;
@@ -27,16 +29,16 @@ public class ConfigListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        try{
+        try(InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("service.properties")){
             MongoConnection.getConnection().ping();
             Neo4jConnection.getConnection();
 
             Properties properties = new Properties();
-            InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("service.properties");
             properties.load(inputStream);
 
             Util.configure(properties);
             UsersServlet.setPageSize(Integer.valueOf(properties.getProperty("listUserPageSize")));
+            HomepageServlet.setPageLength(Integer.valueOf(properties.getProperty("listFollowingPageSize", "10")));
             Statistic.configure(
                     Integer.valueOf(properties.getProperty("defaultWindowSize")),
                     Integer.valueOf(properties.getProperty("defaultLastN")),

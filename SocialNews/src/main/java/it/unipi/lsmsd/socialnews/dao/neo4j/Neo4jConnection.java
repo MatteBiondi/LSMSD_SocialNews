@@ -19,7 +19,6 @@ public final class Neo4jConnection implements AutoCloseable{
     }
 
     public static Neo4jConnection getConnection() {
-        logger.info("Neo4j connection established");
         return connection;
     }
 
@@ -30,7 +29,6 @@ public final class Neo4jConnection implements AutoCloseable{
     }
 
     public Session getNeo4jSession() {
-        logger.info("New Neo4j session opened");
         return driver.session(SessionConfig.forDatabase(Neo4jEnvironment.getNeo4jDatabase()));
     }
 }
