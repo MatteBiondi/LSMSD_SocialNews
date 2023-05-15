@@ -5,7 +5,6 @@ import it.unipi.lsmsd.socialnews.dao.neo4j.Neo4jConnection;
 import it.unipi.lsmsd.socialnews.dao.redundancy.RedundancyUpdater;
 import it.unipi.lsmsd.socialnews.service.exception.SocialNewsServiceException;
 import it.unipi.lsmsd.socialnews.servlet.reader.HomepageServlet;
-import it.unipi.lsmsd.socialnews.servlet.reader.HomepageServlet;
 import it.unipi.lsmsd.socialnews.threading.ServiceWorkerPool;
 import it.unipi.lsmsd.socialnews.service.util.Statistic;
 import it.unipi.lsmsd.socialnews.service.util.Util;
