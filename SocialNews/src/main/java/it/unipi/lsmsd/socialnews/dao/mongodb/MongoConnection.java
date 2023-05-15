@@ -66,16 +66,10 @@ public final class MongoConnection {
 
     public boolean ping(){
         MongoDatabase database = mongoClient.getDatabase("socialNewsDB");
-        try{
-            Bson command = new BsonDocument("ping", new BsonInt64(1));
-            Document commandResult = database.runCommand(command);
-            if(commandResult.containsKey("ok") && commandResult.getDouble("ok") == 1)
-                return true;
-        }
-        catch (MongoException ex){
-            ex.printStackTrace();
-        }
-        return false;
+        Bson command = new BsonDocument("ping", new BsonInt64(1));
+        Document commandResult = database.runCommand(command);
+
+        return commandResult.containsKey("ok") && commandResult.getDouble("ok") == 1;
     }
 
     public ClientSession openSession(){ return mongoClient.startSession(); }

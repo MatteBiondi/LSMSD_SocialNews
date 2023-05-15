@@ -27,27 +27,35 @@ public class ConfigListener implements ServletContextListener {
 
     @Override
     public void contextInitialized(ServletContextEvent sce) {
-        MongoConnection.getConnection();
-        Neo4jConnection.getConnection();
+        try{
+            MongoConnection.getConnection().ping();
+            Neo4jConnection.getConnection();
 
-        Properties properties = new Properties();
-        InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("service.properties");
-        try {
+            Properties properties = new Properties();
+            InputStream inputStream = this.getClass().getClassLoader().getResourceAsStream("service.properties");
             properties.load(inputStream);
-        } catch (IOException | NullPointerException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to load properties");
+
+            Util.configure(properties);
+            UsersServlet.setPageSize(Integer.valueOf(properties.getProperty("listUserPageSize")));
+            Statistic.configure(
+                    Integer.valueOf(properties.getProperty("defaultWindowSize")),
+                    Integer.valueOf(properties.getProperty("defaultLastN")),
+                    properties.getProperty("defaultUnitOfTime")
+            );
+            ServiceWorkerPool.getPool();
+            RedundancyUpdater.getInstance();
+            logger.info("Configuration complete");
         }
-        Util.configure(properties);
-        UsersServlet.setPageSize(Integer.valueOf(properties.getProperty("listUserPageSize")));
-        Statistic.configure(
-                Integer.valueOf(properties.getProperty("defaultWindowSize")),
-                Integer.valueOf(properties.getProperty("defaultLastN")),
-                properties.getProperty("defaultUnitOfTime")
-        );
-        ServiceWorkerPool.getPool();
-        RedundancyUpdater.getInstance();
-        logger.info("Configuration complete");
+        catch (IOException | NullPointerException ex){// The system won't be started due to critical exception during the boot of the application
+            ex.printStackTrace();
+            logger.error(ex.getMessage());
+            throw new RuntimeException("System failed to start due to load properties error: " + ex.getMessage());
+        }
+        catch (RuntimeException ex){
+            ex.printStackTrace();
+            logger.error(ex.getMessage());
+            throw new RuntimeException("System failed to start: " + ex.getMessage());
+        }
     }
 
     @Override
