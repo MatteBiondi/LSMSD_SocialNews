@@ -80,8 +80,8 @@ const reportPage = new class {
                     <hr>
                     <p class="post-text">${post.text}</p>
                     <footer>
-                        <p class="hashtags">${post.hashtags !== undefined ? post.hashtags:""}</p>
-                        <p class="related-links">${post.links !== undefined ? post.links:""}</p>
+                        <p class="hashtags">${post.hashtags !== undefined ? post.hashtags.map(s => '#' + s).join(' '):""}</p>
+                        <p class="related-links">${post.links !== undefined ? post.links.map(s => `<a href="${s}">${s}</a>`).join(' '):""}</p>
                         <p class="timestamp">${new Date(post.timestamp).toLocaleString()}</p>
                         <hr>
                         <div id="showComment" class="show-comm-div"><button class="show-comm">Show comments</button></div>
