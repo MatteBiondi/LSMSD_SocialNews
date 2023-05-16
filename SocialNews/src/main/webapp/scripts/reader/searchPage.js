@@ -1,4 +1,5 @@
 import {noElemMessage, showMessage} from "../util.js";
+import {showComments, publishNewComment} from "../reporter/homepage.js"
 
 const CARDS_PER_PAGE = 25
 
@@ -90,8 +91,11 @@ async function loadResults(direction){
     if($(resultList).find(".search-result").length > 0) {
         // There are cards inside
         resultListDiv.empty();
-        resultListDiv.html(resultList);
+        resultListDiv.append(resultList);
+        //resultListDiv.html(resultList);
         numCards = $(".search-result").length;
+
+        await applyButtonsEventListener(resultList);
     }
     else{
         numCards = 0;
@@ -109,4 +113,30 @@ async function loadResults(direction){
 
     nextPaging(numCards);
     previousPaging();
+}
+
+async function applyButtonsEventListener(resultList){
+    $(resultList).find('.show-comm').each(function() {
+        console.log($(resultList).find('.show-comm'));
+        console.log($(this));
+        $(this).click( function(event) {
+            console.log("ciao");
+            /*let target = event.currentTarget;
+            let postId = $(target).attr("data-post");
+            let reporter = $(target).attr("data-reporter");
+            showComments(reporter, postId);*/
+        })
+
+        console.log($(this).data('events'));
+    });
+
+    $(resultList).find('.write-comment').each(function(){
+        $(this).click( function(event) {
+            console.log("ehi");
+            /*let postId = $(this).closest('.post-container').attr('id');
+            let target = event.currentTarget;
+            let reporterId = $(target).attr("data-reporter");
+            publishNewComment(postId, reporterId);*/
+        })
+    });
 }

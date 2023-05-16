@@ -446,7 +446,7 @@ function loadComments(reporterId, postId, commentsFromPost) {
     })
 }
 
-function publishNewComment(postId, reporterId) {
+export function publishNewComment(postId, reporterId) {
     let postDiv = document.getElementById(postId);
     let textarea = postDiv.querySelector(".new-comment-textarea");
     let commentText = textarea.value;
