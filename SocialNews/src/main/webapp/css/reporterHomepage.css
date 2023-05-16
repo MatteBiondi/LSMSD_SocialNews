@@ -101,35 +101,9 @@ h2{
     height: 210px;
 }
 
-.comment-container {
-    text-align: left;
-    border-bottom: solid 1px lightgrey;
-    border-top: solid 1px lightgrey;
-}
-
 .post-header {
     text-align: right;
     margin-top: 2%;
-}
-
-.comment-container {
-    background-color: #f7f7f7;
-    margin-top: 0!important;
-    margin-bottom: 0!important;
-    padding-left: 3%;
-    padding-right: 3%;
-}
-
-.comment-text {
-    font-style: normal;
-}
-
-.comment-text, .comment-container > footer > .timestamp {
-    font-size: 17px;
-}
-
-.show-comm-div {
-    margin-top: 5%;
 }
 
 .show-comm {

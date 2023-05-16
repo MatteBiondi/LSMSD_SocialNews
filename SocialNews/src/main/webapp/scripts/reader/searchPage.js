@@ -115,28 +115,15 @@ async function loadResults(direction){
     previousPaging();
 }
 
-async function applyButtonsEventListener(resultList){
-    $(resultList).find('.show-comm').each(function() {
-        console.log($(resultList).find('.show-comm'));
-        console.log($(this));
-        $(this).click( function(event) {
-            console.log("ciao");
-            /*let target = event.currentTarget;
+async function applyButtonsEventListener(){
+    let allshowbuttons = document.getElementsByClassName("show-comm");
+
+    for(let i=0; i<allshowbuttons.length; i++) {
+        allshowbuttons[i].addEventListener("click", function () {
+            let target = this;
             let postId = $(target).attr("data-post");
             let reporter = $(target).attr("data-reporter");
-            showComments(reporter, postId);*/
+            showComments(reporter, postId);
         })
-
-        console.log($(this).data('events'));
-    });
-
-    $(resultList).find('.write-comment').each(function(){
-        $(this).click( function(event) {
-            console.log("ehi");
-            /*let postId = $(this).closest('.post-container').attr('id');
-            let target = event.currentTarget;
-            let reporterId = $(target).attr("data-reporter");
-            publishNewComment(postId, reporterId);*/
-        })
-    });
+    }
 }

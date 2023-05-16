@@ -1,0 +1,35 @@
+
+.comment-container {
+    text-align: left;
+    border-bottom: solid 1px lightgrey;
+    border-top: solid 1px lightgrey;
+}
+
+.comment-container {
+    background-color: #f7f7f7;
+    margin-top: 0!important;
+    margin-bottom: 0!important;
+    padding-left: 3%;
+    padding-right: 3%;
+}
+
+.comment-text {
+    font-style: normal;
+}
+
+.comment-text, .comment-container > footer > .timestamp {
+    font-size: 17px;
+}
+
+.show-comm-div {
+    margin-top: 5%;
+}
+
+.show-comm {
+    margin: 5%;
+}
+
+.reader-name {
+    font: 20px normal;
+    font-weight: bold;
+}
