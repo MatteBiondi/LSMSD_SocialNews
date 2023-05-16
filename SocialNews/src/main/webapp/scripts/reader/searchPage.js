@@ -92,7 +92,6 @@ async function loadResults(direction){
         // There are cards inside
         resultListDiv.empty();
         resultListDiv.append(resultList);
-        //resultListDiv.html(resultList);
         numCards = $(".search-result").length;
 
         await applyButtonsEventListener(resultList);
