@@ -115,15 +115,24 @@ async function loadResults(direction){
     previousPaging();
 }
 
-async function applyButtonsEventListener(){
-    let allshowbuttons = document.getElementsByClassName("show-comm");
+async function applyButtonsEventListener() {
+    const showButtons = document.querySelectorAll(".show-comm");
 
-    for(let i=0; i<allshowbuttons.length; i++) {
-        allshowbuttons[i].addEventListener("click", function () {
-            let target = this;
-            let postId = $(target).attr("data-post");
-            let reporter = $(target).attr("data-reporter");
+    for (const button of showButtons) {
+        button.addEventListener("click", function () {
+            const postId = this.getAttribute("data-post");
+            const reporter = this.getAttribute("data-reporter");
             showComments(reporter, postId);
-        })
+        });
+    }
+
+    const publishButtons = document.querySelectorAll(".write-comment");
+
+    for (const button of publishButtons) {
+        button.addEventListener("click", function () {
+            const postId = this.closest('.post-container').id;
+            const reporterId = this.getAttribute("data-reporter");
+            publishNewComment(postId, reporterId);
+        });
     }
 }
