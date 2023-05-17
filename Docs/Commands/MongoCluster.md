@@ -30,7 +30,8 @@ rsconf = {
      	{_id: 0, host: "172.16.5.20:27017", priority:2},
      	{_id: 1, host: "172.16.5.21:27017", priority:3},
         {_id: 2, host: "172.16.5.22:27017", priority:1}],
-    writeConcernMajorityJournalDefault: false
+    writeConcernMajorityJournalDefault: false // Determines the behavior of { w: "majority" } write concern if the 
+                                                //  write concern does not explicitly specify the journal option j 
 };
 
 rs.initiate(rsconf);
@@ -38,7 +39,7 @@ rs.initiate(rsconf);
 db.adminCommand({
     setDefaultRWConcern: 1,
     defaultReadConcern: {level: 'majority'},
-    defaultWriteConcern: {w: 'majority', j: false, wtimeout: 0}
+    defaultWriteConcern: {w: 'majority', j: false, wtimeout: 10000}
 });
 
 rs.status(); // Check cluster status

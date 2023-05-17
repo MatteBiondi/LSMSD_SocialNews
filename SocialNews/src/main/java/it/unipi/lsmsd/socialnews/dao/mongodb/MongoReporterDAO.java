@@ -292,8 +292,14 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
                     Document docSize = getRawCollection("reporters").aggregate(session, stages).first();
 
                     if (docSize != null && docSize.getDouble("sizeMB") > MAX_DOC_SIZE_MB) {
+
+                        // Retrieve reporter information
                         Reporter reporter = reporterByEmail(reporterEmail);
+
+                        // Set the new document ID
                         reporter.setId(UUID.randomUUID().toString());
+
+                        // Remove unnecessary  fields to the old document
                         getCollection().updateOne(session, Filters.eq("email", reporterEmail), Updates.combine(
                                 Updates.unset("email"),
                                 Updates.unset("password"),
@@ -305,7 +311,10 @@ public class MongoReporterDAO extends MongoDAO<Reporter> {
                                 Updates.unset("numOfReport")
 
                         ));
+
+                        // Create the new active document
                         register(session, reporter);
+
                         return true;
                     }
                     return false;
