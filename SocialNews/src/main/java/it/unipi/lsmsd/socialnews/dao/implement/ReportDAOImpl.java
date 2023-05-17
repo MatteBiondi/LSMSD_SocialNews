@@ -41,18 +41,6 @@ public class ReportDAOImpl implements ReportDAO {
     }
 
     /**
-     * Retrieves information about the report identified by 'reportId' field
-     *
-     * @param reportId id of the report
-     * @return report object containing all the information
-     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
-     */
-    @Override
-    public Report getReportById(String reportId) throws SocialNewsDataAccessException {
-        return neo4JReportDAO.getReportById(reportId);
-    }
-
-    /**
      * Retrieves information about the reports associated with a reporter identified by 'reporterId' field
      *
      * @param reporterId id of the reporter

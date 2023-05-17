@@ -18,15 +18,6 @@ public interface ReportDAO {
     String addReport(Report report, String reporterId) throws SocialNewsDataAccessException;
 
     /**
-     * Retrieves information about the report identified by 'reportId' field
-     *
-     * @param reportId id of the report
-     * @return report object containing all the information
-     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
-     */
-    Report getReportById(String reportId) throws SocialNewsDataAccessException;
-
-    /**
      * Retrieves information about the reports associated with a reporter identified by 'reporterId' field
      *
      * @param reporterId id of the reporter

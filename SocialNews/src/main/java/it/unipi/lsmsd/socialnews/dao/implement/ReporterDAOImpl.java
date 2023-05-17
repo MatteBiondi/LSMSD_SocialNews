@@ -54,11 +54,6 @@ public class ReporterDAOImpl implements ReporterDAO {
     }
 
     @Override
-    public Reporter reporterByEmail(String email) throws SocialNewsDataAccessException {
-        return mongoReporterDAO.reporterByEmail(email);
-    }
-
-    @Override
     public Reporter reporterByReporterId(String reporterId, Integer pageSize) throws SocialNewsDataAccessException {
         return mongoReporterDAO.reporterByReporterId(reporterId, pageSize);
     }
@@ -105,11 +100,6 @@ public class ReporterDAOImpl implements ReporterDAO {
         session.close();
 
         return resultMongo;
-    }
-
-    @Override
-    public Integer getNumOfFollowers(String reporterId) throws SocialNewsDataAccessException{
-        return neo4jReporterDAO.getNumOfFollowers(reporterId);
     }
 
     @Override

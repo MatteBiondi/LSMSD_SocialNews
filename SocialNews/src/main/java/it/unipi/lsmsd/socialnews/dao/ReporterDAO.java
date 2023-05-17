@@ -27,15 +27,6 @@ public interface ReporterDAO {
     Reporter authenticate(String email, String password) throws SocialNewsDataAccessException;
 
     /**
-     * Retrieves information about the reporter identified by email field
-     *
-     * @param email email of the reporter
-     * @return reporter object containing all the information
-     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
-     */
-    Reporter reporterByEmail(String email) throws SocialNewsDataAccessException;
-
-    /**
      * Retrieves information about a reporter, including all his\her posts, limiting the post list size to the
      * dimension specified
      *
@@ -108,15 +99,6 @@ public interface ReporterDAO {
      * @throws SocialNewsDataAccessException in case of failure of the delete operation on database
      */
     Long removeReporter(String reporterId) throws SocialNewsDataAccessException;
-
-    /**
-     * Retrieve the number of followers for a given reporter
-     *
-     * @param reporterId id of the reporter
-     * @return number of follower for the reporter identified by 'reporterId'
-     * @throws SocialNewsDataAccessException in case of failure of the query operation on database
-     */
-    Integer getNumOfFollowers(String reporterId) throws SocialNewsDataAccessException;
 
     /**
      * Retrieve the number of followers for a given reporter and if the reader is one of the follower
