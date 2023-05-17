@@ -260,7 +260,7 @@ public class MongoPostDAO extends MongoDAO<Reporter> {
         try{
             // Remove the post
             Long postRemoved = getCollection()
-                    .updateOne(
+                    .updateMany(
                             session,
                             Filters.eq("reporterId", reporterId),
                             Updates.pullByFilter(Document.parse(String.format("{posts:{_id:'%s'}}", postId))))
