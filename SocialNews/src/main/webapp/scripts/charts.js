@@ -285,8 +285,8 @@ const hottestPosts = new class extends Table{
 
             let newElem = [];
             newElem["id"] = post.id;
-            newElem["text"] = post.text;
-            newElem["hashtags"] = post.hashtags;
+            newElem["text"] = post.text ?? "empty";
+            newElem["hashtags"] = post.hashtags ?? "none";
             let milliseconds = parseInt(post.timestamp);
             newElem["timestamp"] = getFormattedTimestamp(milliseconds);
             tmp.push(newElem);
