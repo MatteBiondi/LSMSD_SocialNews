@@ -382,25 +382,25 @@ export async function showComments(reporterId, postId) {
     let commentsFromPost = JSON.parse(commentsFromPostJSON);
 
     if(commentsFromPost.length > 0) {
-        loadComments(reporterId, postId, commentsFromPost);
-
         let postDiv = document.getElementById(postId);
+        let commentsDiv = postDiv.querySelector("div.show-comm-div");
+        commentsDiv.innerHTML = '';
 
+        loadComments(reporterId, postId, commentsFromPost);
 
         let showCommBtn = postDiv.querySelector("button.show-comm");
         if(showCommBtn)
             showCommBtn.remove();
 
         let showMoreBtn = $("<button>Show more</button>");
-        showMoreBtn.attr("class","show-comm");
+        showMoreBtn.attr("class","show-more");
         showMoreBtn.on(
             "click",
             () => {
                 takeLastComment(postId);
-                commentsPageRequest(postId);
+                commentsPageRequest(reporterId, postId);
             }
         );
-
         let showCommDiv = postDiv.querySelector("div.show-comm-div");
         showCommDiv.append(showMoreBtn[0]);
 
@@ -436,12 +436,7 @@ function removeNoCommentsMessage(postId) {
 
 function loadComments(reporterId, postId, commentsFromPost) {
 
-    let postDiv = document.getElementById(postId);
-    let commentsDiv = postDiv.querySelector("div.show-comm-div");
-    commentsDiv.innerHTML = '';
-
     $.each(commentsFromPost, function(index, comment) {
-
         createNewComment(postId, comment);
     })
 }
@@ -526,7 +521,7 @@ function createNewComment(postId, comment) {
 
     let postDiv = document.getElementById(postId);
     let commentsDiv = postDiv.querySelector("div.show-comm-div");
-    commentsDiv.prepend(newComment[0]);
+    commentsDiv.append(newComment[0]);
 }
 
 function removeComment(commentId, postId) {
@@ -555,7 +550,7 @@ function hideRemovedComment(commentId) {
 
 /********** Comments Paging **********/
 
-const COMMENTS_PER_PAGE = 20;
+const COMMENTS_PER_PAGE = 10;
 
 function takeLastComment(postId){
     let postDiv = document.getElementById(postId);
@@ -566,7 +561,7 @@ function takeLastComment(postId){
     sessionStorage.setItem("commentsLastTimestamp", lastComment.getAttribute("data-millis-time"));
 }
 
-async function commentsPageRequest(postId){
+async function commentsPageRequest(reporterId, postId){
     let lastId = sessionStorage.getItem("commentsLastId");
     let lastTimestamp = sessionStorage.getItem("commentsLastTimestamp");
 
@@ -574,47 +569,30 @@ async function commentsPageRequest(postId){
     let showCommDiv = postDiv.querySelector("div.show-comm-div");
     let page = parseInt(showCommDiv.getAttribute("page")) + 1;
 
-    let urlOrigin = window.location.origin;
     // Get root of current pathname
     let rootPathname = window.location.pathname.match(/^\/[^/]+/)[0];
+    let baseUrl = window.location.origin + rootPathname ;
 
     //Last value is timestamp for post and fullName for reporter
     let newCommentsListJSON = await $.get(
-        `${urlOrigin}/${rootPathname}/commenthandling?page=${page}&postId=${postId}&commentsLastId=${lastId}&commentsLastTimestamp=${lastTimestamp}`
+        `${baseUrl}/commenthandling?page=${page}&postId=${postId}&commentsLastId=${lastId}&commentsLastTimestamp=${lastTimestamp}`
     );
 
     let newCommentsList = JSON.parse(newCommentsListJSON);
 
-    newCommentsList.reverse();
-
-    loadNewCommentsPage(postId, newCommentsList);
-}
-
-function loadNewCommentsPage(postId, newCommentsList) {
-
-    let numComments;
-
-    if(newCommentsList.length > 0) {
-
-        $.each(newCommentsList, function(index, commentJSON) {
-
-            createNewComment(postId, commentJSON);
-        });
-        numComments = newCommentsList.length;
-    }
-    else {
-        numComments = 0;
-        let page = parseInt(sessionStorage.getItem("commentsPage"));
-        sessionStorage.setItem("commentsPage", (page-1).toString());
-    }
-
-    nextCommentsPaging(numComments, postId);
+    loadComments(reporterId, postId, newCommentsList);
+    nextCommentsPaging(newCommentsList.length, postId);
+    showCommDiv.setAttribute("page", page.toString());
 }
 
 function nextCommentsPaging(numComments, postId) {
     let postDiv = document.getElementById(postId);
-    let showOtherCommentsButton = postDiv.querySelector("button.show-comm");
+    let showMoreButton = postDiv.querySelector("button.show-more");
 
     if(numComments < COMMENTS_PER_PAGE)
-        showOtherCommentsButton.remove();
+        showMoreButton.remove();
+    else {
+        let commentsDiv = postDiv.querySelector("div.show-comm-div");
+        commentsDiv.appendChild(showMoreButton);
+    }
 }

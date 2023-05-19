@@ -33,7 +33,6 @@ public class CommentHandlingServlet extends HttpServlet {
         int page = Integer.parseInt(request.getParameter("page"));
         String postId = request.getParameter("postId");
 
-        //da ricompattare
         if(page==1) {
 
             try {
@@ -124,7 +123,6 @@ public class CommentHandlingServlet extends HttpServlet {
             response.setContentType("text/plain");
             String commentId = request.getParameter("commentId");
             try {
-                System.out.println(commentId);
                 ServiceLocator.getPostService().removeComment(commentId, postId);
                 writer.write("success");
             } catch (SocialNewsServiceException ex) {
