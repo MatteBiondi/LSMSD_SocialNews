@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -44,12 +45,15 @@ public class PostHandlingServlet extends HttpServlet {
             if(direction.equals("next")) {
                 List<PostDTO> nextPage = reporterService.nextReporterPagePosts(lastPost);
                 String nextPageJSON = toJSONArray(nextPage);
-                writer.write(nextPageJSON);
+                writer.write(new String(nextPageJSON.getBytes(StandardCharsets.UTF_8),
+                        StandardCharsets.ISO_8859_1));
             }
             else {
                 List<PostDTO> prevPage = reporterService.prevReporterPagePosts(lastPost);
                 String prevPageJSON = toJSONArray(prevPage);
-                writer.write(prevPageJSON);
+
+                writer.write(new String(prevPageJSON.getBytes(StandardCharsets.UTF_8),
+                        StandardCharsets.ISO_8859_1));
             }
         } catch (Exception ex) {
             String message = ex.getMessage();
