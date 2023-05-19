@@ -252,7 +252,7 @@ const nationalityStatistic = new class extends Chart{
 const hottestMoments = new class extends Chart{
     constructor(){
         super('hottest-moment', 'bar', {statistic: 'hottestMomentsOfDay', windowSize:'3',
-            lastN: '1', unitOfTime:'Month'});
+            lastN: '10', unitOfTime:'Years'});
     }
 
     render(data){
@@ -276,7 +276,7 @@ const hottestMoments = new class extends Chart{
 
 const hottestPosts = new class extends Table{
     constructor(){
-        super('hottest-posts-grid',{statistic: 'hottestPosts', lastN: '1', unitOfTime:'Month'});
+        super('hottest-posts-grid',{statistic: 'hottestPosts', lastN: '10', unitOfTime:'Years'});
     }
 
     render(data) {

@@ -41,7 +41,7 @@ public class StatisticsServlet extends HttpServlet {
 
             if(params.get("statistic") == null) {
                 Integer defaultWindowSize = 3;
-                Integer defaultLastN = 25;
+                Integer defaultLastN = 10;
                 TemporalUnit defaultUnitOfTime = ChronoUnit.YEARS;
                 ArrayNode statisticMomentsList = ServiceLocator.getReporterService().hottestMomentsOfDay(defaultWindowSize, defaultLastN, defaultUnitOfTime);
                 List<PostDTO> statisticPostsList = ServiceLocator.getReporterService().latestHottestPost(reporterId, defaultLastN, defaultUnitOfTime);
