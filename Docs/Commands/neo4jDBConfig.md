@@ -1,25 +1,25 @@
 # INDEXES SETUP:
 Reporter:
 ```
-CREATE POINT INDEX reporter_id_index IF NOT EXISTS
+CREATE RANGE INDEX reporter_id_index IF NOT EXISTS
 FOR (r:Reporter)
 ON (r.reporterId)
 ```
 Reader:
 ```
-CREATE POINT INDEX reader_id_index IF NOT EXISTS
+CREATE RANGE INDEX reader_id_index IF NOT EXISTS
 FOR (r:Reader)
 ON (r.readerId)
 ```
 Post:
 ```
-CREATE POINT INDEX post_id_index IF NOT EXISTS
+CREATE RANGE INDEX post_id_index IF NOT EXISTS
 FOR (p:Post)
 ON (p.postId)
 ```
 Report:
 ```
-CREATE POINT INDEX report_id_index IF NOT EXISTS
+CREATE RANGE INDEX report_id_index IF NOT EXISTS
 FOR ()-[r:REPORT]-()
 ON (r.reportId)
 ```
@@ -106,4 +106,5 @@ ___
 * Creating a constraint requires the *CREATE CONSTRAINT* privilege.
 * Dropping a constraint requires the *DROP CONSTRAINT* privilege.
 * Listing constraints requires the *SHOW CONSTRAINTS* privilege.
-* 'IS UNIQUE' does not allow relationship patterns, so the constraint will be ensured by code
+* 'IS UNIQUE' does not allow relationship patterns in current version
+* Property existence constraint requires Neo4j Enterprise Edition
