@@ -22,6 +22,10 @@
 
     <h1 class="content-title">Followed Reporters</h1>
 
+    <div id="reporter_list">
+        <!-- Filled by AJAX -->
+    </div>
+
     <!-- Pagination section -->
     <jsp:include page="/pages/common/pagination.jsp"/>
 
@@ -31,8 +35,5 @@
         </div>
     </div>
 
-    <div id="reporter_list">
-        <!-- Filled by AJAX -->
-    </div>
 </body>
 </html>
