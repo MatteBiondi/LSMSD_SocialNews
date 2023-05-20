@@ -55,7 +55,7 @@
                                     <option value="Hour">Hour</option>
                                     <option value="Day">Day</option>
                                     <option value="Week">Week</option>
-                                    <option value="Month" selected>Month</option>
+                                    <option value="Month">Month</option>
                                     <option value="Year">Year</option>
                                 </select>
                             </div>

@@ -39,14 +39,14 @@
                                 <div class="input-group params">
                                     <label for="hottest-post-count" class="input-group-text">From last: </label>
                                     <input class="form-control param" name="hottest-post-count" type="number"
-                                           id="hottest-post-count" step="1" min="1" value="1" data-param="lastN">
+                                           id="hottest-post-count" step="1" min="1" value="10" data-param="lastN">
                                     <select id="hottest-post-unit" name="hottest-post-unit" aria-label="Period"
                                             class="form-control form-select param" data-param="unitOfTime">
                                         <option value="Hour">Hour</option>
                                         <option value="Day">Day</option>
                                         <option value="Week">Week</option>
                                         <option value="Month" selected>Month</option>
-                                        <option value="Year">Year</option>
+                                        <option value="Year" selected>Year</option>
                                     </select>
                                 </div>
                             </div>
@@ -70,14 +70,14 @@
                             <div class="input-group params">
                                 <label for="hottest-moment-count" class="input-group-text">From last: </label>
                                 <input class="form-control param" name="hottest-moment-count" type="number"
-                                       id="hottest-moment-count" step="1" min="1" value="1" data-param="lastN">
+                                       id="hottest-moment-count" step="1" min="1" value="10" data-param="lastN">
                                 <select id="hottest-moment-unit" name="hottest-moment-unit" aria-label="Period"
                                         class="form-control form-select param" data-param="unitOfTime">
                                     <option value="Hour">Hour</option>
                                     <option value="Day">Day</option>
                                     <option value="Week">Week</option>
-                                    <option value="Month" selected>Month</option>
-                                    <option value="Year">Year</option>
+                                    <option value="Month">Month</option>
+                                    <option value="Year" selected>Year</option>
                                 </select>
                             </div>
                             <div class="input-group params">
