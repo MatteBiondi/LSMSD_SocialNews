@@ -92,10 +92,10 @@ public class Neo4jReporterDAO {
             Query query = new Query(
                     "MATCH (r:Reporter {reporterId: $reporterId}) " +
                             "OPTIONAL MATCH (r) -[w:WRITE]-> (p:Post) " +
-                            "OPTIONAL MATCH (p) <-[rp]- () "+
-                            "OPTIONAL MATCH (r) <-[rr]- () "+
-                            "DELETE rp "+
-                            "DELETE rr "+
+                            "OPTIONAL MATCH (p) <-[report]- () "+
+                            "OPTIONAL MATCH (r) <-[follow]- () "+
+                            "DELETE report "+
+                            "DELETE follow "+
                             "DELETE w " +
                             "DELETE p "+
                             "DELETE r ",
@@ -115,9 +115,9 @@ public class Neo4jReporterDAO {
     public ArrayNode getMostPopularReporters(int limitTopRanking) throws SocialNewsDataAccessException{
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
-                    "MATCH (r:Reporter) " +
-                            "OPTIONAL MATCH (r) <-[f:FOLLOW]- () "+
-                            "WITH r as reporter, count(f) as numFollowers " +
+                    "MATCH (reporter:Reporter) " +
+                            "OPTIONAL MATCH (reporter) <-[follow:FOLLOW]- () "+
+                            "WITH reporter, count(follow) as numFollowers " +
                             "RETURN reporter, numFollowers "+
                             "ORDER BY numFollowers DESC " +
                             "LIMIT $limit",
