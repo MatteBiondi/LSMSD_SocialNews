@@ -10,6 +10,7 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -38,7 +39,10 @@ public class ReporterPageServlet extends HttpServlet {
             ReporterPageDTO reporterPage = ServiceLocator.getReporterService().loadReporterPage(reporterId, readerId);
             List<PostDTO> postsList = reporterPage.getPosts();
             reporterPage.setPosts(null); //avoid passing duplicate values
-
+            for(PostDTO post: postsList){
+                post.setText(new String(post.getText().getBytes(StandardCharsets.UTF_8),
+                        StandardCharsets.ISO_8859_1));
+            }
             request.setAttribute("reporterPage",reporterPage);
             request.setAttribute("postsList",postsList);
             request.getRequestDispatcher(targetJSP).forward(request, response);

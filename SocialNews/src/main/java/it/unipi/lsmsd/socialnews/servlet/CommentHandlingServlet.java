@@ -33,17 +33,12 @@ public class CommentHandlingServlet extends HttpServlet {
         int page = Integer.parseInt(request.getParameter("page"));
         String postId = request.getParameter("postId");
 
-        //da ricompattare
         if(page==1) {
 
             try {
-
                 List<CommentDTO> commentPage = ServiceLocator.getPostService().firstPageComments(postId);
-                for (CommentDTO comment : commentPage){
-                    comment.getReader().setFullName(new String(comment.getReader().getFullName().getBytes(StandardCharsets.UTF_8),
-                            StandardCharsets.ISO_8859_1));
-                }
-                String commentPageJSON = toJSONArray(commentPage);
+                String commentPageJSON = new String(toJSONArray(commentPage).getBytes(StandardCharsets.UTF_8),
+                        StandardCharsets.ISO_8859_1);
                 writer.write(commentPageJSON);
 
             } catch (SocialNewsServiceException ex) {
@@ -66,11 +61,10 @@ public class CommentHandlingServlet extends HttpServlet {
 
             try {
                 List<CommentDTO> nextCommentsPage = ServiceLocator.getPostService().nextPageComments(postId, commentDTO);
-                for (CommentDTO comment : nextCommentsPage){
-                    comment.getReader().setFullName(new String(comment.getReader().getFullName().getBytes(StandardCharsets.UTF_8),
-                            StandardCharsets.ISO_8859_1));
-                }
-                String commentPageJSON = toJSONArray(nextCommentsPage);
+
+                String commentPageJSON = new String(toJSONArray(nextCommentsPage).getBytes(StandardCharsets.UTF_8),
+                        StandardCharsets.ISO_8859_1);
+
                 writer.write(commentPageJSON);
 
             } catch (SocialNewsServiceException ex) {
@@ -124,7 +118,6 @@ public class CommentHandlingServlet extends HttpServlet {
             response.setContentType("text/plain");
             String commentId = request.getParameter("commentId");
             try {
-                System.out.println(commentId);
                 ServiceLocator.getPostService().removeComment(commentId, postId);
                 writer.write("success");
             } catch (SocialNewsServiceException ex) {

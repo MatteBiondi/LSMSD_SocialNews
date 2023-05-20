@@ -48,7 +48,7 @@
         <c:if  test="${ sessionScope.userType == \"reader\" }">
         <div class="form-group">
             <label for="message"></label><textarea class="form-control new-comment-textarea" id="message" rows="3" placeholder="Enter comment text here"></textarea>
-            <button class="write-comment">Publish</button>
+            <button data-reporter="${param.reporterId}" class="write-comment">Publish</button>
         </div>
         </c:if>
         <div class="show-comm-div" page="null">

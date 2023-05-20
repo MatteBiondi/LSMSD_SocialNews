@@ -93,7 +93,11 @@ h2{
 }
 
 #no-post-msg {
+    text-align: center;
     color: white;
+    font-family: 'Garamond', serif;
+    font-style: italic;
+    font-size: 25px;
 }
 
 .profile-image {
