@@ -6,6 +6,7 @@
 
 .wrapper{
     padding: 25px;
+    overflow: auto;
 }
 
 #reporter-form{
