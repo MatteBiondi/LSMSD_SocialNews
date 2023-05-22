@@ -88,5 +88,5 @@ function writeConcernTest(){
 console.log("***********************************\n*** CLUSTER CONFIGURATION TEST ***\n***********************************")
             
 // Launch test
-//writeConcernTest()
-readConcernTest()
+writeConcernTest()
+//readConcernTest()

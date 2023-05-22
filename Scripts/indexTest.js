@@ -1,59 +1,119 @@
 const fs = require('fs')
 
-let pageSize = 5
-let reporterId = 'b3c022e7-8ecd-429e-b2c8-3b86fb0a8c44';
-let hashtag = 'BREAKING'
-let regex = "(?=.*\\bM.*\\b)(?=.*\\bR.*\\b)"
-let postId = '7fd548de-f3fb-495e-901f-f6857d4e73c9'
-let postOffsetNext={ timestamp:ISODate("2023-02-23T11:16:00.890Z"), id:'b9e670ad-958a-4842-8ada-e6ae76c0ee1f'}
-let postHashtagsOffset = ISODate();
+let pageSize = 25
+let reporterId = 'a03704eb-ffe4-480a-8715-a238a162a571';
+let hashtag = 'kabul'
+let regex = "(?=.*\\bM.*\\b)"
+let postId = '5bb4ebbb-b715-4254-ad84-eb1a5f7b4e20'
+let postOffsetNext={ timestamp:ISODate("2023-01-14T13:21:47.000Z"), id:'5bb4ebbb-b715-4254-ad84-eb1a5f7b4e20'}
+let postHashtagsOffset = {timestamp: ISODate("2023-01-17T22:08:32.000Z"), id:'cb8e2d9d-2294-429f-b359-89c46f6fba2e'};
+let commentPostId = 'ed01e84a-760c-4346-acee-cbc62702ad7c'
+let commentOffset = {timestamp:ISODate("2017-07-06T02:21:34.000Z"),id:'3bc309e9-b2b7-4f2d-93a9-3659fdb0d511'}
+
+
+/** INDEXES **/
+
+function buildUsersIndexes(){
+    db.users.dropIndexes()
+
+    db.users.createIndex(
+        {'fullName':  1, '_id': 1},
+        {name:'sortByFullNamePagination', unique: false, sparse: false}
+    )
+
+    db.users.createIndex(
+        {'email':  1},
+        {name:'emailUnique', unique: true, sparse: false}
+    )
+}
+
+function buildReportersIndexes(){
+    db.reporters.dropIndexes()
+
+    db.reporters.createIndex(
+        {'fullName':  1, 'reporterId': 1},
+        {name:'searchByFullNamePagination', unique: false, sparse: false}
+    )
+
+    db.reporters.createIndex(
+        {'reporterId':  1},
+        {name:'filterByReporterId', unique: false, sparse: false}
+    )
+
+    db.reporters.createIndex(
+        {'reporterId': 1, 'posts._id':  1},
+        {name:'filterByReporterIdPostId', unique: false, sparse: true}
+    )
+
+    db.reporters.createIndex(
+        {'reporterId':1, 'posts.timestamp':  1, 'posts._id': 1},
+        {name:'filterPostsByReporterIdPagination', unique: false, sparse: true}
+    )
+
+    db.reporters.createIndex(
+        {'posts.hashtags':  1, 'posts.timestamp':1, 'posts._id':1},
+        {name:'filterByPostHashtag', unique: false, sparse: true}
+    )
+
+    db.reporters.createIndex(
+        {'email':  1},
+        {name:'emailActiveReporterUnique', unique: true, sparse: true}
+    )
+}
+
+function buildCommentsIndexes(){
+    db.comments.dropIndexes()
+
+    db.comments.createIndex(
+        {'post._id': 1, 'timestamp':1, '_id':1},
+        {name:'searchByPostSortByTimestampPagination', unique: false, sparse: false}
+    )
+}
 
 /*** QUERIES ***/
 
-// Login
-const authenticateReporter = () => db.reporters.find(
-        {$and:[{email:'adrian.herrero@example.com'}, {password:'3fc409bf40a364b43fa6d11b0e4610bccbc0ca2707e5976ba219155a92dcb9cb'}]}).hint(indexes ? {}:{$natural: 1})
-    .explain('executionStats')
+const allReaders = () => db.users.find({$and:[
+            {isAdmin: {$exists:false}},
+            {$or:[
+                    {$and:[{fullName: 'Aadi Padmanabha'},
+                            {'_id':{$gt: 'b5d21392-2396-4597-98f8-5ce3025bd581'}}]},
+                    {fullName: {$gt:'Aadi Padmanabha'}}
+                ]}
+        ]}).sort({fullName: 1}).limit(pageSize).explain('executionStats')
 
+const reporterByReporterId = () => db.reporters.aggregate([
+        {$match: {reporterId: reporterId}},
+        {$sort:{'email':-1}},
+        {$group:{_id:'$reporterId',
+                posts:{$push: '$posts'},
+                fullName: {$first:'$fullName'},
+                gender: {$first:'$gender'},
+                dateOfBirth: {$first:'$dateOfBirth'},
+                location: {$first:'$location'},
+                cell: {$first:'$cell'},
+                picture: {$first:'$picture'}}},
+        {$project: {reporterId:1, "email":1, "fullName":1, "gender":1, "dateOfBirth":1, "location":1, "cell":1, "picture":1,
+                posts:{$filter: {
+                        input:{
+                            $sortArray:{
+                                input:{$reduce: {input:'$posts', initialValue: [], in: {$concatArrays: ['$$value', '$$this']}}},
+                                sortBy:{'timestamp':-1}}},
+                        cond:{}, limit:pageSize}}}}]).explain('executionStats')
 
-// Reporter by reporter id
-const reportersByReporterId = () =>
-db.reporters.aggregate([
-    {$match: {reporterId: reporterId}},
-    {$sort:{'email':-1}},
-    {$group:{_id:'$reporterId',
-            posts:{$push: '$posts'},
-            fullName: {$first:'$fullName'},
-            gender: {$first:'$gender'},
-            dateOfBirth: {$first:'$dateOfBirth'},
-            location: {$first:'$location'},
-            cell: {$first:'$cell'},
-            picture: {$first:'$picture'}}},
-    {$project: {reporterId:1, "email":1, "fullName":1, "gender":1, "dateOfBirth":1, "location":1, "cell":1, "picture":1,
-            posts:{$filter: {
-                    input:{
-                        $sortArray:{
-                            input:{$reduce: {input:'$posts', initialValue: [], in: {$concatArrays: ['$$value', '$$this']}}},
-                            sortBy:{'timestamp':-1}}},
-                        cond:{}, limit:25}}}}])
-    .explain('executionStats')
+const reportersByFullName = () => db.reporters.find({$and:[
+            {fullName: {$regex: regex , $options:'i'}},
+            {$or:[
+                    {$and:[
+                            {fullName: 'Mario Rossi'},
+                            {reporterId:{$gt: '9f6a77b2-df70-4de3-a2a4-a6e3136de134'}}
+                        ]},
+                    {fullName: {$gt:'Mario Rossi'}}
+                ]}
+        ]}, {fullName:1}).sort({fullName:1}).limit(pageSize).explain('executionStats')
 
-    
-// Reporters by full name 
-const reportersByFullName = () =>
-db.reporters.find({$and:[
-        {fullName: {$regex: regex , $options:'i'}},
-        {$or:[
-                {$and:[
-                        {fullName: 'Mario Rossi'},
-                        {reporterId:{$gt: 'b3c022e7-8ecd-429e-b2c8-3b86fb0a8c44'}}
-                    ]},
-                {fullName: {$gt:'Mario Rossi'}}
-            ]}
-    ]}, {fullName:1}).sort({fullName:1}).limit(25)
-    .explain('executionStats')
+const postByPostId = () => db.reporters.find({$and:[{reporterId: reporterId, 'posts._id':postId}]},
+    {posts:{$elemMatch:{'_id':postId}}}).explain('executionStats')
 
-// Post by reporter id
 const postsByReporterId = () => db.reporters.aggregate([
     {$match:
             {$and:[
@@ -65,9 +125,9 @@ const postsByReporterId = () => db.reporters.aggregate([
             posts: {"$filter":
                     {"input": "$posts", "as": "posts", "cond":
                             {"$or": [
-                                    {"$and": [{"$eq": ["$$posts.timestamp", ISODate("2023-02-23T11:16:00.89Z")]},
-                                            {"$lt": ["$$posts._id", "b9e670ad-958a-4842-8ada-e6ae76c0ee1f"]}]},
-                                    {"$lt": ["$$posts.timestamp", ISODate("2023-02-23T11:16:00.89Z")]}]}}}}},
+                                    {"$and": [{"$eq": ["$$posts.timestamp", postOffsetNext.timestamp]},
+                                            {"$lt": ["$$posts._id", postOffsetNext.id]}]},
+                                    {"$lt": ["$$posts.timestamp", postOffsetNext.timestamp]}]}}}}},
     {$group:{_id:'$reporterId', posts:{$push: '$posts'}}},
     {$project: {reporterId:1,
             posts:{$filter: {
@@ -76,10 +136,8 @@ const postsByReporterId = () => db.reporters.aggregate([
                             input:{$reduce: {input:'$posts', initialValue: [], in: {$concatArrays: ['$$value', '$$this']}}},
                             sortBy:{'timestamp':-1}}},
                     cond:{}, limit:pageSize}}}}
-]).explain('executionStats')
+    ]).explain('executionStats')
 
-
-// Post by hashtag (next)
 const postByHashtag = () => db.reporters.aggregate([
     {$match:{'posts.hashtags':hashtag}},
     {$project:{
@@ -87,12 +145,12 @@ const postByHashtag = () => db.reporters.aggregate([
             'posts': {
                 $filter: {input: '$posts', as: 'posts', cond: {
                         $and: [
-                            {$in: ['BREAKING', {$ifNull: ['$$posts.hashtags', []]}]},
-                            {$or: [ // Condition only for next page
+                            {$in: [hashtag, {$ifNull: ['$$posts.hashtags', []]}]},
+                            {$or: [
                                     {$and: [{
-                                            $eq:['$$posts.timestamp', postHashtagsOffset]},
-                                            {$lt:['$$posts._id', postId]}]},
-                                    {$lt: ['$$posts.timestamp', postHashtagsOffset]}]}]}}}}},
+                                            $eq:['$$posts.timestamp', postHashtagsOffset.timestamp]},
+                                            {$lt:['$$posts._id', postHashtagsOffset.id]}]},
+                                    {$lt: ['$$posts.timestamp', postHashtagsOffset.timestamp]}]}]}}}}},
     {$addFields: {'posts.reporterId': '$reporterId'}},
     {$group:{_id: '', posts: {$push: '$posts'}}},
     {$project: {_id:0, posts:{
@@ -101,41 +159,25 @@ const postByHashtag = () => db.reporters.aggregate([
                         $sortArray:{
                             input:{$reduce: {input:'$posts', initialValue: [], in: {$concatArrays: ['$$value', '$$this']}}},
                             sortBy:{'timestamp':-1}}},
-                    cond:{}, limit:pageSize}}}}
-]).explain('executionStats')
+                    cond:{}, limit:pageSize}}}}]).explain('executionStats')
 
-
-// All readers
-const allReaders = () =>
-    db.users.find({$and:[
-            {isAdmin: {$exists:false}},
+const commentsByPostId = () => db.comments.find({$and:[
+            {'post._id': commentPostId},
             {$or:[
-                    {$and:[{fullName: 'Lucas French'}, {'_id':{$gt: '84ee74bc-f0b1-4ded-bce5-42eb6ed5911e'}}]},
-                    {fullName: {$gt:'Lucas French'}}
+                    {$and:[{timestamp: commentOffset.timestamp }, {'_id':{$gt: commentOffset.id}}]},
+                    {timestamp: {$gt: commentOffset.timestamp}}
                 ]}
-        ]}, {password:-1}).sort({fullName: 1}).limit(25)
-    .explain('executionStats')
-
-// Comments by post id (prev)
-const commentsByPostId = () =>
-    db.comments.find({$and:[
-            {'post._id': '327ba9a1-f476-4469-8127-acda3c4096f2'},
-            {$or:[
-                    {$and:[{timestamp: new Date('2017-07-14T14:47:11.000+00:00')}, {'_id':{$gt: '58397250-cd1d-4f24-8356-64cdfa3bb56f'}}]},
-                    {timestamp: {$gt: new Date('2017-07-14T14:47:11.000+00:00')}}
-                ]}
-        ]}).sort({timestamp: 1, _id: 1}).limit(25)
-    .explain('executionStats')
+        ]}).sort({timestamp: 1, _id: 1}).limit(pageSize).explain('executionStats')
 
 
 const QUERIES = [
-    {name:'reporterAuthentication', collection:'reporters', query: authenticateReporter},
-    {name:'reportersByFullName', collection:'reporters', query: reportersByFullName},
-    {name:'reportersByReporterId', collection:'reporters', query: reportersByReporterId},
     {name:'allReaders', collection:'users', query: allReaders},
-    {name:'commentsByPostId', collection:'comments', query: commentsByPostId},
+    {name:'reporterByReporterId', collection:'reporters', query: reporterByReporterId},
+    {name:'reportersByFullName', collection:'reporters', query: reportersByFullName},
+    {name:'postByPostId', collection: 'reporters', query:postByPostId},
+    {name:'postByReporterId', collection:'reporters', query: postsByReporterId},
     {name:'postsByHashtag', collection:'reporters', query: postByHashtag},
-    {name:'postByReporterId', collection:'reporters', query: postsByReporterId}
+    {name:'commentsByPostId', collection:'comments', query: commentsByPostId}
 ]
 
 // Test function
@@ -162,6 +204,12 @@ function indexesTest(){
     console.log("Indexes test ready")
 }
 
+
+
+// Build indexes
+buildUsersIndexes()
+buildReportersIndexes()
+buildCommentsIndexes()
 
 // Run tests
 
