@@ -271,6 +271,7 @@ $(document).ready(async () => {
             takeLastPost("previous");
 
             pageRequest("previous");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     );
 
@@ -282,6 +283,7 @@ $(document).ready(async () => {
             takeLastPost("next");
 
             pageRequest("next");
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     );
 });
