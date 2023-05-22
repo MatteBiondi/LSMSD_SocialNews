@@ -29,10 +29,10 @@ public class Neo4jReportDAO {
 
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
-                    "MATCH (reporter:Reporter {reporterId: $reporterId})" +
-                            "MERGE (p:Post {postId: $postId}) <-[:WRITE]- (reporter) "+
+                    "MATCH (reporter:Reporter {reporterId: $reporterId}) " +
+                            "MERGE (post:Post {postId: $postId}) <-[:WRITE]- (reporter) "+
                             "MERGE (reader:Reader {readerId: $readerId}) " +
-                            "CREATE (reader) -[report:REPORT {reportId:$reportId, timestamp: $timestamp, text: $text}]-> (p) ",
+                            "CREATE (reader) -[report:REPORT {reportId:$reportId, timestamp: $timestamp, text: $text}]-> (post) ",
                     parameters("readerId", readerId,
                             "reporterId", reporterId,
                             "postId", postId,
@@ -107,7 +107,7 @@ public class Neo4jReportDAO {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
                     "MATCH (reader:Reader) -[report:REPORT]-> (post:Post) "+
-                            "MATCH (reporter:Reporter) -[:WRITE]-> (post)"+
+                            "MATCH (reporter:Reporter) -[:WRITE]-> (post) "+
                             "WHERE report.reportId = $reportId "+
                             "DELETE report "+
                             "RETURN reporter.reporterId as reporterId",

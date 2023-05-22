@@ -108,10 +108,10 @@ public class Neo4jReaderDAO {
     public List<Reporter> suggestReporters(String readerId, int limitListLen) throws SocialNewsDataAccessException {
         try(Session session = neo4jConnection.getNeo4jSession()){
             Query query = new Query(
-                    "MATCH (r:Reporter) " +
-                            "WHERE NOT (:Reader {readerId: $readerId}) -[:FOLLOW]-> (r) " +
-                            "OPTIONAL MATCH (r) <-[f:FOLLOW]-() " +
-                            "WITH r as suggestedReporters, count(f) as NumFollower "+
+                    "MATCH (reporter:Reporter) " +
+                            "WHERE NOT (:Reader {readerId: $readerId}) -[:FOLLOW]-> (reporter) " +
+                            "OPTIONAL MATCH (reporter) <-[follow:FOLLOW]-() " +
+                            "WITH reporter as suggestedReporters, count(follow) as NumFollower "+
                             "RETURN suggestedReporters " +
                             "ORDER BY NumFollower DESC " +
                             "LIMIT $limit",

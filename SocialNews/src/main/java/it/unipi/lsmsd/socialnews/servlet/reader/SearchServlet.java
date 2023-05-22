@@ -71,6 +71,10 @@ public class SearchServlet extends HttpServlet {
                         else
                             posts = ServiceLocator.getPostService().prevPagePostsByHashtag(searchValue, lastPost);
                     }
+                    for(PostDTO post: posts){
+                        post.setText(new String(post.getText().getBytes(StandardCharsets.UTF_8),
+                                StandardCharsets.ISO_8859_1));
+                    }
                     request.setAttribute("postsList", posts);
 
                 } else{

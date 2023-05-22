@@ -33,6 +33,10 @@
 
     <h1 class="content-title">Search results:</h1>
 
+    <div id="result_list">
+        <!-- Filled by AJAX -->
+    </div>
+
     <!-- Pagination section -->
     <jsp:include page="/pages/common/pagination.jsp"/>
 
@@ -40,10 +44,6 @@
         <div class="spinner-grow" role="status">
             <span class="visually-hidden">Loading...</span>
         </div>
-    </div>
-
-    <div id="result_list">
-        <!-- Filled by AJAX -->
     </div>
 </body>
 </html>

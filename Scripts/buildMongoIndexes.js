@@ -1,15 +1,14 @@
-
 function buildUsersIndexes(){
     db.users.dropIndexes()
 
     db.users.createIndex(
-        {'email':  1},
-        {name:'emailUnique', unique: true, sparse: false}
+        {'fullName':  1, '_id': 1},
+        {name:'sortByFullNamePagination', unique: false, sparse: false}
     )
 
     db.users.createIndex(
-        {'fullName':  1, '_id': 1},
-        {name:'sortByFullNamePagination', unique: false, sparse: false}
+        {'email':  1},
+        {name:'emailUnique', unique: true, sparse: false}
     )
 }
 
@@ -17,8 +16,8 @@ function buildReportersIndexes(){
     db.reporters.dropIndexes()
 
     db.reporters.createIndex(
-        {'email':  1},
-        {name:'emailActiveReporterUnique', unique: true, sparse: true}
+        {'fullName':  1, 'reporterId': 1},
+        {name:'searchByFullNamePagination', unique: false, sparse: false}
     )
 
     db.reporters.createIndex(
@@ -27,14 +26,13 @@ function buildReportersIndexes(){
     )
 
     db.reporters.createIndex(
-        {'fullName':  1, 'reporterId': 1},
-        {name:'searchByFullNamePagination', unique: false, sparse: false}
-    )
-
-
-    db.reporters.createIndex(
         {'posts.hashtags':  1},
         {name:'filterByPostHashtag', unique: false, sparse: true}
+    )
+
+    db.reporters.createIndex(
+        {'email':  1},
+        {name:'emailActiveReporterUnique', unique: true, sparse: true}
     )
 }
 

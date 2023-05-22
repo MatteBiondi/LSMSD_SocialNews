@@ -57,6 +57,7 @@ async function loadFollowing(){
         reporterListDiv.empty();
         reporterListDiv.html(reporterList);
         numCards = $(".card-container").length;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     else{
         numCards = 0;

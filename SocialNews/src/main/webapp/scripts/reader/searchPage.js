@@ -95,6 +95,7 @@ async function loadResults(direction){
         numCards = $(".search-result").length;
 
         await applyButtonsEventListener(resultList);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     else{
         numCards = 0;
